@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/Osoitetyokalu" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
