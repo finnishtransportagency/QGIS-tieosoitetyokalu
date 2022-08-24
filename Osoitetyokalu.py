@@ -23,6 +23,7 @@
 """
 
 
+from ctypes import pointer
 from qgis.core import QgsMessageLog
 import logging
 formatter = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -88,6 +89,8 @@ class Osoitetyokalu:
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
         self.first_start = None
+
+        self.my_crs = QgsCoordinateReferenceSystem(3067)
 
 
         #Setting up canvas to click
@@ -255,41 +258,8 @@ class Osoitetyokalu:
                 dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
 
                 #get new coordinates and address from VKM
-                vkm_url = 'https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-                response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot=1,2')
-
-                while response.status_code !=200: #retry
-                    logging.info('retrying')
-                    response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot=1,2')
-
-                vkm_error = False
-                vkm_data = json.loads(response.content)
-                for vkm_feature in vkm_data['features']:
-
-                    if 'virheet' in vkm_feature['properties']:
-                        road_address = vkm_feature['properties']['virheet']
-                        vkm_error = True
-                    
-                    else:
-                        try:
-                            #getting road coordinates and road address that are nearest to the mouse click
-                            print(vkm_feature['properties']) 
-                            point_x = vkm_feature['properties']['x']
-                            point_y = vkm_feature['properties']['y']
-                            tie = str(vkm_feature['properties']['tie'])
-                            ajorata = str(vkm_feature['properties']['ajorata'])
-                            osa = str(vkm_feature['properties']['osa'])
-                            etaisyys = str(vkm_feature['properties']['etaisyys'])
-                            
-                            road_address = f'{tie}/{ajorata}/{osa}/{etaisyys}'
-                            
-                        except:
-                            #nearest address is a street -> no road address
-                            print(vkm_feature['properties'])
-                            point_x = vkm_feature['properties']['x']
-                            point_y = vkm_feature['properties']['y']
-
-                            road_address = 'Ei tieosoitetta'
+                vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
+                road_address, vkm_error, point_x, point_y = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y)
                         
                 if vkm_error == True:
                     dlg.AddrLineEdit.setText(road_address)
@@ -297,35 +267,10 @@ class Osoitetyokalu:
                 else:
                     dlg.AddrLineEdit.setText(road_address)
                     #draws a point with clicked coordinates
-                    point_layer = QgsVectorLayer('Point', f'Piste ({road_address})', 'memory')
-                    pr = point_layer.dataProvider()
-                    pr.addAttributes([QgsField("ID", QVariant.String)])
-                    point_layer.updateFields()
-                    feature = QgsFeature()
-                    feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, point_y)))
-                    feature.setAttributes(['1'])
-                    my_crs = QgsCoordinateReferenceSystem(3067)
-                    
-                    #each point is added as a separate layer
-                    pr.addFeature(feature)
-                    point_layer.updateExtents()
-                    point_layer.setCrs(my_crs)
-                    QgsProject.instance().addMapLayer(point_layer)
+                    self.add_point(road_address=road_address, point_x=point_x, point_y=point_y)
                     
                     #adding an annotation with road address to the latest point
-                    layer = self.iface.activeLayer()
-
-                    annot = QgsTextAnnotation()
-                    annot.setFrameSize(QSizeF(100, 20))
-                    annot.setMapLayer(layer)
-                    annot.setFrameOffsetFromReferencePoint(QPoint(30, 30))
-                    annot.setDocument(QTextDocument(road_address))
-
-                    # X and Y are defined previously
-                    annot.setMapPositionCrs(QgsCoordinateReferenceSystem(layer.crs()))
-                    annot.setMapPosition(QgsPointXY(point_x, point_y))
-
-                    QgsProject.instance().annotationManager().addAnnotation(annot)
+                    self.add_annotation(road_address=road_address, point_x=point_x, point_y=point_y)
                     
             except AttributeError:
                 pass
@@ -334,15 +279,9 @@ class Osoitetyokalu:
         #self.iface.newProject()
 
         #CRS when the ShowCoordinates-tool is opened
-        my_crs = QgsCoordinateReferenceSystem(3067)
-        QgsProject.instance().setCrs(my_crs)
-
-        #if self.iface.mapCanvas().mapRenderer().hasCrsTransformEnabled():
-        #    my_crs = core.QgsCoordinateReferenceSystem(3067,core.QgsCoordinateReferenceSystem.EpsgCrsId)
-        #    self.iface.mapCanvas().mapRenderer().setDestinationCrs(my_crs)
+        QgsProject.instance().setCrs(self.my_crs)
 
         canvas = self.iface.mapCanvas()
-
         pointTool = QgsMapToolEmitPoint(canvas)
         pointTool.canvasClicked.connect(display_point)
         canvas.setMapTool(pointTool)
@@ -360,233 +299,125 @@ class Osoitetyokalu:
             pass
 
 
-    def display_popup(self, pointTool):
-
+    def popup(self):
         if self.first_start == True:
             self.first_start = False
         dlg = PopUp_dialog()
         dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
-        my_crs = QgsCoordinateReferenceSystem(3067)
-        QgsProject.instance().setCrs(my_crs)
-        #canvas = self.iface.mapCanvas()
 
-        point_x = str(pointTool.x())
-        point_y = str(pointTool.y())
-        #get new coordinates and address from VKM
-        vkm_url = 'https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-        response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot=1,2,3,4,5,6&vaylan_luonne=0')
+        def display_popup(pointTool):
+            try:
+                QgsProject.instance().setCrs(self.my_crs)
+                #canvas = self.iface.mapCanvas()
 
-        while response.status_code !=200: #retry
-            logging.info('retrying')
-            response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot=1,2,3,4,5,6&vaylan_luonne=0')
+                point_x = str(pointTool.x())
+                point_y = str(pointTool.y())
+                #get new coordinates and address from VKM
+                vkm_url = 'https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
+                response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot=1,2,3,4,5,6&vaylan_luonne=0')
 
-        vkm_error = False
-        vkm_data = json.loads(response.content)
-        for vkm_feature in vkm_data['features']:
-            print(vkm_feature)
-            if 'virheet' in vkm_feature['properties']:
-                road_address = vkm_feature['properties']['virheet']
-                vkm_error = True
-                
-            else:
-                try:
-                    #getting road coordinates and road address that are nearest to the mouse click
-                    #print(vkm_feature['properties']) 
-                    point_x = vkm_feature['properties']['x']
-                    point_y = vkm_feature['properties']['y']
-                    tie = str(vkm_feature['properties']['tie'])
-                    ajorata = str(vkm_feature['properties']['ajorata'])
-                    osa = str(vkm_feature['properties']['osa'])
-                    etaisyys = str(vkm_feature['properties']['etaisyys'])
-                    hallinnollinen_luokka = str(vkm_feature['properties']['hallinnollinen_luokka'])
-                    kuntanimi = str(vkm_feature['properties']['kuntanimi'])
-                    katunimi = str(vkm_feature['properties']['katunimi'])
-                    katunumero = str(vkm_feature['properties']['katunumero'])
-                    elynimi = str(vkm_feature['properties']['elynimi'])
-                    ualuenimi = str(vkm_feature['properties']['ualuenimi'])
-                    maakuntanimi = str(vkm_feature['properties']['maakuntanimi'])
-                    #maantien_nimi = str(vkm_feature['properties']['maantien_nimi'])
+                while response.status_code !=200: #retry
+                    logging.info('retrying')
+                    response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot=1,2,3,4,5,6&vaylan_luonne=0')
 
-                    dlg.XlineEdit.setText(str(point_x))
-                    dlg.YlineEdit.setText(str(point_y))
-                    dlg.TielineEdit.setText(tie)
-                    dlg.AjoratalineEdit.setText(ajorata)
-                    dlg.OsalineEdit.setText(osa)
-                    dlg.EtaisyyslineEdit.setText(etaisyys)
-                    dlg.HaLulineEdit.setText(hallinnollinen_luokka)
-                    dlg.KuntanimilineEdit.setText(kuntanimi)
-                    dlg.KatunimilineEdit.setText(katunimi)
-                    dlg.KatunumerolineEdit.setText(katunumero)
-                    dlg.ElynimilineEdit.setText(elynimi)
-                    dlg.UaluenimilineEdit.setText(ualuenimi)
-                    dlg.MaakuntanimilineEdit.setText(maakuntanimi)
-
-                    road_address = f'{tie}/{ajorata}/{osa}/{etaisyys}'
-                    
-                except:
-                    point_x = vkm_feature['properties']['x']
-                    point_y = vkm_feature['properties']['y']
-                    tie = str(vkm_feature['properties']['tie'])
-                    ajorata = str(vkm_feature['properties']['ajorata'])
-                    osa = str(vkm_feature['properties']['osa'])
-                    etaisyys = str(vkm_feature['properties']['etaisyys'])
-                    hallinnollinen_luokka = str(vkm_feature['properties']['hallinnollinen_luokka'])
-                    kuntanimi = str(vkm_feature['properties']['kuntanimi'])
-                    #katunimi = str(vkm_feature['properties']['katunimi'])
-                    #katunumero = str(vkm_feature['properties']['katunumero'])
-                    elynimi = str(vkm_feature['properties']['elynimi'])
-                    ualuenimi = str(vkm_feature['properties']['ualuenimi'])
-                    maakuntanimi = str(vkm_feature['properties']['maakuntanimi'])
-                    #maantien_nimi = str(vkm_feature['properties']['maantien_nimi'])
-
-                    dlg.XlineEdit.setText(str(point_x))
-                    dlg.YlineEdit.setText(str(point_y))
-                    dlg.TielineEdit.setText(tie)
-                    dlg.AjoratalineEdit.setText(ajorata)
-                    dlg.OsalineEdit.setText(osa)
-                    dlg.EtaisyyslineEdit.setText(etaisyys)
-                    dlg.HaLulineEdit.setText(hallinnollinen_luokka)
-                    dlg.KuntanimilineEdit.setText(kuntanimi)
-                    #dlg.KatunimilineEdit.setText(katunimi)
-                    #dlg.KatunumerolineEdit.setText(katunumero)
-                    dlg.ElynimilineEdit.setText(elynimi)
-                    dlg.UaluenimilineEdit.setText(ualuenimi)
-                    dlg.MaakuntanimilineEdit.setText(maakuntanimi)
-                    
-                    road_address = f'{tie}/{ajorata}/{osa}/{etaisyys}'
-
-            if vkm_error == True:
-                self.iface.messageBar().pushMessage(
-                    f'{road_address}',
-                    level=1, duration=10)
-
-            else:
-                point_layer = QgsVectorLayer('Point', f'Piste ({road_address})', 'memory')
-                pr = point_layer.dataProvider()
-                pr.addAttributes([QgsField("ID", QVariant.String)])
-                point_layer.updateFields()
-                feature = QgsFeature()
-                feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, point_y)))
-                feature.setAttributes(['1'])
-                my_crs = QgsCoordinateReferenceSystem(3067)
-                
-                #each point is added as a separate layer
-                pr.addFeature(feature)
-                point_layer.updateExtents()
-                point_layer.setCrs(my_crs)
-                QgsProject.instance().addMapLayer(point_layer)
-
-                dlg.show()
-                
-                dlg.exec_()
-                
-                dlg.SuljeButton.clicked.connect(self.close_popup)
-
-
-    def popup(self):
-        canvas = self.iface.mapCanvas()
-        pointTool = QgsMapToolEmitPoint(canvas)
-        pointTool.canvasClicked.connect(self.display_popup)
-        canvas.setMapTool(pointTool)
-        #self.display_popup(pointTool)
-
-
-    def display_point_B(self, pointTool):
-
-        try:
-
-            #click on canvas returns coordinates
-            print('Point B')
-            print(pointTool.x(), pointTool.y())
-            point_x = str(pointTool.x())
-            point_y = str(pointTool.y())
-            self.two_points_dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
-
-            #get new coordinates and address from VKM
-            vkm_url = 'https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-            response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot=1,2&vaylan_luonne=0')
-
-            while response.status_code !=200: #retry
-                logging.info('retrying')
-                response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot=1,2&vaylan_luonne=0')
-
-            vkm_error = False
-            vkm_data = json.loads(response.content)
-            for vkm_feature in vkm_data['features']:
-
-                if 'virheet' in vkm_feature['properties']:
-                    road_address = vkm_feature['properties']['virheet']
-                    vkm_error = True
-                
-                else:
-                    try:
-                        #getting road coordinates and road address that are nearest to the mouse click
-                        print(vkm_feature['properties']) 
-                        point_x = vkm_feature['properties']['x']
-                        point_y = vkm_feature['properties']['y']
-                        tie = str(vkm_feature['properties']['tie'])
-                        ajorata = str(vkm_feature['properties']['ajorata'])
-                        osa = str(vkm_feature['properties']['osa'])
-                        etaisyys = str(vkm_feature['properties']['etaisyys'])
+                vkm_error = False
+                vkm_data = json.loads(response.content)
+                for vkm_feature in vkm_data['features']:
+                    print(vkm_feature)
+                    if 'virheet' in vkm_feature['properties']:
+                        road_address = vkm_feature['properties']['virheet']
+                        vkm_error = True
                         
-                        road_address = f'B {tie}/{ajorata}/{osa}/{etaisyys}'
+                    else:
+                        try:
+                            #getting road coordinates and road address that are nearest to the mouse click
+                            #print(vkm_feature['properties']) 
+                            point_x = vkm_feature['properties']['x']
+                            point_y = vkm_feature['properties']['y']
+                            tie = str(vkm_feature['properties']['tie'])
+                            ajorata = str(vkm_feature['properties']['ajorata'])
+                            osa = str(vkm_feature['properties']['osa'])
+                            etaisyys = str(vkm_feature['properties']['etaisyys'])
+                            hallinnollinen_luokka = str(vkm_feature['properties']['hallinnollinen_luokka'])
+                            kuntanimi = str(vkm_feature['properties']['kuntanimi'])
+                            katunimi = str(vkm_feature['properties']['katunimi'])
+                            katunumero = str(vkm_feature['properties']['katunumero'])
+                            elynimi = str(vkm_feature['properties']['elynimi'])
+                            ualuenimi = str(vkm_feature['properties']['ualuenimi'])
+                            maakuntanimi = str(vkm_feature['properties']['maakuntanimi'])
+                            #maantien_nimi = str(vkm_feature['properties']['maantien_nimi'])
+
+                            dlg.XlineEdit.setText(str(point_x))
+                            dlg.YlineEdit.setText(str(point_y))
+                            dlg.TielineEdit.setText(tie)
+                            dlg.AjoratalineEdit.setText(ajorata)
+                            dlg.OsalineEdit.setText(osa)
+                            dlg.EtaisyyslineEdit.setText(etaisyys)
+                            dlg.HaLulineEdit.setText(hallinnollinen_luokka)
+                            dlg.KuntanimilineEdit.setText(kuntanimi)
+                            dlg.KatunimilineEdit.setText(katunimi)
+                            dlg.KatunumerolineEdit.setText(katunumero)
+                            dlg.ElynimilineEdit.setText(elynimi)
+                            dlg.UaluenimilineEdit.setText(ualuenimi)
+                            dlg.MaakuntanimilineEdit.setText(maakuntanimi)
+
+                            road_address = f'{tie}/{ajorata}/{osa}/{etaisyys}'
+                            
+                        except:
+                            point_x = vkm_feature['properties']['x']
+                            point_y = vkm_feature['properties']['y']
+                            tie = str(vkm_feature['properties']['tie'])
+                            ajorata = str(vkm_feature['properties']['ajorata'])
+                            osa = str(vkm_feature['properties']['osa'])
+                            etaisyys = str(vkm_feature['properties']['etaisyys'])
+                            hallinnollinen_luokka = str(vkm_feature['properties']['hallinnollinen_luokka'])
+                            kuntanimi = str(vkm_feature['properties']['kuntanimi'])
+                            #katunimi = str(vkm_feature['properties']['katunimi'])
+                            #katunumero = str(vkm_feature['properties']['katunumero'])
+                            elynimi = str(vkm_feature['properties']['elynimi'])
+                            ualuenimi = str(vkm_feature['properties']['ualuenimi'])
+                            maakuntanimi = str(vkm_feature['properties']['maakuntanimi'])
+                            #maantien_nimi = str(vkm_feature['properties']['maantien_nimi'])
+
+                            dlg.XlineEdit.setText(str(point_x))
+                            dlg.YlineEdit.setText(str(point_y))
+                            dlg.TielineEdit.setText(tie)
+                            dlg.AjoratalineEdit.setText(ajorata)
+                            dlg.OsalineEdit.setText(osa)
+                            dlg.EtaisyyslineEdit.setText(etaisyys)
+                            dlg.HaLulineEdit.setText(hallinnollinen_luokka)
+                            dlg.KuntanimilineEdit.setText(kuntanimi)
+                            #dlg.KatunimilineEdit.setText(katunimi)
+                            #dlg.KatunumerolineEdit.setText(katunumero)
+                            dlg.ElynimilineEdit.setText(elynimi)
+                            dlg.UaluenimilineEdit.setText(ualuenimi)
+                            dlg.MaakuntanimilineEdit.setText(maakuntanimi)
+                            
+                            road_address = f'{tie}/{ajorata}/{osa}/{etaisyys}'
+
+                    if vkm_error == True:
+                        self.error_popup(road_address=road_address)
+
+                    else:
+                        self.add_point(road_address=road_address, point_x=point_x, point_y=point_y)
                         
-                    except:
-                        #nearest address is a street -> no road address
-                        print(vkm_feature['properties'])
-                        point_x = vkm_feature['properties']['x']
-                        point_y = vkm_feature['properties']['y']
 
-                        road_address = 'Ei tieosoitetta'
-                    
-            if vkm_error == True:
-                self.iface.messageBar().pushMessage(
-                    f'{road_address}',
-                    level=1, duration=10)
-            
-            else:
-                #dlg.AddrLineEdit.setText(road_address)
-                #draws a point with clicked coordinates
-                point_layer = QgsVectorLayer('Point', f'Piste ({road_address})', 'memory')
-                pr = point_layer.dataProvider()
-                pr.addAttributes([QgsField("ID", QVariant.String)])
-                point_layer.updateFields()
-                feature = QgsFeature()
-                feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, point_y)))
-                feature.setAttributes(['1'])
-                my_crs = QgsCoordinateReferenceSystem(3067)
-                
-                #each point is added as a separate layer
-                pr.addFeature(feature)
-                point_layer.updateExtents()
-                point_layer.setCrs(my_crs)
-                QgsProject.instance().addMapLayer(point_layer)
-                
-                #adding an annotation with road address to the latest point
-                layer = self.iface.activeLayer()
-
-                annot = QgsTextAnnotation()
-                annot.setFrameSize(QSizeF(100, 20))
-                annot.setMapLayer(layer)
-                annot.setFrameOffsetFromReferencePoint(QPoint(30, 30))
-                annot.setDocument(QTextDocument(road_address))
-
-                # X and Y are defined previously
-                annot.setMapPositionCrs(QgsCoordinateReferenceSystem(layer.crs()))
-                annot.setMapPosition(QgsPointXY(point_x, point_y))
-
-                QgsProject.instance().annotationManager().addAnnotation(annot)
-                #connecting pointTool to point A
-                canvas = self.iface.mapCanvas()
-                pointTool = QgsMapToolEmitPoint(canvas)
-                pointTool.canvasClicked.connect(self.display_point_A)
-                canvas.setMapTool(pointTool)
-                        
-        except AttributeError:
+            except AttributeError:
                 pass
 
-    
+        
+        canvas = self.iface.mapCanvas()
+        pointTool = QgsMapToolEmitPoint(canvas)
+        pointTool.canvasClicked.connect(display_popup)
+        canvas.setMapTool(pointTool)
+        display_popup(pointTool)
+        dlg.show()
+        dlg.exec_()
+        dlg.SuljeButton.clicked.connect(self.close_popup)
+        
+        
+        
 
     def two_points(self):
 
@@ -596,114 +427,106 @@ class Osoitetyokalu:
         self.two_points_dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
 
-        def display_point_A(pointTool):
+        def display_point_A(pointTool_A):
             try:
 
                 #click on canvas returns coordinates
                 print('Point A')
-                print(pointTool.x(), pointTool.y())
-                point_x = str(pointTool.x())
-                point_y = str(pointTool.y())
+                print(pointTool_A.x(), pointTool_A.y())
+                point_x = str(pointTool_A.x())
+                point_y = str(pointTool_A.y())
                 self.two_points_dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
 
                 #get new coordinates and address from VKM
-                vkm_url = 'https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-                response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot=1,2&vaylan_luonne=0')
-
-                while response.status_code !=200: #retry
-                    logging.info('retrying')
-                    response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot=1,2&vaylan_luonne=0')
-
-                vkm_error = False
-                vkm_data = json.loads(response.content)
-                for vkm_feature in vkm_data['features']:
-
-                    if 'virheet' in vkm_feature['properties']:
-                        road_address = vkm_feature['properties']['virheet']
-                        vkm_error = True
-                    
-                    else:
-                        try:
-                            #getting road coordinates and road address that are nearest to the mouse click
-                            print(vkm_feature['properties']) 
-                            point_x = vkm_feature['properties']['x']
-                            point_y = vkm_feature['properties']['y']
-                            tie = str(vkm_feature['properties']['tie'])
-                            ajorata = str(vkm_feature['properties']['ajorata'])
-                            osa = str(vkm_feature['properties']['osa'])
-                            etaisyys = str(vkm_feature['properties']['etaisyys'])
-                            
-                            road_address = f'A {tie}/{ajorata}/{osa}/{etaisyys}'
-                            
-                        except:
-                            #nearest address is a street -> no road address
-                            print(vkm_feature['properties'])
-                            point_x = vkm_feature['properties']['x']
-                            point_y = vkm_feature['properties']['y']
-
-                            road_address = 'Ei tieosoitetta'
+                vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
+                road_address, vkm_error, point_x, point_y = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y, display_point='A')
                         
                 if vkm_error == True:
-                    print('ERROR')
-                    self.iface.messageBar().pushMessage(
-                        f'{road_address}',
-                        level=1, duration=10)
+                    self.error_popup(road_address=road_address)
                 
                 else:
                     #dlg.AddrLineEdit.setText(road_address)
-                    #draws a point with clicked coordinates
-                    point_layer = QgsVectorLayer('Point', f'Piste ({road_address})', 'memory')
-                    pr = point_layer.dataProvider()
-                    pr.addAttributes([QgsField("ID", QVariant.String)])
-                    point_layer.updateFields()
-                    feature = QgsFeature()
-                    feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, point_y)))
-                    feature.setAttributes(['1'])
-                    my_crs = QgsCoordinateReferenceSystem(3067)
-                    
-                    #each point is added as a separate layer
-                    pr.addFeature(feature)
-                    point_layer.updateExtents()
-                    point_layer.setCrs(my_crs)
-                    QgsProject.instance().addMapLayer(point_layer)
+                    self.add_point(road_address=road_address, point_x=point_x, point_y=point_y)
                     
                     #adding an annotation with road address to the latest point
-                    layer = self.iface.activeLayer()
+                    self.add_annotation(road_address=road_address, point_x=point_x, point_y=point_y)
 
-                    annot = QgsTextAnnotation()
-                    annot.setFrameSize(QSizeF(100, 20))
-                    annot.setMapLayer(layer)
-                    annot.setFrameOffsetFromReferencePoint(QPoint(30, 30))
-                    annot.setDocument(QTextDocument(road_address))
-
-                    # X and Y are defined previously
-                    annot.setMapPositionCrs(QgsCoordinateReferenceSystem(layer.crs()))
-                    annot.setMapPosition(QgsPointXY(point_x, point_y))
-
-                    QgsProject.instance().annotationManager().addAnnotation(annot)
-
-                    #connecting pointTool to point B
-                    pointTool = QgsMapToolEmitPoint(canvas)
-                    pointTool.canvasClicked.connect(self.display_point_B)
-                    canvas.setMapTool(pointTool)
+                    #connecting canvas to pointTool B
+                    canvas.setMapTool(pointTool_B)
                     
                     print('Returning point A coordinates')
+                    #getting road number to confirm it matches with point B road number
+                    road_address_split = road_address.split('/')
+                    road_address_split = road_address_split[0].split(' ')
+                    tie_A = road_address_split[1]
+                    print(f'Tie A {tie_A}')
+                    
 
-                    return point_x, point_y
+                    return point_x, point_y, tie_A
                             
             except AttributeError:
                 pass
+
+
+        def display_point_B(pointTool_B, point_x_A, point_y_A, tie_A):
+
+            try:
+
+                #click on canvas returns coordinates
+                print('Point B')
+                print(pointTool_B.x(), pointTool_B.y())
+                point_x = str(pointTool_B.x())
+                point_y = str(pointTool_B.y())
+                self.two_points_dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
+
+                #get new coordinates and address from VKM
+                vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
+                road_address, vkm_error, point_x_B, point_y_B = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y, display_point='B', palautus_arvot='1,2,5')
+                        
+                if vkm_error == True:
+                    self.error_popup(road_address=road_address)
                 
+                else:
+                    #dlg.AddrLineEdit.setText(road_address)
+                    self.add_point(road_address=road_address, point_x=point_x_B, point_y=point_y_B)
+                    
+                    #adding an annotation with road address to the latest point
+                    self.add_annotation(road_address=road_address, point_x=point_x_B, point_y=point_y_B)
 
-        my_crs = QgsCoordinateReferenceSystem(3067)
-        QgsProject.instance().setCrs(my_crs)
+                    #getting road address and calculating the distance between points A and B
+                    
+                    error_message, polyline_coordinates, pituus = self.vkm_request_geometry(vkm_url=vkm_url, point_x_A=point_x_A, point_y_A=point_y_A, point_x_B=point_x_B, point_y_B=point_y_B, tie_A=tie_A)
 
+                    print(f'polyline_coordinates {polyline_coordinates}')
+                    print(f'pituus {pituus}')
+
+                    if error_message != None:
+                        self.error_popup(road_address=error_message)
+                        return
+                    #connecting canvas to pointTool A
+                    canvas.setMapTool(pointTool_A)
+                            
+            except AttributeError:
+                    pass
+
+
+        self.my_crs = QgsCoordinateReferenceSystem(3067)
+        QgsProject.instance().setCrs(self.my_crs)
         canvas = self.iface.mapCanvas()
-        pointTool = QgsMapToolEmitPoint(canvas)
+        
+        pointTool_A = QgsMapToolEmitPoint(canvas)
+        pointTool_A.canvasClicked.connect(display_point_A)
+        canvas.setMapTool(pointTool_A)
 
-        pointTool.canvasClicked.connect(display_point_A)
-        canvas.setMapTool(pointTool)
-        display_point_A(pointTool)
+        pointTool_B = QgsMapToolEmitPoint(canvas)
+        pointTool_B.canvasClicked.connect(display_point_B)
+        
+        try:
+            point_x_A, point_y_A, tie_A = display_point_A(pointTool_A)
+            print(f'point_y_A = {point_y_A} \n tie_A = {tie_A}')
+            display_point_B(pointTool_B, point_x_A, point_y_A, tie_A)
+        except:
+            display_point_A(pointTool_A)
 
         #self.display_point_B(pointTool)
 
@@ -718,32 +541,115 @@ class Osoitetyokalu:
             pass
 
 
+# ---------------- EXTRA FUNCTIONS ---------------------- 
 
-        #print(f'Point X A {point_x_A}')
-        #print(f'Point Y A {point_y_A}')
-        #connects pointTool to point_B
+    def vkm_request_road_address(self, vkm_url, point_x, point_y, display_point='', palautus_arvot='1,2'):
+        response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot={palautus_arvot}&vaylan_luonne=0')
+
+        while response.status_code !=200: #retry
+            logging.info('retrying')
+            response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot={palautus_arvot}&vaylan_luonne=0')
+
+        vkm_error = False
+        vkm_data = json.loads(response.content)
+        for vkm_feature in vkm_data['features']:
+
+            if 'virheet' in vkm_feature['properties']:
+                road_address = display_point + vkm_feature['properties']['virheet']
+                vkm_error = True
+            
+            else:
+                try:
+                    #getting road coordinates and road address that are nearest to the mouse click
+                    print(vkm_feature['properties']) 
+                    point_x = vkm_feature['properties']['x']
+                    point_y = vkm_feature['properties']['y']
+                    tie = str(vkm_feature['properties']['tie'])
+                    ajorata = str(vkm_feature['properties']['ajorata'])
+                    osa = str(vkm_feature['properties']['osa'])
+                    etaisyys = str(vkm_feature['properties']['etaisyys'])
+                    
+                    road_address = f'{display_point} {tie}/{ajorata}/{osa}/{etaisyys}'
+
+                    
+                except:
+                    #nearest address is a street -> no road address
+                    print(vkm_feature['properties'])
+                    point_x = vkm_feature['properties']['x']
+                    point_y = vkm_feature['properties']['y']
+
+                    road_address = f'Ei tieosoitetta'
+        print(road_address)
+
+        return road_address, vkm_error, point_x, point_y
+
+    
+    def add_point(self, road_address, point_x, point_y):
+        point_layer = QgsVectorLayer('Point', f'Piste ({road_address})', 'memory')
+        pr = point_layer.dataProvider()
+        pr.addAttributes([QgsField("ID", QVariant.String)])
+        point_layer.updateFields()
+        feature = QgsFeature()
+        feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, point_y)))
+        feature.setAttributes(['1'])
         
-        #try:
-        #    point_x_A, point_y_A = self.display_point_A(pointTool)
-        #    print(f'Point X A {point_x_A}')
-        #    print(f'Point X A {point_y_A}')
-        #except Exception as e:
-        #    self.display_point_A(pointTool)
-        #    print(e)
-        #connects pointTool back to point_A
-        #self.display_point_B(pointTool)
+        #each point is added as a separate layer
+        pr.addFeature(feature)
+        point_layer.updateExtents()
+        point_layer.setCrs(self.my_crs)
+        QgsProject.instance().addMapLayer(point_layer)
 
 
+    def add_annotation(self, road_address, point_x, point_y):
+        layer = self.iface.activeLayer()
+
+        annot = QgsTextAnnotation()
+        annot_length = len(road_address) * 6
+
+        annot.setFrameSize(QSizeF(annot_length, 18))
+        annot.setMapLayer(layer)
+        annot.setFrameOffsetFromReferencePoint(QPoint(30, 30))
+        annot.setDocument(QTextDocument(road_address))
+
+        # X and Y are defined previously
+        annot.setMapPositionCrs(QgsCoordinateReferenceSystem(layer.crs()))
+        annot.setMapPosition(QgsPointXY(point_x, point_y))
+
+        QgsProject.instance().annotationManager().addAnnotation(annot)
 
 
+    def close_popup(self):
+        dlg = PopUp_dialog
+        dlg.close()
 
-    #def get_road_address(self):
+    
+    def error_popup(self, road_address):
+            self.iface.messageBar().pushMessage(
+            f'{road_address}',
+            level=1, duration=10)
 
+    
+    def vkm_request_geometry(self, vkm_url, point_x_A, point_y_A, point_x_B, point_y_B, tie_A, display_point='', palautus_arvot='1,2,5'):
+        response = get(vkm_url + f'muunna?x={point_x_A}&y={point_y_A}&x_loppu={point_x_B}&y_loppu={point_y_B}&tie={tie_A}&palautusarvot={palautus_arvot}&vaylan_luonne=0')
 
-#class PrintClickedPoint(QgsMapToolEmitPoint):
-#    def __init__(self, canvas):
-#        self.canvas = canvas
-#        QgsMapToolEmitPoint.__init__(self, self.canvas)
-#    def canvasPressEvent( self, e ):
-#        point = self.toMapCoordinates(self.canvas.mouseLastXY())
-#        print(point[0], point[1])
+        while response.status_code !=200: #retry
+            logging.info('retrying')
+            response = get(vkm_url + f'muunna?x={point_x_A}&y={point_y_A}&x_loppu={point_x_B}&y_loppu={point_y_B}&tie={tie_A}&palautusarvot={palautus_arvot}&vaylan_luonne=0')
+
+        vkm_data = json.loads(response.content)
+        polyline_coordinates = []
+        error_message = None
+
+        for vkm_feature in vkm_data['features']:
+
+            if 'virheet' in vkm_feature['properties']:
+                error_message = display_point + vkm_feature['properties']['virheet']
+            
+            elif vkm_feature['geometry']['type'] == 'LineString':
+                for point in vkm_feature['geometry']['coordinates'][0]:
+                    polyline_coordinates.append(point)
+                pituus = str(vkm_feature['properties']['mitattu_pituus'])
+                
+        return error_message, polyline_coordinates, pituus
+
+                
