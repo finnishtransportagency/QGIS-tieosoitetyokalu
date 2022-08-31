@@ -215,3 +215,5 @@ __pycache__/
 *.code-workspace
 launch.json
 settings.json
+
+logs/
