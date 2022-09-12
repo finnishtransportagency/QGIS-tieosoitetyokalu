@@ -24,13 +24,18 @@
 
 
 import os.path
+from pathlib import Path
 from qgis.core import QgsMessageLog
 import logging
 formatter = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 try:
     logfilename=os.path.join(os.path.dirname(__file__), 'logs/log.txt')
 except:
-    logfilename = open('logs/log.txt', 'x')
+    filename = 'logs/log.txt'
+    output_file = Path(filename)
+    output_file.parent.mkdir(exist_ok=True, parents=True)
+    logfilename=os.path.join(os.path.dirname(__file__), filename)
+
 logging.basicConfig(filename=logfilename, level=logging.DEBUG, format=formatter)
 
 from sympy import Point
@@ -288,7 +293,7 @@ class Osoitetyokalu:
                 else:
                     dlg.AddrLineEdit.setText(road_address)
                     #draws a point with clicked coordinates
-                    self.add_point(road_address=road_address, point_x=point_x, point_y=point_y)
+                    self.add_point(road_address=road_address, point_x=point_x, point_y=point_y, size='1.0')
 
                     #adding an annotation with road address to the latest point
                     self.add_annotation(road_address=road_address, point_x=point_x, point_y=point_y)
@@ -328,6 +333,11 @@ class Osoitetyokalu:
 
 
         def display_popup(pointTool):
+            lineEdits = dlg.findChildren(QLineEdit)
+            for line in lineEdits:
+                if line.text():
+                    line.clear()
+
             try:
                 QgsProject.instance().setCrs(self.my_crs)
                 #canvas = self.iface.mapCanvas()
@@ -358,6 +368,8 @@ class Osoitetyokalu:
                         self.error_popup(road_address=road_address)
 
                     else:
+                        point_x = vkm_feature['properties']['x']
+                        point_y = vkm_feature['properties']['y']
                         self.add_point(road_address=road_address, point_x=point_x, point_y=point_y)
 
 
@@ -445,7 +457,7 @@ class Osoitetyokalu:
                         self.error_popup(e.message)
                         return
 
-                    self.add_annotation(road_address=roadway, point_x=point_x, point_y=point_y, number_of_rows=3)
+                    self.add_annotation(road_address=roadway, point_x=point_x, point_y=point_y, number_of_rows=5)
 
                     #adding a point to each end of the road part
                     self.add_point(road_address=starting_road_address, point_x=starting_point[0], point_y=starting_point[1], color='0,255,0', shape='square', size='3.0')
@@ -526,7 +538,7 @@ class Osoitetyokalu:
 
                 else:
                     #dlg.AddrLineEdit.setText(road_address)
-                    #self.add_point(road_address=road_address, point_x=point_x, point_y=point_y)
+                    self.add_point(road_address=road_address, point_x=point_x, point_y=point_y, size='1.0')
                     
                     #adding an annotation with road address to the latest point
                     self.add_annotation(road_address=road_address, point_x=point_x, point_y=point_y)
@@ -572,7 +584,7 @@ class Osoitetyokalu:
 
                 else:
                     #dlg.AddrLineEdit.setText(road_address)
-                    #self.add_point(road_address=road_address, point_x=point_x_B, point_y=point_y_B)
+                    self.add_point(road_address=road_address, point_x=point_x_B, point_y=point_y_B, size='1.0')
                     
                     #adding an annotation with road address to the latest point
                     self.add_annotation(road_address=road_address, point_x=point_x_B, point_y=point_y_B, position_x=-34, position_y=-21)
@@ -671,12 +683,10 @@ class Osoitetyokalu:
         self.vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
         self.search_form_dlg = SearchForm_dialog()
         self.search_form_dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
-    
+        self.search_form_dlg.show()
         self.search_form_dlg.pushButton_Search.clicked.connect(self.vkm_request_form_search)
 
-        self.search_form_dlg.show()
-
-        self.search_form_dlg.exec_()
+        
 
 
 
@@ -875,7 +885,7 @@ class Osoitetyokalu:
             annot_width = number_of_rows * 6
             annot.setFrameSizeMm(QSizeF(annot_length, annot_width))
         else:
-            annot_length = len(road_address) * 2
+            annot_length = len(road_address) * 3
             annot.setFrameSizeMm(QSizeF(annot_length, 6))
         annot.setMapLayer(layer)
         annot.setFrameOffsetFromReferencePointMm(QPoint(position_x, position_y))
@@ -1152,7 +1162,44 @@ class Osoitetyokalu:
         
         vkm_data = json.loads(response.content)
 
-        print(vkm_data)
+        popup_dlg = PopUp_dialog()
+
+        for vkm_feature in vkm_data['features']:
+            self.search_form_dlg.close()
+
+            if 'virheet' in vkm_feature['properties']:
+                error_message = vkm_feature['properties']['virheet']
+                self.error_popup(error_message)
+                return
+            elif vkm_feature['geometry']['type'] == 'Point':
+                self.set_popup_text(popup_dlg, vkm_feature)
+                x = vkm_feature['properties']['x']
+                y = vkm_feature['properties']['y']
+                self.add_point('Pistemäinen haku', x, y, color='0,255,0', shape='triangle')
+                self.zoom_to_layer()
+                popup_dlg.show()
+                result = popup_dlg.exec_()
+                if result:
+                    lineEdits = popup_dlg.findChildren(QLineEdit)
+                    for line in lineEdits:
+                        if line.text():
+                            line.clear()
+            else:
+                print(vkm_feature['geometry']['type'])
+        
+    
+
+    def zoom_to_layer(self, point_x = None, point_y = None):
+        if point_x != None and point_y != None:
+            pass
+        else:
+            #zoom to latest active layer
+            layer = self.iface.activeLayer()
+            canvas = self.iface.mapCanvas()
+            extent = layer.extent()
+            canvas.setExtent(extent)
+
+
         
 
 

@@ -312,18 +312,6 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item alignment="Qt::AlignRight">
-     <widget class="QLabel" name="label_3">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Y:</string>
-      </property>
-     </widget>
-    </item>
-    <item alignment="Qt::AlignRight">
      <widget class="QLabel" name="label">
       <property name="font">
        <font>
@@ -332,6 +320,18 @@
       </property>
       <property name="text">
        <string>X:</string>
+      </property>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignRight">
+     <widget class="QLabel" name="label_3">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Y:</string>
       </property>
      </widget>
     </item>
