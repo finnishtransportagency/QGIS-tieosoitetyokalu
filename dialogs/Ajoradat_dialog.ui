@@ -33,30 +33,30 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>30</y>
+     <y>40</y>
      <width>91</width>
-     <height>151</height>
+     <height>131</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QRadioButton" name="radioButton_2">
+     <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>Ajorata 0</string>
+       <string>Ajorata 0:</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="radioButton_3">
+     <widget class="QLabel" name="label_3">
       <property name="text">
-       <string>Ajorata 1</string>
+       <string>Ajorata 1:</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QRadioButton" name="radioButton">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>Ajorata 2</string>
+       <string>Ajorata 2:</string>
       </property>
      </widget>
     </item>

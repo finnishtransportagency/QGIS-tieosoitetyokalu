@@ -107,13 +107,6 @@ class Osoitetyokalu:
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
 
-        #Setting up canvas to click
-
-
-
-
-
-
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -204,6 +197,7 @@ class Osoitetyokalu:
 
         return action
 
+
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
@@ -272,10 +266,9 @@ class Osoitetyokalu:
 
 
         def display_point(pointTool):
-            try:
 
+            try:
                 #click on canvas returns coordinates
-                print(pointTool.x(), pointTool.y())
                 point_x = str(pointTool.x())
                 point_y = str(pointTool.y())
                 dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
@@ -301,9 +294,6 @@ class Osoitetyokalu:
             except AttributeError:
                 self.error_popup('Pistettä ei ole asetettu.')
 
-
-        #self.iface.newProject()
-
         #CRS when the ShowCoordinates-tool is opened
         QgsProject.instance().setCrs(self.my_crs)
 
@@ -311,7 +301,6 @@ class Osoitetyokalu:
         pointTool = QgsMapToolEmitPoint(canvas)
         pointTool.canvasClicked.connect(display_point)
         canvas.setMapTool(pointTool)
-        #display_point(pointTool)
 
         # show the dialog
         dlg.show()
@@ -340,7 +329,6 @@ class Osoitetyokalu:
 
             try:
                 QgsProject.instance().setCrs(self.my_crs)
-                #canvas = self.iface.mapCanvas()
 
                 point_x = str(pointTool.x())
                 point_y = str(pointTool.y())
@@ -356,7 +344,6 @@ class Osoitetyokalu:
                 vkm_error = False
                 vkm_data = json.loads(response.content)
                 for vkm_feature in vkm_data['features']:
-                    print(vkm_feature)
                     if 'virheet' in vkm_feature['properties']:
                         road_address = vkm_feature['properties']['virheet']
                         vkm_error = True
@@ -371,7 +358,6 @@ class Osoitetyokalu:
                         point_x = vkm_feature['properties']['x']
                         point_y = vkm_feature['properties']['y']
                         self.add_point(road_address=road_address, point_x=point_x, point_y=point_y)
-
 
             except AttributeError:
                 self.error_popup('Pistettä ei ole asetettu.')
@@ -398,7 +384,6 @@ class Osoitetyokalu:
             try:
 
                 #click on canvas returns coordinates
-                print(pointTool.x(), pointTool.y())
                 point_x = str(pointTool.x())
                 point_y = str(pointTool.y())
                 dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
@@ -418,14 +403,10 @@ class Osoitetyokalu:
                     
                     dlg.AddrLineEdit.setText(road_address)
                     #draws a point with clicked coordinates
-                    #self.add_point(road_address=road_address, point_x=point_x, point_y=point_y)
                     
                     polyline_dict, road_part_length, starting_point, ending_point = self.vkm_request_road_part_geometry(vkm_url, tie, osa)
 
-                    for ajorata, coordinates in polyline_dict.items():
-                            print(f'{ajorata} - {coordinates}')
-                            print('\n')
-                            
+                    for ajorata, coordinates in polyline_dict.items():                           
                             ending_road_address_split = road_address.split('/')
                             ending_road_address_split[3] = str(road_part_length)
                             ending_road_address = '/'.join(ending_road_address_split)
@@ -433,7 +414,6 @@ class Osoitetyokalu:
                             starting_road_address_split = road_address.split('/')
                             starting_road_address_split[3] = '0'
                             starting_road_address = '/'.join(starting_road_address_split)
-
 
                             roadway = f'Alkupiste: {starting_road_address}\nLoppupiste: {ending_road_address}\npituus: {road_part_length}m'
 
@@ -465,9 +445,6 @@ class Osoitetyokalu:
                     
             except AttributeError:
                  self.error_popup('Pistettä ei ole asetettu.')
-
-
-        #self.iface.newProject()
 
         #CRS when the ShowCoordinates-tool is opened
         QgsProject.instance().setCrs(self.my_crs)
@@ -517,10 +494,7 @@ class Osoitetyokalu:
             self.ajoradat_dlg.Ajorata2lineEdit.clear()
 
             try:
-
                 #click on canvas returns coordinates
-                print('Point A')
-                #print(pointTool_A.x(), pointTool_A.y())
                 point_x = str(pointTool_A.x())
                 point_y = str(pointTool_A.y())
                 self.two_points_dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
@@ -551,6 +525,7 @@ class Osoitetyokalu:
             
                     #connecting canvas to pointTool B
                     self.canvas.setMapTool(pointTool_B)
+
             except AttributeError:
                  self.error_popup('Pistettä ei ole asetettu.')
 
@@ -559,8 +534,6 @@ class Osoitetyokalu:
 
             try:
                 #click on canvas returns coordinates
-                print('Point B')
-                #print(pointTool_B.x(), pointTool_B.y())
                 point_x = str(pointTool_B.x())
                 point_y = str(pointTool_B.y())
                 self.two_points_dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
@@ -589,30 +562,11 @@ class Osoitetyokalu:
                     #adding an annotation with road address to the latest point
                     self.add_annotation(road_address=road_address, point_x=point_x_B, point_y=point_y_B, position_x=-34, position_y=-21)
 
-
                     #getting road address and calculating the distance of roadway(s) between points A and B
-
-
                     try:
                         polyline_dict, pituus_dict = self.vkm_request_geometry(vkm_url, self.tie_A, self.osa_A, self.etaisyys_A, tie_B, osa_B, etaisyys_B)
 
-                        #print(f'polyline_coordinates {polyline_coordinates}')
-                        #print(f'pituus {pituus}')
-
-                        #if error_message != None:
-                        #    self.error_popup(road_address=error_message)
-                        #    raise Exception
-
-                        #print(polyline_dict)
-
                         for ajorata, coordinates in polyline_dict.items():
-                            print(f'{ajorata} - {coordinates}')
-                            print('\n')
-
-                            #road_address_split = road_address.split('/')
-                            #road_address_split[1] = ajorata
-                            #road_address = '/'.join(road_address_split)
-
                             for ajorata_pituus, pituus in pituus_dict.items():
                                 if ajorata_pituus == ajorata:
                                     mitattu_pituus = pituus
@@ -686,12 +640,9 @@ class Osoitetyokalu:
         self.search_form_dlg.show()
         self.search_form_dlg.pushButton_Search.clicked.connect(self.vkm_request_form_search)
 
-        
-
-
-
 
 # ---------------- EXTRA FUNCTIONS ---------------------- 
+
 
     def vkm_request_road_address(self, vkm_url, point_x, point_y, display_point='', palautus_arvot='1,2'):
 
@@ -812,7 +763,6 @@ class Osoitetyokalu:
 
             return road_address
         except BaseException as e:
-            print(e)
             raise
 
 
@@ -871,6 +821,9 @@ class Osoitetyokalu:
         
         QgsProject.instance().addMapLayer(point_layer)
 
+        layer_group = self.create_layer_group()
+        self.add_to_layer_group(point_layer, layer_group)
+
 
     def add_annotation(self, road_address, point_x, point_y, number_of_rows=None, position_x=14, position_y=11):
         
@@ -902,7 +855,7 @@ class Osoitetyokalu:
         if color == 'green':
             polyline_color = QColor(0,255,0)
         elif color == 'yellow':
-            polyline_color = QColor(255,165,0)
+            polyline_color = QColor(255,247,0)
         elif color == 'blue':
             polyline_color = QColor(0,0,255)
 
@@ -924,6 +877,9 @@ class Osoitetyokalu:
         polyline_layer.triggerRepaint()
 
         QgsProject.instance().addMapLayer(polyline_layer)
+
+        layer_group = self.create_layer_group()
+        self.add_to_layer_group(polyline_layer, layer_group)
 
 
     def convert_coordinates_to_XY(self, linestring):
@@ -987,11 +943,11 @@ class Osoitetyokalu:
                         polyline_dict[ajorata] = vkm_feature['geometry']['coordinates']
 
                 #get road length
-                try:
-                    vkm_pituus = str(vkm_feature['properties']['mitattu_pituus'])
-                except KeyError:
-                    vkm_pituus = abs(vkm_feature['properties']['etaisyys'] - vkm_feature['properties']['etaisyys_loppu'])
-                pituus_dict[ajorata] = str(vkm_pituus)
+                if ajorata in pituus_dict:
+                    pituus_dict[ajorata] = pituus_dict[ajorata] + vkm_feature['properties']['mitattu_pituus']
+                else:
+                    pituus_dict[ajorata] = vkm_feature['properties']['mitattu_pituus']
+                
 
         return polyline_dict, pituus_dict
 
@@ -1060,7 +1016,6 @@ class Osoitetyokalu:
         
         params_dict = self.append_form_layout_lines()
 
-
         if len(params_dict) == 0:
             self.error_popup('Täytä vaaditut kentät.')
             return
@@ -1070,22 +1025,19 @@ class Osoitetyokalu:
 
 
     def append_form_layout_lines(self):
-        params_dict = {}
 
-        #layouts = [dlg.itemAt(i).widget() for i in range(dlg.count())] 
-        
-        #params_dict = {}
+        params_dict = {}
 
         lineEdits = self.search_form_dlg.findChildren(QLineEdit)
         for line in lineEdits:
             if line.text():
                 params_dict[line.objectName()] = line.text()
-            
-        #print(params_dict)
+
         return params_dict
 
 
     def vkm_request_form_point(self, params, output_parameters = '1,2,3,4,5,6'):
+
         url = self.vkm_url + 'muunna?'
         url_x = '&x='
         url_y = '&y='
@@ -1206,10 +1158,16 @@ class Osoitetyokalu:
                             line.clear()
 
             else:
+                #process and draw a polyline
                 if x == 0 and 'lineEdit_X' not in params:
-                    road = str(vkm_feature['properties']['X'])
-                elif 'lineEdit_Tie' in params:
-                    road = params['lineEdit_Tie']
+                    x = vkm_feature['properties']['x']
+                elif 'lineEdit_X' in params:
+                    x = float(params['lineEdit_X'])
+
+                if y == 0 and 'lineEdit_Y' not in params:
+                    y = vkm_feature['properties']['y']
+                elif 'lineEdit_Y' in params:
+                    y = float(params['lineEdit_Y'])
 
                 if road == 0 and 'lineEdit_Tie' not in params:
                     road = str(vkm_feature['properties']['tie'])
@@ -1230,6 +1188,9 @@ class Osoitetyokalu:
                     distance = str(vkm_feature['properties']['etaisyys'])
                 elif 'lineEdit_Etaisyys' in params:
                     distance = params['lineEdit_Etaisyys']
+
+                x_end = vkm_feature['properties']['x_loppu']
+                y_end = vkm_feature['properties']['y_loppu']
 
                 #polylines are always on the same road
                 road_end = road
@@ -1263,21 +1224,18 @@ class Osoitetyokalu:
                         polyline_dict[polyline_roadway] = vkm_feature['geometry']['coordinates']
 
                 #get road length
-                try:
-                    polyline_length = str(vkm_feature['properties']['mitattu_pituus'])
-                except KeyError:
-                    polyline_length = abs(vkm_feature['properties']['etaisyys'] - vkm_feature['properties']['etaisyys_loppu'])
-                length_dict[polyline_roadway] = str(polyline_length)
+                if polyline_roadway in length_dict:
+                    length_dict[polyline_roadway] = length_dict[polyline_roadway] + vkm_feature['properties']['mitattu_pituus']
+                else:
+                    length_dict[polyline_roadway] = vkm_feature['properties']['mitattu_pituus']
+                
 
         if len(polyline_dict) != 0:
             
             for polyline_roadway, coordinates in polyline_dict.items():
-                print(f'{polyline_roadway} - {coordinates}')
-                print('\n')
-
                 for length_dict_roadway, length in length_dict.items():
                     if length_dict_roadway == polyline_roadway:
-                        measured_length = length
+                        measured_length = str(length)
                         break
                 polyline_adress = f'Alkupiste {road}/{roadway}/{part}/{distance} - Loppupiste {road_end}/{roadway_end}/{part_end}/{distance_end}, mitattu pituus: {measured_length}'
 
@@ -1299,16 +1257,19 @@ class Osoitetyokalu:
                 elif polyline_roadway == '2':
                     roadways_dlg.Ajorata2lineEdit.clear()
                     roadways_dlg.Ajorata2lineEdit.setText(polyline_adress)
-
+            #draw ending and starting points, zoom to starting point
+            self.add_point('Alkupiste', x, y, color='0,255,0', shape='square', size='3.0')
+            self.zoom_to_layer()
+            self.add_point('Alkupiste', x_end, y_end, color='255,0,0', shape='square', size='3.0')
+            
             roadways_dlg.show()
             result = roadways_dlg.exec_()
             if result:
                 return
 
         
-    
-
     def zoom_to_layer(self, point_x = None, point_y = None):
+
         if point_x != None and point_y != None:
             pass
         else:
@@ -1319,8 +1280,27 @@ class Osoitetyokalu:
             canvas.setExtent(extent)
 
 
+    def create_layer_group(self):
+
+        root = QgsProject.instance().layerTreeRoot()
+        try:
+            layer_group = root.findGroup('LayerGroup1')
+        except:
+            layer_group = root.addGroup('LayerGroup1')
+        return layer_group
+
+
+    def add_to_layer_group(self, layer, layer_group):
+
+        layer_group.addLayer(layer)
+
+
+    def delete_all_layers_from_group(self, layer_group):
+
+        root = QgsProject.instance().layerTreeRoot()
+        group = root.findGroup(layer_group)
+        if group is not None:
+            root.removeChildNode(group)
         
-
-
-
-                
+    def delete_layer_from_group(self, layer_group):
+        
