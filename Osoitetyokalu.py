@@ -25,20 +25,12 @@
 
 import os.path
 from pathlib import Path
-from qgis.core import QgsMessageLog
 import logging
 formatter = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-try:
-    logfilename=os.path.join(os.path.dirname(__file__), 'logs/log.txt')
-except:
-    filename = 'logs/log.txt'
-    output_file = Path(filename)
-    output_file.parent.mkdir(exist_ok=True, parents=True)
-    logfilename=os.path.join(os.path.dirname(__file__), filename)
-
-logging.basicConfig(filename=logfilename, level=logging.DEBUG, format=formatter)
-
-from sympy import Point
+rootPath = Path(__file__).parent
+logPath = Path.joinpath(rootPath, 'logs')
+logPath.mkdir(parents=True, exist_ok=True)
+logging.basicConfig(filename=Path.joinpath(logPath, 'log.txt'), level=logging.DEBUG, format=formatter)
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QVariant
 from qgis.PyQt.QtGui import QIcon, QColor
@@ -59,13 +51,13 @@ from .dialogs.ShowCoordinates_dialog import ShowCoordinates_dialog
 from .dialogs.PopUp_dialog import PopUp_dialog
 from .dialogs.Ajoradat_dialog import Ajoradat_dialog
 from .dialogs.SearchForm_dialog import SearchForm_dialog
+from .dialogs.DeleteLayer_dialog import DeleteLayer_dialog
 from .CustomExceptions.VkmApiException import VkmApiException
 from .CustomExceptions.VkmRequestException import VkmRequestException
 
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
-from .Osoitetyokalu_dialog import OsoitetyokaluDialog
 
 
 
@@ -205,7 +197,7 @@ class Osoitetyokalu:
         self.add_action(
             icon_path,
             text=self.tr(u'1. Tieosoite'),
-            callback=self.run,
+            callback=self.road_address,
             parent=self.iface.mainWindow())
 
         # will be set False in run()
@@ -238,6 +230,13 @@ class Osoitetyokalu:
             callback=self.search_form,
             parent=self.iface.mainWindow(),
             add_to_toolbar=False)
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'6. Poistotyökalu'),
+            callback=self.delete_tool,
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False)
 
 
     def unload(self):
@@ -249,12 +248,7 @@ class Osoitetyokalu:
             self.iface.removeToolBarIcon(action)
 
 
-    def close_popup(self):
-            dlg = PopUp_dialog
-            dlg.close()
-
-
-    def run(self):
+    def road_address(self):
         """Run method that performs all the real work"""
 
         # Create the dialog with elements (after translation) and keep reference
@@ -315,6 +309,7 @@ class Osoitetyokalu:
 
 
     def popup(self):
+
         if self.first_start == True:
             self.first_start = False
         dlg = PopUp_dialog()
@@ -367,13 +362,14 @@ class Osoitetyokalu:
         pointTool = QgsMapToolEmitPoint(canvas)
         pointTool.canvasClicked.connect(display_popup)
         canvas.setMapTool(pointTool)
-        #display_popup(pointTool)
+
         dlg.show()
         dlg.exec_()
         dlg.SuljeButton.clicked.connect(self.close_popup)
         
     
     def road_part(self):
+
         if self.first_start == True:
             self.first_start = False
         dlg = ShowCoordinates_dialog()
@@ -381,8 +377,8 @@ class Osoitetyokalu:
 
 
         def display_road_part(pointTool):
-            try:
 
+            try:
                 #click on canvas returns coordinates
                 point_x = str(pointTool.x())
                 point_y = str(pointTool.y())
@@ -400,9 +396,7 @@ class Osoitetyokalu:
                     self.error_popup(road_address)
                 
                 else:
-                    
                     dlg.AddrLineEdit.setText(road_address)
-                    #draws a point with clicked coordinates
                     
                     polyline_dict, road_part_length, starting_point, ending_point = self.vkm_request_road_part_geometry(vkm_url, tie, osa)
 
@@ -453,7 +447,6 @@ class Osoitetyokalu:
         pointTool = QgsMapToolEmitPoint(canvas)
         pointTool.canvasClicked.connect(display_road_part)
         canvas.setMapTool(pointTool)
-        #display_road_part(pointTool)
 
         # show the dialog
         dlg.show()
@@ -613,11 +606,9 @@ class Osoitetyokalu:
         pointTool_A = QgsMapToolEmitPoint(self.canvas)
         pointTool_A.canvasClicked.connect(display_point_A)
         self.canvas.setMapTool(pointTool_A)
-        #display_point_A(pointTool_A)
 
         pointTool_B = QgsMapToolEmitPoint(self.canvas)
         pointTool_B.canvasClicked.connect(display_point_B)
-        #display_point_B(pointTool_B)
         
         self.two_points_dlg.show()
         # Run the dialog event loop
@@ -632,8 +623,8 @@ class Osoitetyokalu:
 
 
     def search_form(self):
-        QgsProject.instance().setCrs(self.my_crs)
 
+        QgsProject.instance().setCrs(self.my_crs)
         self.vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
         self.search_form_dlg = SearchForm_dialog()
         self.search_form_dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
@@ -641,6 +632,18 @@ class Osoitetyokalu:
         self.search_form_dlg.pushButton_Search.clicked.connect(self.vkm_request_form_search)
 
 
+    def delete_tool(self):
+
+        QgsProject.instance().setCrs(self.my_crs)
+        delete_dlg = DeleteLayer_dialog()
+        delete_dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+        delete_dlg.show()
+        
+        delete_dlg.pushButton_delete_annotations.clicked.connect(self.delete_all_annotations)
+        delete_dlg.pushButton_delete_annotation.clicked.connect(self.delete_annotation)
+        delete_dlg.exec_()
+
+        
 # ---------------- EXTRA FUNCTIONS ---------------------- 
 
 
@@ -668,7 +671,6 @@ class Osoitetyokalu:
             else:
                 try:
                     #getting road coordinates and road address that are nearest to the mouse click
-                    #print(vkm_feature['properties'])
                     point_x = vkm_feature['properties']['x']
                     point_y = vkm_feature['properties']['y']
                     tie = str(vkm_feature['properties']['tie'])
@@ -680,12 +682,10 @@ class Osoitetyokalu:
 
                 except KeyError:
                     #nearest address is a street -> no road address
-                    #print(vkm_feature['properties'])
                     point_x = vkm_feature['properties']['x']
                     point_y = vkm_feature['properties']['y']
 
                     road_address = f'Ei tieosoitetta'
-        #print(road_address)
         if vkm_error == True:
             return road_address, vkm_error
         else:
@@ -693,9 +693,9 @@ class Osoitetyokalu:
 
 
     def set_popup_text(self, dlg, vkm_feature):
+
         try:
             #getting road coordinates and road address that are nearest to the mouse click
-            #print(vkm_feature['properties']) 
             point_x = vkm_feature['properties']['x']
             point_y = vkm_feature['properties']['y']
             tie = str(vkm_feature['properties']['tie'])
@@ -709,7 +709,6 @@ class Osoitetyokalu:
             elynimi = str(vkm_feature['properties']['elynimi'])
             ualuenimi = str(vkm_feature['properties']['ualuenimi'])
             maakuntanimi = str(vkm_feature['properties']['maakuntanimi'])
-            #maantien_nimi = str(vkm_feature['properties']['maantien_nimi'])
 
             dlg.XlineEdit.setText(str(point_x))
             dlg.YlineEdit.setText(str(point_y))
@@ -743,7 +742,6 @@ class Osoitetyokalu:
             elynimi = str(vkm_feature['properties']['elynimi'])
             ualuenimi = str(vkm_feature['properties']['ualuenimi'])
             maakuntanimi = str(vkm_feature['properties']['maakuntanimi'])
-            #maantien_nimi = str(vkm_feature['properties']['maantien_nimi'])
 
             dlg.XlineEdit.setText(str(point_x))
             dlg.YlineEdit.setText(str(point_y))
@@ -797,6 +795,7 @@ class Osoitetyokalu:
 
     
     def add_point(self, road_address, point_x, point_y, color='255,0,0', shape='circle', size='2.5'):
+
         point_layer = QgsVectorLayer('Point', f'Piste ({road_address})', 'memory')
         pr = point_layer.dataProvider()
         pr.addAttributes([QgsField("ID", QVariant.String)])
@@ -820,9 +819,6 @@ class Osoitetyokalu:
         point_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
         
         QgsProject.instance().addMapLayer(point_layer)
-
-        layer_group = self.create_layer_group()
-        self.add_to_layer_group(point_layer, layer_group)
 
 
     def add_annotation(self, road_address, point_x, point_y, number_of_rows=None, position_x=14, position_y=11):
@@ -852,6 +848,7 @@ class Osoitetyokalu:
 
 
     def add_polyline(self, xy_points, roadway, color):
+
         if color == 'green':
             polyline_color = QColor(0,255,0)
         elif color == 'yellow':
@@ -878,11 +875,9 @@ class Osoitetyokalu:
 
         QgsProject.instance().addMapLayer(polyline_layer)
 
-        layer_group = self.create_layer_group()
-        self.add_to_layer_group(polyline_layer, layer_group)
-
 
     def convert_coordinates_to_XY(self, linestring):
+
         xy_points = []
        
         for coordinates in linestring:
@@ -891,11 +886,13 @@ class Osoitetyokalu:
 
 
     def close_popup(self):
+
         dlg = PopUp_dialog
         dlg.close()
 
 
     def error_popup(self, road_address):
+
             self.iface.messageBar().pushMessage(
             f'{road_address}',
             level=1, duration=10)
@@ -974,7 +971,6 @@ class Osoitetyokalu:
         error_message = None
 
         for vkm_feature in vkm_data['features']:
-            #print(vkm_feature)
 
             if 'virheet' in vkm_feature['properties']:
                 error_message = vkm_feature['properties']['virheet']
@@ -1147,7 +1143,7 @@ class Osoitetyokalu:
                 self.set_popup_text(popup_dlg, vkm_feature)
                 point_x = vkm_feature['properties']['x']
                 point_y = vkm_feature['properties']['y']
-                self.add_point('Pistemäinen haku', point_x, point_y, color='0,255,0', shape='triangle')
+                self.add_point('Pistemäinen haku', point_x, point_y, color='0,255,0', shape='triangle', size='3.5')
                 self.zoom_to_layer()
                 popup_dlg.show()
                 result = popup_dlg.exec_()
@@ -1278,29 +1274,19 @@ class Osoitetyokalu:
             canvas = self.iface.mapCanvas()
             extent = layer.extent()
             canvas.setExtent(extent)
+            canvas.zoomScale(16555 / 1)
 
 
-    def create_layer_group(self):
+    def delete_all_annotations(self):
 
-        root = QgsProject.instance().layerTreeRoot()
-        try:
-            layer_group = root.findGroup('LayerGroup1')
-        except:
-            layer_group = root.addGroup('LayerGroup1')
-        return layer_group
+        manager = QgsProject.instance().annotationManager()
+        for i in manager.annotations():
+           manager.removeAnnotation(i)
 
+    
+    def delete_annotation(self):
 
-    def add_to_layer_group(self, layer, layer_group):
-
-        layer_group.addLayer(layer)
-
-
-    def delete_all_layers_from_group(self, layer_group):
-
-        root = QgsProject.instance().layerTreeRoot()
-        group = root.findGroup(layer_group)
-        if group is not None:
-            root.removeChildNode(group)
-        
-    def delete_layer_from_group(self, layer_group):
-        
+        manager = QgsProject.instance().annotationManager()
+        for i in manager.annotations():
+           manager.removeAnnotation(i)
+           break
