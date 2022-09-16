@@ -249,7 +249,8 @@ class Osoitetyokalu:
 
 
     def road_address(self):
-        """Run method that performs all the real work"""
+        """Retrieves the road address from VKM-api using the coordinates that come from a click on canvas and displays it as a annotation."""
+        
 
         # Create the dialog with elements (after translation) and keep reference
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
@@ -260,6 +261,13 @@ class Osoitetyokalu:
 
 
         def display_point(pointTool):
+            """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API. 
+                Draws an annotation on the canvas with the road address by using the road's coordinates from VKM-API output, that are closest to the clicked coordinates.
+                Clicked coordinates and returned road address are also displayed on a dialog.
+
+            Args:
+                pointTool (QgsMapToolEmitPoint()): Tool that returns coordinates from clicking on the canvas that it's connected to. 
+            """
 
             try:
                 #click on canvas returns coordinates
@@ -291,6 +299,7 @@ class Osoitetyokalu:
         #CRS when the ShowCoordinates-tool is opened
         QgsProject.instance().setCrs(self.my_crs)
 
+        #connecting QGIS-canvas to QgsMapToolEmitPoint()
         canvas = self.iface.mapCanvas()
         pointTool = QgsMapToolEmitPoint(canvas)
         pointTool.canvasClicked.connect(display_point)
@@ -309,7 +318,8 @@ class Osoitetyokalu:
 
 
     def popup(self):
-
+        """Retrieves all possible address information from VKM-API using the coordinates that come from a click on canvas and displays it on a dialog(Pop-Up window).
+        """
         if self.first_start == True:
             self.first_start = False
         dlg = PopUp_dialog()
@@ -317,6 +327,13 @@ class Osoitetyokalu:
 
 
         def display_popup(pointTool):
+            """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API. 
+                Draws a point on the canvas with the road address by using the road's coordinates from VKM-API output, that are closest to the clicked coordinates.
+                Clicked coordinates and returned road address are also displayed on a dialog.
+
+            Args:
+                pointTool (QgsMapToolEmitPoint()): Tool that returns coordinates from clicking on the canvas that it's connected to.
+            """
             lineEdits = dlg.findChildren(QLineEdit)
             for line in lineEdits:
                 if line.text():
@@ -369,7 +386,8 @@ class Osoitetyokalu:
         
     
     def road_part(self):
-
+        """Highlights a clicked road part's roadway(s), draws its ending and starting points and displays their road addresses on an annotation.
+        """
         if self.first_start == True:
             self.first_start = False
         dlg = ShowCoordinates_dialog()
@@ -377,6 +395,17 @@ class Osoitetyokalu:
 
 
         def display_road_part(pointTool):
+            """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API. 
+
+                Draws an annotation on the canvas with the road part's starting and ending road addresses, draws their points and hightlights the part's roadways using different color poylines.
+                Drawn geometry uses the road part's coordinates and linestring geometry coordinates from VKM-API output.
+                Annotation uses the road part's halfway coordiantes which come from a seperate coordinate search.
+
+                Clicked coordinates and returned road address are also displayed on a dialog.
+
+            Args:
+                pointTool (QgsMapToolEmitPoint()): Tool that returns coordinates from clicking on the canvas that it's connected to.
+            """
 
             try:
                 #click on canvas returns coordinates
@@ -461,6 +490,7 @@ class Osoitetyokalu:
         
 
     def two_points(self):
+        """Highlights every roadway between two clicked points on the same road."""
 
         if self.first_start == True:
             self.first_start = False
@@ -476,6 +506,13 @@ class Osoitetyokalu:
 
         
         def display_point_A(pointTool_A):
+            """ Operates the same way as display_point(), but in addition: clears the roadway dialog lines at the start, creates road address parameters for VKM-API
+                request in the display_point_B() and switches canvas connection to pointTool_B that is used by display_point_B().
+
+
+            Args:
+                pointTool (QgsMapToolEmitPoint()): Tool that returns coordinates from clicking on the canvas that it's connected to.
+            """
 
             #variables for display_point_B
             self.tie_A = 0
@@ -501,7 +538,7 @@ class Osoitetyokalu:
                     road_address, vkm_error = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y, display_point='A ')
 
                 if vkm_error == True:
-                    self.error_popup(road_address=road_address)
+                    self.error_popup(road_address)
                     return
 
                 else:
@@ -524,7 +561,16 @@ class Osoitetyokalu:
 
 
         def display_point_B(pointTool_B):
+            """ Creates the second point by using pointTool_B, uses its own and display_point_A() function's retrieved VKM-API output addresses
+                to request the lengths and linestring geometry of roadways between the two points.
 
+                Highlights the possible roadways by drawing polylines using the retrieved linestrings. Roadways are distinguished by color.
+
+                Conntects canvas back to pointTool_A which is used by display_point_A().
+
+            Args:
+                pointTool (QgsMapToolEmitPoint()): Tool that returns coordinates from clicking on the canvas that it's connected to.
+            """
             try:
                 #click on canvas returns coordinates
                 point_x = str(pointTool_B.x())
@@ -623,6 +669,9 @@ class Osoitetyokalu:
 
 
     def search_form(self):
+        """ A dialog with a search form for VKM-API requests. Uses the same search parameteres as VKM-API. Either returns and draws a point or line(s)
+            depending on the search parameters given.
+        """
 
         QgsProject.instance().setCrs(self.my_crs)
         self.vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
@@ -633,7 +682,8 @@ class Osoitetyokalu:
 
 
     def delete_tool(self):
-
+        """ A dialog with buttons that either delete one annotation or all of them.
+        """
         QgsProject.instance().setCrs(self.my_crs)
         delete_dlg = DeleteLayer_dialog()
         delete_dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
@@ -648,6 +698,26 @@ class Osoitetyokalu:
 
 
     def vkm_request_road_address(self, vkm_url, point_x, point_y, display_point='', palautus_arvot='1,2'):
+        """ Returns a road address from VKM-API request.
+
+        Args:
+            vkm_url (str): VKM-API URL.
+            point_x (str): X coordinate.
+            point_y (_type_): Y coordinate.
+            display_point (str, optional): Used to distinguish points A and B in two_points(). Defaults to ''.
+            palautus_arvot (str, optional): Search parameters for VKM-API that regulate the amount of address information it returns. Defaults to '1,2'.
+
+        Returns:
+            road_address (str): Road address that consists of road/roadway/(road)part/distance.
+            vkm_error (boolean): Messages to the next function wether to give an error popup or not.
+            point_x (float): X coordinate from VKM-API output.
+            point_y (float): Y coordinate from VKM-API output.
+            tie (str): Road from VKM-API output.
+            ajorata (str): Roadway from VKM-API output.
+            osa (str): Road part from VKM-API output.
+            etaisyys (str): Distance from VKM-API output.
+
+        """
 
         response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot={palautus_arvot}&vaylan_luonne=0')
 
@@ -693,6 +763,15 @@ class Osoitetyokalu:
 
 
     def set_popup_text(self, dlg, vkm_feature):
+        """Displays address information on PopUp dialog lines.
+
+        Args:
+            dlg (QDialog): Dialog to write to.
+            vkm_feature (json): One feature of VKM-API output that contains address information.
+
+        Returns:
+            _type_: _description_
+        """
 
         try:
             #getting road coordinates and road address that are nearest to the mouse click
