@@ -364,7 +364,7 @@ class Osoitetyokalu:
                         road_address = self.set_popup_text(dlg, vkm_feature)
 
                     if vkm_error == True:
-                        self.error_popup(road_address=road_address)
+                        self.error_popup(error_msg=road_address)
 
                     else:
                         point_x = vkm_feature['properties']['x']
@@ -461,6 +461,7 @@ class Osoitetyokalu:
                         return
 
                     self.add_annotation(road_address=roadway, point_x=point_x, point_y=point_y, number_of_rows=5)
+                    self.zoom_to_layer()
 
                     #adding a point to each end of the road part
                     self.add_point(road_address=starting_road_address, point_x=starting_point[0], point_y=starting_point[1], color='0,255,0', shape='square', size='3.0')
@@ -587,7 +588,7 @@ class Osoitetyokalu:
 
                 if vkm_error == True:
                     self.canvas.setMapTool(pointTool_A)
-                    self.error_popup(road_address=road_address)
+                    self.error_popup(error_msg=road_address)
                     return
 
                 elif tie_B != self.tie_A:
@@ -719,12 +720,12 @@ class Osoitetyokalu:
 
         """
 
-        response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot={palautus_arvot}&vaylan_luonne=0')
+        response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot={palautus_arvot}&vaylan_luonne=0&sade=10')
 
         retry_times = 0
         while response.status_code !=200: #retry
             logging.info('retrying')
-            response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot={palautus_arvot}&vaylan_luonne=0')
+            response = get(vkm_url + f'muunna?x={point_x}&y={point_y}&palautusarvot={palautus_arvot}&vaylan_luonne=0&sade=10')
             retry_times +=1
             if retry_times > 20:
                 self.error_popup('VKM-API ei vastaa.')
@@ -770,7 +771,7 @@ class Osoitetyokalu:
             vkm_feature (json): One feature of VKM-API output that contains address information.
 
         Returns:
-            _type_: _description_
+            road_address (str): Road address that consists of road/roadway/(road)part/distance.
         """
 
         try:
@@ -788,6 +789,8 @@ class Osoitetyokalu:
             elynimi = str(vkm_feature['properties']['elynimi'])
             ualuenimi = str(vkm_feature['properties']['ualuenimi'])
             maakuntanimi = str(vkm_feature['properties']['maakuntanimi'])
+            kmtk_id = str(vkm_feature['properties']['kmtk_id'])
+            m_arvo = str(vkm_feature['properties']['m_arvo'])
 
             dlg.XlineEdit.setText(str(point_x))
             dlg.YlineEdit.setText(str(point_y))
@@ -802,6 +805,8 @@ class Osoitetyokalu:
             dlg.ElynimilineEdit.setText(elynimi)
             dlg.UaluenimilineEdit.setText(ualuenimi)
             dlg.MaakuntanimilineEdit.setText(maakuntanimi)
+            dlg.Kmtk_idlineEdit.setText(kmtk_id)
+            dlg.M_arvolineEdit.setText(m_arvo)
 
             road_address = f'{tie}/{ajorata}/{osa}/{etaisyys}'
 
@@ -821,6 +826,8 @@ class Osoitetyokalu:
             elynimi = str(vkm_feature['properties']['elynimi'])
             ualuenimi = str(vkm_feature['properties']['ualuenimi'])
             maakuntanimi = str(vkm_feature['properties']['maakuntanimi'])
+            kmtk_id = str(vkm_feature['properties']['kmtk_id'])
+            m_arvo = str(vkm_feature['properties']['m_arvo'])
 
             dlg.XlineEdit.setText(str(point_x))
             dlg.YlineEdit.setText(str(point_y))
@@ -835,6 +842,8 @@ class Osoitetyokalu:
             dlg.ElynimilineEdit.setText(elynimi)
             dlg.UaluenimilineEdit.setText(ualuenimi)
             dlg.MaakuntanimilineEdit.setText(maakuntanimi)
+            dlg.Kmtk_idlineEdit.setText(kmtk_id)
+            dlg.M_arvolineEdit.setText(m_arvo)
             
             road_address = f'{tie}/{ajorata}/{osa}/{etaisyys}'
 
@@ -844,6 +853,23 @@ class Osoitetyokalu:
 
 
     def vkm_request_coordinates(self, vkm_url, road, road_part, distance, output_parameters = '1,2'):
+        """Returns coordinates from VKM-API request.
+
+        Args:
+            vkm_url (str): VKM-API URL.
+            road (str): Road for VKM-API request.
+            road_part (str): Part for VKM-API request.
+            distance (str): Distance for VKM-API request.
+            output_parameters (str, optional): Search parameters for VKM-API that regulate the amount of address information it returns. Defaults to '1,2'.
+
+        Raises:
+            VkmApiException: VKM-API doesn't respond.
+            VkmRequestException: Wrong request parameters.
+
+        Returns:
+            point_x (float): X coordinate from VKM-API output.
+            point_y (float): Y coordinate from VKM-API output.
+        """
 
         request_url = vkm_url + f'muunna?tie={road}&osa={road_part}&etaisyys={distance}&palautusarvot={output_parameters}&vaylan_luonne=0'
 
@@ -874,6 +900,16 @@ class Osoitetyokalu:
 
     
     def add_point(self, road_address, point_x, point_y, color='255,0,0', shape='circle', size='2.5'):
+        """Draws a point to given coordinates as a layer.
+
+        Args:
+            road_address (str): Road address that consists of road/roadway/(road)part/distance. Is used as point's name.
+            point_x (float): X coordiante.
+            point_y (float): Y coordinate.
+            color (str, optional): Point's color. Defaults to '255,0,0'.
+            shape (str, optional): Point's shape. Defaults to 'circle'.
+            size (str, optional): Point's size Defaults to '2.5'.
+        """
 
         point_layer = QgsVectorLayer('Point', f'Piste ({road_address})', 'memory')
         pr = point_layer.dataProvider()
@@ -901,8 +937,17 @@ class Osoitetyokalu:
 
 
     def add_annotation(self, road_address, point_x, point_y, number_of_rows=None, position_x=14, position_y=11):
+        """Adds an annotation to given coordinates.
+
+        Args:
+            road_address (str): Road address that consists of road/roadway/(road)part/distance. Is used as annotation's content.
+            point_x (float): X coordiante.
+            point_y (float): Y coordinate.
+            number_of_rows (int, optional): Width of the annotation. Defaults to None.
+            position_x (int, optional): Position of the annotation from reference point. Defaults to 14.
+            position_y (int, optional): Position of the annotation from reference point. Defaults to 11.
+        """
         
-        #self.annot_position = 0
     
         layer = self.iface.activeLayer()
 
@@ -927,6 +972,13 @@ class Osoitetyokalu:
 
 
     def add_polyline(self, xy_points, roadway, color):
+        """Draws a linestring as a layer.
+
+        Args:
+            xy_points (list): List of linestring coordinates as QgsPointXY.
+            roadway (str): Linestring's name.
+            color (str): Linestring's color.
+        """
 
         if color == 'green':
             polyline_color = QColor(0,255,0)
@@ -956,6 +1008,14 @@ class Osoitetyokalu:
 
 
     def convert_coordinates_to_XY(self, linestring):
+        """Converts a linestring to a list of QgsPointXY-type coordinates.
+
+        Args:
+            linestring (list): A list of lists of float-type coordinate points.
+
+        Returns:
+            xy_points (list): List of linestring coordinates as QgsPointXY.
+        """
 
         xy_points = []
        
@@ -965,19 +1025,41 @@ class Osoitetyokalu:
 
 
     def close_popup(self):
+        """Closes the PopUp dialog window. Is connected to a button."""
 
         dlg = PopUp_dialog
         dlg.close()
 
 
-    def error_popup(self, road_address):
+    def error_popup(self, error_msg):
+        """Gives an error message in Qgis.
 
-            self.iface.messageBar().pushMessage(
-            f'{road_address}',
-            level=1, duration=10)
+        Args:
+            road_address (str): Error content.
+        """
+
+        self.iface.messageBar().pushMessage(
+        f'{error_msg}',
+        level=1, duration=10)
 
 
-    def vkm_request_geometry(self, vkm_url, tie_A, osa_A, etaisyys_A, tie_B, osa_B, etaisyys_B, display_point='', palautus_arvot='1,2,5'):
+    def vkm_request_geometry(self, vkm_url, tie_A, osa_A, etaisyys_A, tie_B, osa_B, etaisyys_B, palautus_arvot='1,2,5'):
+        """Returns line geometry from VKM-API request. Mainly used in two_points()-function.
+
+        Args:
+            vkm_url (str): VKM-API URL.
+            tie_A (str): Starting road.
+            osa_A (_type_): Starting part.
+            etaisyys_A (_type_): Starting distance.
+            tie_B (_type_): Ending road.
+            osa_B (_type_): Ending part.
+            etaisyys_B (_type_): Ending distance.
+            palautus_arvot (str, optional): Search parameters for VKM-API that regulate the amount of address information it returns. Defaults to '1,2,5'.
+
+        Returns:
+            polyline_dict (dict): {roadway : [ [linestring], [linestring],... ], ....}
+            pituus_dict (dict): {roadway : roadway length,... }
+        """
 
         response = get(vkm_url + f'muunna?tie={tie_A}&osa={osa_A}&etaisyys={etaisyys_A}&tie_loppu={tie_B}&osa_loppu={osa_B}&etaisyys_loppu={etaisyys_B}&vaylan_luonne=0&valihaku=true&palautusarvot={palautus_arvot}')
         polyline_dict = {}
@@ -997,7 +1079,7 @@ class Osoitetyokalu:
         for vkm_feature in vkm_data['features']:
 
             if 'virheet' in vkm_feature['properties']:
-                error_message = display_point + vkm_feature['properties']['virheet']
+                error_message = vkm_feature['properties']['virheet']
                 self.error_popup(error_message)
                 return
 
@@ -1029,6 +1111,20 @@ class Osoitetyokalu:
 
 
     def vkm_request_road_part_geometry(self, vkm_url, tie, osa, palautus_arvot='1,2,5'):
+        """Returns line geometry of a road part.
+
+        Args:
+            vkm_url (str): VKM-API URL.
+            tie (str): Road.
+            osa (str): (road) part.
+            palautus_arvot (str, optional): Search parameters for VKM-API that regulate the amount of address information it returns. Defaults to '1,2,5'.
+
+        Returns:
+            polyline_dict (dict): {roadway : [ [linestring], [linestring],... ], ....}
+            road_part_length (int): Road part length.
+            starting_point (list): Contains XY-coordinates.
+            ending_point (list): Contains XY-coordinates.
+        """
 
         response = get(vkm_url + f'muunna?tie={tie}&osa={osa}&osa_loppu={osa}&vaylan_luonne=0&valihaku=true&palautusarvot={palautus_arvot}')
         polyline_dict = {}
@@ -1088,6 +1184,9 @@ class Osoitetyokalu:
 
 
     def vkm_request_form_search(self):
+        """ Checks which lines in SearchForm dialog have content and either returns an error or 
+            passes the content as VKM-API request parameters to the next function. Runs when Search-button is pressed in the SearchForm dialog.
+        """
         
         params_dict = self.append_form_layout_lines()
 
@@ -1096,10 +1195,15 @@ class Osoitetyokalu:
             return
 
         else:
-            self.vkm_request_form_point(params_dict)
+            self.process_search_form_params(params_dict)
 
 
     def append_form_layout_lines(self):
+        """Appends non-empty SearchForm lines to a dictionary.
+
+        Returns:
+            params_dict (dict): Dictionary with VKM-API request parameters.
+        """
 
         params_dict = {}
 
@@ -1111,7 +1215,15 @@ class Osoitetyokalu:
         return params_dict
 
 
-    def vkm_request_form_point(self, params, output_parameters = '1,2,3,4,5,6'):
+    def process_search_form_params(self, params, output_parameters = '1,2,3,4,5,6'):
+        """ Makes a VKM-API request with paramateres given in SearchForm dialog and either draws a point or polyline(s) depending on the ssearch parameters.
+
+            Also centers the canvas on the returned coordinates.
+
+        Args:
+            params (dict): Dictionary with VKM-API request parameters.
+            palautus_arvot (str, optional): Search parameters for VKM-API that regulate the amount of address information it returns. Defaults to '1,2,3,4,5,6'.
+        """
 
         url = self.vkm_url + 'muunna?'
         url_x = '&x='
@@ -1344,7 +1456,12 @@ class Osoitetyokalu:
 
         
     def zoom_to_layer(self, point_x = None, point_y = None):
+        """Zooms and centers to given coordinates(available in the next version) or to an active layer.
 
+        Args:
+            point_x (float, optional): X coordinate. Defaults to None.
+            point_y (float, optional): Y coordiante. Defaults to None.
+        """
         if point_x != None and point_y != None:
             pass
         else:
@@ -1357,14 +1474,14 @@ class Osoitetyokalu:
 
 
     def delete_all_annotations(self):
-
+        """Deletes all annotations."""
         manager = QgsProject.instance().annotationManager()
         for i in manager.annotations():
            manager.removeAnnotation(i)
 
     
     def delete_annotation(self):
-
+        """Deletes one annotation."""
         manager = QgsProject.instance().annotationManager()
         for i in manager.annotations():
            manager.removeAnnotation(i)
