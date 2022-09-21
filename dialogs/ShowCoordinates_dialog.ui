@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>512</width>
-    <height>175</height>
+    <height>143</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Tieosoite</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -62,19 +62,6 @@
      <width>381</width>
      <height>21</height>
     </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>374</x>
-     <y>120</y>
-     <width>121</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Valitse ja poista -tila</string>
    </property>
   </widget>
  </widget>
