@@ -1528,7 +1528,7 @@ class Osoitetyokalu:
             roadways_file = open(final_path, 'w')
 
             feature_count = 0
-            header_row = 'feature,tie,ajorata,osa,etaisyys,tie_loppu,ajorata_loppu,osa_loppu,etaisyys_loppu,pituus\n'
+            header_row = 'tie,ajorata,osa,etaisyys,ajorata_loppu,osa_loppu,etaisyys_loppu,pituus\n'
             roadways_file.write(header_row)
             for vkm_feature in vkm_data['features']:
 
