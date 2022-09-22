@@ -592,8 +592,9 @@ class Osoitetyokalu:
 
                     #getting road address and calculating the distance of roadway(s) between points A and B
                     try:
-                        polyline_dict, pituus_dict, request_url = self.vkm_request_geometry(vkm_url, self.tie_A, self.osa_A, self.etaisyys_A, tie_B, osa_B, etaisyys_B)
-                        roadway_file_name = f'{self.tie_A}_{self.ajorata_A}_{self.osa_A}_{self.etaisyys_A}--{tie_B}_{ajorata_B}_{osa_B}_{etaisyys_B}.csv'
+                        polyline_dict, pituus_dict, request_url, kokonaispituus = self.vkm_request_geometry(vkm_url, self.tie_A, self.osa_A, self.etaisyys_A, tie_B, osa_B, etaisyys_B)
+                        self.ajoradat_dlg.PituuslineEdit.clear()
+                        self.ajoradat_dlg.PituuslineEdit.setText(str(kokonaispituus))
 
                         for ajorata, coordinates in polyline_dict.items():
                             for ajorata_pituus, pituus in pituus_dict.items():
@@ -623,8 +624,7 @@ class Osoitetyokalu:
                                 self.ajoradat_dlg.Ajorata2lineEdit.setText(roadway)
 
                         self.ajoradat_dlg.pushButton_Download.setEnabled(True)
-                        self.ajoradat_dlg.PathlineEdit.clear()
-                        self.ajoradat_dlg.pushButton_Download.clicked.connect(lambda: self.write_roadways_to_csv(request_url, roadway_file_name, self.ajoradat_dlg))
+                        self.ajoradat_dlg.pushButton_Download.clicked.connect(lambda: self.write_roadways_to_csv(request_url, self.ajoradat_dlg))
                         
                         #connecting canvas back to pointTool A
                         self.canvas.setMapTool(pointTool_A)
@@ -1079,6 +1079,7 @@ class Osoitetyokalu:
             
         vkm_data = json.loads(response.content)
 
+        kokonaispituus = 0
         for vkm_feature in vkm_data['features']:
             if 'virheet' in vkm_feature['properties']:
                 error_msg = vkm_feature['properties']['virheet']
@@ -1107,8 +1108,9 @@ class Osoitetyokalu:
                 else:
                     pituus_dict[ajorata] = vkm_feature['properties']['mitattu_pituus']
                 
-
-        return polyline_dict, pituus_dict, request_url
+            kokonaispituus = kokonaispituus + vkm_feature['properties']['mitattu_pituus']
+                
+        return polyline_dict, pituus_dict, request_url, kokonaispituus
 
 
     def vkm_request_road_part_geometry(self, vkm_url, tie, osa, palautus_arvot='1,2,5'):
@@ -1319,6 +1321,8 @@ class Osoitetyokalu:
         part_end = 0
         distance_end = 0
 
+        overall_length = 0
+
         polyline_dict = {}
         length_dict = {}
 
@@ -1415,9 +1419,12 @@ class Osoitetyokalu:
                     length_dict[polyline_roadway] = length_dict[polyline_roadway] + vkm_feature['properties']['mitattu_pituus']
                 else:
                     length_dict[polyline_roadway] = vkm_feature['properties']['mitattu_pituus']
+
+                overall_length = overall_length + vkm_feature['properties']['mitattu_pituus']
                 
 
         if len(polyline_dict) != 0:
+            roadways_dlg.PituuslineEdit.setText(str(overall_length))
             
             for polyline_roadway, coordinates in polyline_dict.items():
                 for length_dict_roadway, length in length_dict.items():
@@ -1449,10 +1456,9 @@ class Osoitetyokalu:
             self.zoom_to_layer()
             self.add_point('Loppupiste', x_end, y_end, color='255,0,0', shape='square', size='3.0')
             
-            roadways_file_name = f'{road}_{roadway}_{part}_{distance}--{road_end}_{roadway_end}_{part_end}_{distance_end}.csv'
+            #roadways_file_name = f'{road}_{roadway}_{part}_{distance}--{road_end}_{roadway_end}_{part_end}_{distance_end}.csv'
             roadways_dlg.pushButton_Download.setEnabled(True)
-            roadways_dlg.PathlineEdit.clear()
-            roadways_dlg.pushButton_Download.clicked.connect(lambda: self.write_roadways_to_csv(final_url, roadways_file_name, roadways_dlg))
+            roadways_dlg.pushButton_Download.clicked.connect(lambda: self.write_roadways_to_csv(final_url, roadways_dlg))
             roadways_dlg.show()
             result = roadways_dlg.exec_()
             if result:
@@ -1493,12 +1499,11 @@ class Osoitetyokalu:
            break
 
     
-    def write_roadways_to_csv(self, request_url, roadway_file_name, dlg):
+    def write_roadways_to_csv(self, request_url, dlg):
         """Writes ending and starting address data of every feature in linestring VKM output to a CSV-file.
 
         Args:
             request_url (str): VKM URL used in two_points() or process_search_form_params functions.
-            roadway_file_name (str): Name for the csv-file.
             dlg (QDialog): Dialog.
 
         Raises:
@@ -1518,14 +1523,9 @@ class Osoitetyokalu:
 
             vkm_data = json.loads(response.content)
 
-            #creating a roadways folder
-            rootPath = Path(__file__).parent
-            roadwaysPath = Path.joinpath(rootPath, 'roadways')
-            roadwaysPath.mkdir(parents=True, exist_ok=True)
-
-            final_path = Path.joinpath(roadwaysPath, roadway_file_name)
-
-            roadways_file = open(final_path, 'w')
+            user_path = dlg.get_file_path()
+            
+            roadways_file = open(str(user_path), 'w')
 
             feature_count = 0
             header_row = 'tie,ajorata,osa,etaisyys,ajorata_loppu,osa_loppu,etaisyys_loppu,pituus\n'
@@ -1552,17 +1552,15 @@ class Osoitetyokalu:
                     feature_row = f'{road},{roadway},{part},{distance},{roadway_end},{part_end},{distance_end},{length}\n'
                     roadways_file.write(feature_row)
             
-
             roadways_file.close()
-
-            file_path = Path(f'C:/Users/[username]/AppData/Roaming/QGIS/QGIS3/profiles/default/python/plugins/osoitetyokalu/roadways/{roadway_file_name}')
-            file_path = file_path.resolve()
-            dlg.PathlineEdit.setText(str(file_path))
         
         except VkmApiException as e:
             self.error_popup(e)
         except VkmRequestException as e:
             self.error_popup(e)
+        except OSError as e:
+            self.error_popup('Virhe tiedostoa ladattaessa. Yritä uudelleen.')
+            logging.info(e)
 
                     
         

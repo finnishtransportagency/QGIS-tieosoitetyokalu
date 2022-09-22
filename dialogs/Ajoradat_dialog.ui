@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>794</width>
+    <width>816</width>
     <height>315</height>
    </rect>
   </property>
@@ -99,38 +99,48 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>230</y>
-     <width>201</width>
+     <x>590</x>
+     <y>220</y>
+     <width>181</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
-    <string>Lataa välin tiedot tekstitiedostona</string>
+    <string>Lataa välin ajoratojen osoitetiedot</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_5">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>260</y>
-     <width>71</width>
-     <height>16</height>
+     <x>100</x>
+     <y>190</y>
+     <width>671</width>
+     <height>25</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Oletussijainti:</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="PathlineEdit">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>260</y>
-     <width>511</width>
-     <height>20</height>
-    </rect>
-   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>Sijainti:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="PathlineEdit">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_Path">
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

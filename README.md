@@ -22,12 +22,12 @@
 	4. 	"Alku- ja loppupiste" -työkalu. Korostaa kahden (A ja B) klikatun pisteen väliset ajoradat ja esittää niiden alku- ja loppuosoitteet sekä pituudet erillisessä ikkunassa.
 		Pisteiden on oltava samalla tiellä. Kun ensimmäinen piste on valittu, karttaa pitkin voi tarvittaessa siirtyä eri suuntiin käyttäen nuolinäppäimiä ennen toista klikkausta!!!
 		
-		Haetun välin ajoratapätkien tiedot voi ladata CSV-tiedostoon, joka ilmestyy pluginin roadways-kansioon!
+		Haetun välin ajoratapätkien tiedot voi ladata CSV-tiedostoon, joka ilmestyy valittuun kansioon!
 	
 	5.	Kohdistustyökalu. Avaa tekstikenttiä sisältävän ikkunan, johon käyttäjä voi syöttää parametreja VKM-hakua varten. Palauttaa pisteen tai ajoratojen osoitetiedot, kohdistaa niihin 
 		ja lisää ne kanvakselle riippuen annetuista hakuparametreista.
 		
-		Haetun välin ajoratapätkien tiedot voi ladata CSV-tiedostoon, joka ilmestyy pluginin roadways-kansioon!
+		Haetun välin ajoratapätkien tiedot voi ladata CSV-tiedostoon, joka ilmestyy valittuun kansioon!
 		
 	6. 	Poistotyökalu. Poistaa yhden tai kaikki karttavihjeet riippuen käyttäjän valinnasta. Karttavihjeet kannattaa poistaa ainoastaan tämän työkalun avulla, 
 		muuten ne tulee takaisin esille uuden karttavihjeen tullessa kartalle.
@@ -35,8 +35,7 @@
 - Huom!
 	-Korostetut ajoradat erotetaan värin avulla. 0 = vihreä, 1 = keltainen, 2 = sininen.
 	
-	-!!!Mitä enemmän pisteitä ja viivoja (=tasoja) on yhtäaikaisesti kanvaksella, sitä hitaammin QGIS pyörii!!! Turhia tasoja kannattaa poistaa tai piilottaa käyttäen vasemassa laidassa sijaitsevaa kenttää, 
-	jonka avulla voi poistaa tai piilottaa valitut tasot. Karttavihjeet kannattaa poistaa ainoastaan poistotyökalun kautta.
+	-!!!Mitä enemmän pisteitä ja viivoja (=tasoja) on yhtäaikaisesti kanvaksella, sitä hitaammin QGIS pyörii!!! Turhia tasoja kannattaa poistaa tai piilottaa käyttäen vasemassa laidassa sijaitsevaa kenttää, jonka avulla voi poistaa tai piilottaa valitut tasot. Karttavihjeet kannattaa poistaa ainoastaan poistotyökalun kautta.
 
 
 

@@ -1,5 +1,6 @@
 import os
 
+from PyQt5.QtWidgets import QFileDialog
 from qgis.PyQt import uic
 from qgis.PyQt import QtWidgets
 
@@ -19,3 +20,26 @@ class Ajoradat_dialog(QtWidgets.QDialog, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
         self.setFixedSize(794, 315)
+
+        self.PathlineEdit.textChanged.connect(self.enable_download)
+        self.enable_download()
+        self.PathlineEdit.clear()
+        self.pushButton_Path.clicked.connect(self.select_output_file)
+
+
+    def enable_download(self):
+        if not self.PathlineEdit.text() or self.PathlineEdit.text() != "":
+            self.pushButton_Download.setEnabled(True)
+        else:
+            self.pushButton_Download.setEnabled(False)
+
+
+    def select_output_file(self):
+        options = QFileDialog.Options()
+        filename,_ = QFileDialog.getSaveFileName(self, 'Valitse tallennussijainti', "", 'csv (*.csv)', options=options)
+        if filename:
+            self.PathlineEdit.setText(filename)
+
+
+    def get_file_path(self):
+        return self.PathlineEdit.text()
