@@ -28,13 +28,14 @@ class Ajoradat_dialog(QtWidgets.QDialog, FORM_CLASS):
 
 
     def enable_download(self):
-        if not self.PathlineEdit.text() or self.PathlineEdit.text() != "":
+        if self.PathlineEdit.text() or self.PathlineEdit.text() != "":
             self.pushButton_Download.setEnabled(True)
         else:
             self.pushButton_Download.setEnabled(False)
 
 
     def select_output_file(self):
+        """User chooses location for the downloadable CSV-file."""
         options = QFileDialog.Options()
         filename,_ = QFileDialog.getSaveFileName(self, 'Valitse tallennussijainti', "", 'csv (*.csv)', options=options)
         if filename:
@@ -42,4 +43,9 @@ class Ajoradat_dialog(QtWidgets.QDialog, FORM_CLASS):
 
 
     def get_file_path(self):
+        """Returns the path of the file once the Download button is pressed.
+
+        Returns:
+            (str): File path.
+        """
         return self.PathlineEdit.text()

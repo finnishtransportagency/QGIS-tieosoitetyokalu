@@ -38,7 +38,7 @@ from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import QAction
 from qgis.gui import QgsMapToolEmitPoint
 from qgis.core import QgsField, QgsFeature, QgsVectorLayer, QgsProject, QgsCoordinateReferenceSystem, QgsGeometry, QgsPointXY
-from qgis.core import QgsTextAnnotation, QgsMarkerSymbol, QgsSingleSymbolRenderer
+from qgis.core import QgsTextAnnotation, QgsMarkerSymbol, QgsSingleSymbolRenderer, Qgis
 from PyQt5.QtWidgets import QLineEdit
 
 from PyQt5.QtGui import QTextDocument
@@ -623,7 +623,6 @@ class Osoitetyokalu:
                                 self.ajoradat_dlg.Ajorata2lineEdit.clear()
                                 self.ajoradat_dlg.Ajorata2lineEdit.setText(roadway)
 
-                        self.ajoradat_dlg.pushButton_Download.setEnabled(True)
                         self.ajoradat_dlg.pushButton_Download.clicked.connect(lambda: self.write_roadways_to_csv(request_url, self.ajoradat_dlg))
                         
                         #connecting canvas back to pointTool A
@@ -1041,7 +1040,7 @@ class Osoitetyokalu:
 
         self.iface.messageBar().pushMessage(
         f'{error_msg}',
-        level=1, duration=10)
+        level=Qgis.Critical, duration=10)
 
 
     def vkm_request_geometry(self, vkm_url, tie_A, osa_A, etaisyys_A, tie_B, osa_B, etaisyys_B, palautus_arvot='1,2,5'):
@@ -1457,7 +1456,6 @@ class Osoitetyokalu:
             self.add_point('Loppupiste', x_end, y_end, color='255,0,0', shape='square', size='3.0')
             
             #roadways_file_name = f'{road}_{roadway}_{part}_{distance}--{road_end}_{roadway_end}_{part_end}_{distance_end}.csv'
-            roadways_dlg.pushButton_Download.setEnabled(True)
             roadways_dlg.pushButton_Download.clicked.connect(lambda: self.write_roadways_to_csv(final_url, roadways_dlg))
             roadways_dlg.show()
             result = roadways_dlg.exec_()
@@ -1553,6 +1551,8 @@ class Osoitetyokalu:
                     roadways_file.write(feature_row)
             
             roadways_file.close()
+
+            self.iface.messageBar().pushMessage('Lataus onnistui', f'Tiedosto tallennettu polkuun: {str(user_path)}', level=Qgis.Success, duration=7)
         
         except VkmApiException as e:
             self.error_popup(e)
