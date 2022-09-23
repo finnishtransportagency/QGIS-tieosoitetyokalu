@@ -231,7 +231,7 @@ class Osoitetyokalu:
             callback=self.search_form,
             parent=self.iface.mainWindow(),
             add_to_toolbar=False)
-        
+
         self.add_action(
             icon_path,
             text=self.tr(u'6. Poistotyökalu'),
@@ -251,7 +251,7 @@ class Osoitetyokalu:
 
     def road_address(self):
         """Retrieves the road address from VKM-api using the coordinates that come from a click on canvas and displays it as a annotation."""
-        
+
 
         # Create the dialog with elements (after translation) and keep reference
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
@@ -262,12 +262,12 @@ class Osoitetyokalu:
 
 
         def display_point(pointTool):
-            """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API. 
+            """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
                 Draws an annotation on the canvas with the road address by using the road's coordinates from VKM-API output, that are closest to the clicked coordinates.
                 Clicked coordinates and returned road address are also displayed on a dialog.
 
             Args:
-                pointTool (QgsMapToolEmitPoint()): Tool that returns coordinates from clicking on the canvas that it's connected to. 
+                pointTool (QgsMapToolEmitPoint()): Tool that returns coordinates from clicking on the canvas that it's connected to.
             """
 
             try:
@@ -278,11 +278,11 @@ class Osoitetyokalu:
 
                 #get new coordinates and address from VKM
                 vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-                
-                road_address, point_x, point_y, _, _, _, _ = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y)
-                
 
-                
+                road_address, point_x, point_y, _, _, _, _ = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y)
+
+
+
                 dlg.AddrLineEdit.setText(road_address)
                 #draws a point with clicked coordinates
                 self.add_point(road_address=road_address, point_x=point_x, point_y=point_y, size='1.0')
@@ -296,7 +296,7 @@ class Osoitetyokalu:
                 self.error_popup(e)
             except VkmRequestException as e:
                 self.error_popup(e)
-                
+
 
         #CRS when the ShowCoordinates-tool is opened
         QgsProject.instance().setCrs(self.my_crs)
@@ -329,7 +329,7 @@ class Osoitetyokalu:
 
 
         def display_popup(pointTool):
-            """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API. 
+            """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
                 Draws a point on the canvas with the road address by using the road's coordinates from VKM-API output, that are closest to the clicked coordinates.
                 Clicked coordinates and returned road address are also displayed on a dialog.
 
@@ -365,7 +365,7 @@ class Osoitetyokalu:
                     if 'virheet' in vkm_feature['properties']:
                         error_msg = vkm_feature['properties']['virheet']
                         raise VkmRequestException(error_msg)
-                                            
+
                     road_address = self.set_popup_text(dlg, vkm_feature)
 
                     point_x = vkm_feature['properties']['x']
@@ -388,8 +388,8 @@ class Osoitetyokalu:
         dlg.show()
         dlg.exec_()
         dlg.SuljeButton.clicked.connect(self.close_popup)
-        
-    
+
+
     def road_part(self):
         """Highlights a clicked road part's roadway(s), draws its ending and starting points and displays their road addresses on an annotation."""
 
@@ -400,7 +400,7 @@ class Osoitetyokalu:
 
 
         def display_road_part(pointTool):
-            """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API. 
+            """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
 
                 Draws an annotation on the canvas with the road part's starting and ending road addresses, draws their points and hightlights the part's roadways using different color poylines.
                 Drawn geometry uses the road part's coordinates and linestring geometry coordinates from VKM-API output.
@@ -420,14 +420,14 @@ class Osoitetyokalu:
 
                 #get new coordinates and address from VKM
                 vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-                
+
                 road_address, point_x, point_y, tie, _, osa, _ = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y)
-            
+
                 dlg.AddrLineEdit.setText(road_address)
-                
+
                 polyline_dict, road_part_length, starting_point, ending_point, _= self.vkm_request_road_part_geometry(vkm_url, tie, osa)
 
-                for ajorata, coordinates in polyline_dict.items():                           
+                for ajorata, coordinates in polyline_dict.items():
                         ending_road_address_split = road_address.split('/')
                         ending_road_address_split[3] = str(road_part_length)
                         ending_road_address = '/'.join(ending_road_address_split)
@@ -446,12 +446,12 @@ class Osoitetyokalu:
                                 self.add_polyline(xy_points, roadway, color='yellow')
                             elif ajorata == '2':
                                 self.add_polyline(xy_points, roadway, color='blue')
-                
+
                 #getting road part's halfway coordinates for annotation
                 road_part_halfway = road_part_length // 2
-                
+
                 point_x, point_y = self.vkm_request_coordinates(vkm_url, road=tie, road_part=osa, distance=road_part_halfway)
-                
+
 
                 self.add_annotation(road_address=roadway, point_x=point_x, point_y=point_y, number_of_rows=5)
                 self.zoom_to_layer()
@@ -459,14 +459,14 @@ class Osoitetyokalu:
                 #adding a point to each end of the road part
                 self.add_point(road_address=starting_road_address, point_x=starting_point[0], point_y=starting_point[1], color='0,255,0', shape='square', size='3.0')
                 self.add_point(road_address=ending_road_address, point_x=ending_point[0], point_y=ending_point[1], color='255,0,0', shape='square', size='3.0')
-                    
+
             except AttributeError:
                 self.error_popup('Pistettä ei ole asetettu.')
             except VkmApiException as e:
                 self.error_popup(e)
             except VkmRequestException as e:
                 self.error_popup(e)
-                
+
 
         #CRS when the ShowCoordinates-tool is opened
         QgsProject.instance().setCrs(self.my_crs)
@@ -482,11 +482,11 @@ class Osoitetyokalu:
         result = dlg.exec_()
         # See if OK was pressed
         if result:
-            
+
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
             pass
-        
+
 
     def two_points(self):
         """Highlights every roadway between two clicked points on the same road."""
@@ -503,7 +503,7 @@ class Osoitetyokalu:
         QgsProject.instance().setCrs(self.my_crs)
         self.canvas = self.iface.mapCanvas()
 
-        
+
         def display_point_A(pointTool_A):
             """ Operates the same way as display_point(), but in addition: clears the roadway dialog lines at the start, creates road address parameters for VKM-API
                 request in the display_point_B() and switches canvas connection to pointTool_B that is used by display_point_B().
@@ -530,12 +530,12 @@ class Osoitetyokalu:
 
                 #get new coordinates and address from VKM
                 vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-                
+
                 road_address, point_x, point_y, tie_A, ajorata_A, osa_A, etaisyys_A = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y, display_point='A')
-                
+
                 #dlg.AddrLineEdit.setText(road_address)
                 self.add_point(road_address=road_address, point_x=point_x, point_y=point_y, size='1.0')
-                
+
                 #adding an annotation with road address to the latest point
                 self.add_annotation(road_address=road_address, point_x=point_x, point_y=point_y)
 
@@ -543,7 +543,7 @@ class Osoitetyokalu:
                 self.ajorata_A = ajorata_A
                 self.osa_A = osa_A
                 self.etaisyys_A = etaisyys_A
-        
+
                 #connecting canvas to pointTool B
                 self.canvas.setMapTool(pointTool_B)
 
@@ -575,9 +575,9 @@ class Osoitetyokalu:
                 #get new coordinates and address from VKM
                 vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
 
-                
+
                 road_address, point_x_B, point_y_B, tie_B, ajorata_B, osa_B, etaisyys_B = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y, display_point='B')
-                
+
 
                 if tie_B != self.tie_A:
                     self.canvas.setMapTool(pointTool_A)
@@ -586,7 +586,7 @@ class Osoitetyokalu:
 
                 else:
                     self.add_point(road_address=road_address, point_x=point_x_B, point_y=point_y_B, size='1.0')
-                    
+
                     #adding an annotation with road address to the latest point
                     self.add_annotation(road_address=road_address, point_x=point_x_B, point_y=point_y_B, position_x=-34, position_y=-21)
 
@@ -624,18 +624,18 @@ class Osoitetyokalu:
                                 self.ajoradat_dlg.Ajorata2lineEdit.setText(roadway)
 
                         self.ajoradat_dlg.pushButton_Download.clicked.connect(lambda: self.write_roadways_to_csv(request_url, self.ajoradat_dlg))
-                        
+
                         #connecting canvas back to pointTool A
                         self.canvas.setMapTool(pointTool_A)
                         #showing all the roadways address info
                         self.ajoradat_dlg.show()
                         result = self.ajoradat_dlg.exec_()
                         #connecting canvas back to pointTool A
-                        
+
                         if result:
                             self.canvas.setMapTool(pointTool_A)
 
-                        
+
 
                     except VkmApiException as e:
                         self.error_popup(e)
@@ -660,7 +660,7 @@ class Osoitetyokalu:
 
         pointTool_B = QgsMapToolEmitPoint(self.canvas)
         pointTool_B.canvasClicked.connect(display_point_B)
-        
+
         self.two_points_dlg.show()
         # Run the dialog event loop
         result = self.two_points_dlg.exec_()
@@ -693,13 +693,13 @@ class Osoitetyokalu:
         delete_dlg = DeleteLayer_dialog()
         delete_dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
         delete_dlg.show()
-        
+
         delete_dlg.pushButton_delete_annotations.clicked.connect(self.delete_all_annotations)
         delete_dlg.pushButton_delete_annotation.clicked.connect(self.delete_annotation)
         delete_dlg.exec_()
 
-        
-# ---------------- EXTRA FUNCTIONS ---------------------- 
+
+# ---------------- EXTRA FUNCTIONS ----------------------
 
 
     def vkm_request_road_address(self, vkm_url, point_x, point_y, display_point='', palautus_arvot='1,2'):
@@ -738,7 +738,7 @@ class Osoitetyokalu:
         for vkm_feature in vkm_data['features']:
             if 'virheet' in vkm_feature['properties']:
                 error_msg = display_point + vkm_feature['properties']['virheet']
-                raise VkmRequestException(error_msg)   
+                raise VkmRequestException(error_msg)
 
             else:
                 try:
@@ -758,8 +758,8 @@ class Osoitetyokalu:
                     point_y = vkm_feature['properties']['y']
 
                     road_address = f'Ei tieosoitetta'
-        
-        
+
+
         return road_address, point_x, point_y, tie, ajorata, osa, etaisyys
 
 
@@ -811,7 +811,7 @@ class Osoitetyokalu:
             road_address = f'{tie}/{ajorata}/{osa}/{etaisyys}'
 
             return road_address
-            
+
         except KeyError:
             point_x = vkm_feature['properties']['x']
             point_y = vkm_feature['properties']['y']
@@ -844,7 +844,7 @@ class Osoitetyokalu:
             dlg.MaakuntanimilineEdit.setText(maakuntanimi)
             dlg.Kmtk_idlineEdit.setText(kmtk_id)
             dlg.M_arvolineEdit.setText(m_arvo)
-            
+
             road_address = f'{tie}/{ajorata}/{osa}/{etaisyys}'
 
             return road_address
@@ -890,15 +890,15 @@ class Osoitetyokalu:
             if 'virheet' in vkm_feature['properties']:
                 error_message = vkm_feature['properties']['virheet']
                 raise VkmRequestException(error_message)
-                
+
             else:
                 #getting road coordinates and road address that are nearest to the mouse click
                 point_x = vkm_feature['properties']['x']
                 point_y = vkm_feature['properties']['y']
-                    
+
         return point_x, point_y
 
-    
+
     def add_point(self, road_address, point_x, point_y, color='255,0,0', shape='circle', size='2.5'):
         """Draws a point to given coordinates as a layer.
 
@@ -932,7 +932,7 @@ class Osoitetyokalu:
         })
 
         point_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        
+
         QgsProject.instance().addMapLayer(point_layer)
 
 
@@ -947,8 +947,8 @@ class Osoitetyokalu:
             position_x (int, optional): Position of the annotation from reference point. Defaults to 14.
             position_y (int, optional): Position of the annotation from reference point. Defaults to 11.
         """
-        
-    
+
+
         layer = self.iface.activeLayer()
 
         annot = QgsTextAnnotation()
@@ -983,7 +983,7 @@ class Osoitetyokalu:
         if color == 'green':
             polyline_color = QColor(0,255,0)
         elif color == 'yellow':
-            polyline_color = QColor(255,247,0)
+            polyline_color = QColor(255,127,80)
         elif color == 'blue':
             polyline_color = QColor(0,0,255)
 
@@ -1018,7 +1018,7 @@ class Osoitetyokalu:
         """
 
         xy_points = []
-       
+
         for coordinates in linestring:
             xy_points.append(QgsPointXY(coordinates[0], coordinates[1]))
         return xy_points
@@ -1064,10 +1064,10 @@ class Osoitetyokalu:
 
         request_url = f'{vkm_url}muunna?tie={tie_A}&osa={osa_A}&etaisyys={etaisyys_A}&tie_loppu={tie_B}&osa_loppu={osa_B}&etaisyys_loppu={etaisyys_B}&vaylan_luonne=0&valihaku=true&palautusarvot={palautus_arvot}'
         response = get(request_url)
-        
+
         polyline_dict = {}
         pituus_dict = {}
-        
+
         retry_times = 0
         while response.status_code !=200: #retry
             logging.info('retrying')
@@ -1075,7 +1075,7 @@ class Osoitetyokalu:
             retry_times += 1
             if retry_times > 20:
                 raise VkmApiException(request_url)
-            
+
         vkm_data = json.loads(response.content)
 
         kokonaispituus = 0
@@ -1087,7 +1087,7 @@ class Osoitetyokalu:
             else:
                 ajorata = str(vkm_feature['properties']['ajorata'])
                 new_type = str(vkm_feature['geometry']['type'])
-                
+
                 #check if a key already exist and append a linestring to it
                 if ajorata in polyline_dict:
                     if new_type == 'LineString':
@@ -1106,9 +1106,9 @@ class Osoitetyokalu:
                     pituus_dict[ajorata] = pituus_dict[ajorata] + vkm_feature['properties']['mitattu_pituus']
                 else:
                     pituus_dict[ajorata] = vkm_feature['properties']['mitattu_pituus']
-                
+
             kokonaispituus = kokonaispituus + vkm_feature['properties']['mitattu_pituus']
-                
+
         return polyline_dict, pituus_dict, request_url, kokonaispituus
 
 
@@ -1132,7 +1132,7 @@ class Osoitetyokalu:
         request_url = f'{vkm_url}muunna?tie={tie}&osa={osa}&osa_loppu={osa}&vaylan_luonne=0&valihaku=true&palautusarvot={palautus_arvot}'
         response = get(request_url)
         polyline_dict = {}
-        
+
         retry_times = 0
         while response.status_code !=200: #retry
             logging.info('retrying')
@@ -1140,9 +1140,9 @@ class Osoitetyokalu:
             retry_times += 1
             if retry_times > 20:
                 raise VkmApiException(request_url)
-            
+
         vkm_data = json.loads(response.content)
-        
+
         starting_point = []
         #road part length = highest ending distance in any of the roadways of the road part
         road_part_length = 0
@@ -1165,7 +1165,7 @@ class Osoitetyokalu:
 
                 ajorata = str(vkm_feature['properties']['ajorata'])
                 new_type = str(vkm_feature['geometry']['type'])
-                
+
                 #check if a key already exist and append a linestring to it
                 if ajorata in polyline_dict:
                     if new_type == 'LineString':
@@ -1178,17 +1178,17 @@ class Osoitetyokalu:
                         polyline_dict[ajorata] = [vkm_feature['geometry']['coordinates']]
                     else:
                         polyline_dict[ajorata] = vkm_feature['geometry']['coordinates']
-        
+
         ending_point = [x_end, y_end]
-           
+
         return polyline_dict, road_part_length, starting_point, ending_point, request_url
 
 
     def vkm_request_form_search(self):
-        """ Checks which lines in SearchForm dialog have content and either returns an error or 
+        """ Checks which lines in SearchForm dialog have content and either returns an error or
             passes the content as VKM-API request parameters to the next function. Runs when Search-button is pressed in the SearchForm dialog.
         """
-        
+
         params_dict = self.append_form_layout_lines()
 
         if len(params_dict) == 0:
@@ -1273,8 +1273,8 @@ class Osoitetyokalu:
         if 'lineEdit_Kmtk_id' in params:
             url = url + url_kmtk_id + params['lineEdit_Kmtk_id']
         if 'lineEdit_M_arvo' in params:
-            url = url + url_m_value + params['lineEdit_M_arvo']    
-        
+            url = url + url_m_value + params['lineEdit_M_arvo']
+
         #valihaku true or false
         valihaku = 'false'
         if 'lineEdit_X' in params and 'lineEdit_Y' in params:
@@ -1290,7 +1290,7 @@ class Osoitetyokalu:
 
         final_url = f'{url}&vaylan_luonne=0&valihaku={valihaku}&palautusarvot={output_parameters}'
         response = get(final_url)
-        
+
         retry_times = 0
         while response.status_code !=200: #retry
             logging.info('retrying')
@@ -1299,12 +1299,12 @@ class Osoitetyokalu:
             if retry_times > 20:
                 self.error_popup(f'VKM-API ei vastaa. URL: {final_url}')
                 return
-        
+
         vkm_data = json.loads(response.content)
 
         popup_dlg = PopUp_dialog()
         roadways_dlg = Ajoradat_dialog()
-        
+
         #variables for starting and ending road adresses of a polyline
         x = 0
         y = 0
@@ -1391,7 +1391,7 @@ class Osoitetyokalu:
                     part_end = str(vkm_feature['properties']['osa_loppu'])
                 else:
                     part_end = params['lineEdit_Osa_loppu']
-                
+
                 if 'lineEdit_Etaisyys_loppu' not in params:
                     distance_end = str(vkm_feature['properties']['etaisyys_loppu'])
                 else:
@@ -1399,7 +1399,7 @@ class Osoitetyokalu:
 
                 polyline_roadway = str(vkm_feature['properties']['ajorata'])
                 new_type = str(vkm_feature['geometry']['type'])
-                
+
                 #check if a key already exist and append a linestring to it
                 if polyline_roadway in polyline_dict:
                     if new_type == 'LineString':
@@ -1420,11 +1420,11 @@ class Osoitetyokalu:
                     length_dict[polyline_roadway] = vkm_feature['properties']['mitattu_pituus']
 
                 overall_length = overall_length + vkm_feature['properties']['mitattu_pituus']
-                
+
 
         if len(polyline_dict) != 0:
             roadways_dlg.PituuslineEdit.setText(str(overall_length))
-            
+
             for polyline_roadway, coordinates in polyline_dict.items():
                 for length_dict_roadway, length in length_dict.items():
                     if length_dict_roadway == polyline_roadway:
@@ -1454,7 +1454,7 @@ class Osoitetyokalu:
             self.add_point('Alkupiste', x, y, color='0,255,0', shape='square', size='3.0')
             self.zoom_to_layer()
             self.add_point('Loppupiste', x_end, y_end, color='255,0,0', shape='square', size='3.0')
-            
+
             #roadways_file_name = f'{road}_{roadway}_{part}_{distance}--{road_end}_{roadway_end}_{part_end}_{distance_end}.csv'
             roadways_dlg.pushButton_Download.clicked.connect(lambda: self.write_roadways_to_csv(final_url, roadways_dlg))
             roadways_dlg.show()
@@ -1463,7 +1463,7 @@ class Osoitetyokalu:
                 roadways_dlg.pushButton.setEnabled(False)
                 return
 
-        
+
     def zoom_to_layer(self, point_x = None, point_y = None):
         """Zooms and centers to given coordinates(available in the next version) or to an active layer.
 
@@ -1488,7 +1488,7 @@ class Osoitetyokalu:
         for i in manager.annotations():
            manager.removeAnnotation(i)
 
-    
+
     def delete_annotation(self):
         """Deletes one annotation."""
         manager = QgsProject.instance().annotationManager()
@@ -1496,7 +1496,7 @@ class Osoitetyokalu:
            manager.removeAnnotation(i)
            break
 
-    
+
     def write_roadways_to_csv(self, request_url, dlg):
         """Writes ending and starting address data of every feature in linestring VKM output to a CSV-file.
 
@@ -1522,7 +1522,7 @@ class Osoitetyokalu:
             vkm_data = json.loads(response.content)
 
             user_path = dlg.get_file_path()
-            
+
             roadways_file = open(str(user_path), 'w')
 
             feature_count = 0
@@ -1533,7 +1533,7 @@ class Osoitetyokalu:
                 if 'virheet' in vkm_feature['properties']:
                     error_msg = vkm_feature['properties']['virheet']
                     raise VkmRequestException(error_msg)
-                    
+
                 else:
                     feature_count += 1
                     road = str(vkm_feature['properties']['tie'])
@@ -1549,11 +1549,11 @@ class Osoitetyokalu:
 
                     feature_row = f'{road},{roadway},{part},{distance},{roadway_end},{part_end},{distance_end},{length}\n'
                     roadways_file.write(feature_row)
-            
+
             roadways_file.close()
 
             self.iface.messageBar().pushMessage('Lataus onnistui', f'Tiedosto tallennettu polkuun: {str(user_path)}', level=Qgis.Success, duration=7)
-        
+
         except VkmApiException as e:
             self.error_popup(e)
         except VkmRequestException as e:
@@ -1562,5 +1562,4 @@ class Osoitetyokalu:
             self.error_popup('Virhe tiedostoa ladattaessa. Yritä uudelleen.')
             logging.info(e)
 
-                    
-        
+
