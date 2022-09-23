@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Roadways</class>
+ <widget class="QDialog" name="Roadways">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>816</width>
+    <height>315</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Ajoradat</string>
+  </property>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>270</y>
+     <width>341</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>40</y>
+     <width>106</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item alignment="Qt::AlignRight">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Ajorata 0 (vihreä):</string>
+      </property>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignRight">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Ajorata 1 (keltainen):</string>
+      </property>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignRight">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Ajorata 2 (sininen):</string>
+      </property>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignRight">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Kokonaispituus:</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>30</y>
+     <width>631</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QLineEdit" name="Ajorata0lineEdit"/>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="Ajorata1lineEdit"/>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="Ajorata2lineEdit"/>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="PituuslineEdit"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QPushButton" name="pushButton_Download">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>220</y>
+     <width>181</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Lataa välin ajoratojen osoitetiedot</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>190</y>
+     <width>671</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>Sijainti:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="PathlineEdit">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_Path">
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PopUp</class>
- <widget class="QDialog" name="PopUp">
+ <class>Properties</class>
+ <widget class="QDialog" name="Properties">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>932</width>
-    <height>381</height>
+    <width>936</width>
+    <height>440</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Ominaisuudet</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
@@ -287,7 +296,7 @@
    <property name="geometry">
     <rect>
      <x>830</x>
-     <y>330</y>
+     <y>400</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -312,18 +321,6 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item alignment="Qt::AlignRight">
-     <widget class="QLabel" name="label_3">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Y:</string>
-      </property>
-     </widget>
-    </item>
-    <item alignment="Qt::AlignRight">
      <widget class="QLabel" name="label">
       <property name="font">
        <font>
@@ -332,6 +329,18 @@
       </property>
       <property name="text">
        <string>X:</string>
+      </property>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignRight">
+     <widget class="QLabel" name="label_3">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Y:</string>
       </property>
      </widget>
     </item>
@@ -768,24 +777,122 @@
     </item>
    </layout>
   </widget>
+  <widget class="QLineEdit" name="M_arvolineEdit">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>330</y>
+     <width>309</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="Kmtk_idlineEdit">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>370</y>
+     <width>309</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="palette">
+    <palette>
+     <active>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>234</red>
+         <green>234</green>
+         <blue>234</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </active>
+     <inactive>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>234</red>
+         <green>234</green>
+         <blue>234</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </inactive>
+     <disabled>
+      <colorrole role="Base">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>240</red>
+         <green>240</green>
+         <blue>240</blue>
+        </color>
+       </brush>
+      </colorrole>
+     </disabled>
+    </palette>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="clearButtonEnabled">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_15">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>320</y>
+     <width>51</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>M_arvo:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_16">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>360</y>
+     <width>51</width>
+     <height>34</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Kmtk_id:</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>SuljeButton</sender>
-   <signal>clicked()</signal>
-   <receiver>PopUp</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>846</x>
-     <y>341</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>329</x>
-     <y>329</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
