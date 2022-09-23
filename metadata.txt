@@ -6,14 +6,14 @@
 name=Osoitetyokalu
 qgisMinimumVersion=3.0
 description=Osoitetyokalu
-version=0.1
+version=1.0.0
 author=Sitowise
 email=support@sitowise.com
 
 about=Osoitetyokalu.
 
-tracker=http://bugs
-repository=http://repo
+tracker=https://github.com/sitowise/QGIS-tieosoitetyokalu/issues
+repository=https://github.com/sitowise/QGIS-tieosoitetyokalu
 # End of mandatory metadata
 
 # Recommended items:
@@ -21,11 +21,12 @@ repository=http://repo
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
 # changelog=
+  1.0.0 First stable release
 
 # Tags are comma separated with spaces allowed
 tags=python
 
-homepage=http://homepage
+homepage=https://www.sitowise.com/
 category=Plugins
 icon=icon.png
 # experimental flag
