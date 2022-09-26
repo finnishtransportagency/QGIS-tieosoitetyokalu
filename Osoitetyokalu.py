@@ -387,7 +387,6 @@ class Osoitetyokalu:
 
         dlg.show()
         dlg.exec_()
-        dlg.SuljeButton.clicked.connect(self.close_popup)
 
 
     def road_part(self):
@@ -683,7 +682,9 @@ class Osoitetyokalu:
         self.search_form_dlg = SearchForm_dialog()
         self.search_form_dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
         self.search_form_dlg.show()
-        self.search_form_dlg.pushButton_Search.clicked.connect(self.vkm_request_form_search)
+        result = self.search_form_dlg.exec_()
+        if result:
+            self.vkm_request_form_search()
 
 
     def delete_tool(self):
@@ -1024,13 +1025,6 @@ class Osoitetyokalu:
         return xy_points
 
 
-    def close_popup(self):
-        """Closes the PopUp dialog window. Is connected to a button."""
-
-        dlg = PopUp_dialog
-        dlg.close()
-
-
     def error_popup(self, error_msg):
         """Gives an error message in Qgis.
 
@@ -1196,7 +1190,7 @@ class Osoitetyokalu:
             return
 
         else:
-            self.process_search_form_params(params_dict)
+            self.process_center_form_params(params_dict)
 
 
     def append_form_layout_lines(self):
@@ -1216,7 +1210,7 @@ class Osoitetyokalu:
         return params_dict
 
 
-    def process_search_form_params(self, params, output_parameters = '1,2,3,4,5,6'):
+    def process_center_form_params(self, params, output_parameters = '1,2,3,4,5,6'):
         """ Makes a VKM-API request with paramateres given in SearchForm dialog and either draws a point or polyline(s) depending on the ssearch parameters.
 
             Also centers the canvas on the returned coordinates.
