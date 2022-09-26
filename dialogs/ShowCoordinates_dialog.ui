@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>512</width>
-    <height>143</height>
+    <height>168</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,7 +64,37 @@
     </rect>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_Sulje">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>130</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Sulje</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_Sulje</sender>
+   <signal>clicked()</signal>
+   <receiver>Tieosoite</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>457</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>255</x>
+     <y>83</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

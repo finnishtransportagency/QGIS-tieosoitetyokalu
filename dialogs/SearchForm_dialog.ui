@@ -199,14 +199,14 @@
   <widget class="QPushButton" name="pushButton_Search">
    <property name="geometry">
     <rect>
-     <x>750</x>
+     <x>680</x>
      <y>450</y>
      <width>75</width>
      <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>Hae</string>
+    <string>Kohdista</string>
    </property>
   </widget>
   <widget class="QWidget" name="verticalLayoutWidget_3">
@@ -442,7 +442,53 @@
     </item>
    </layout>
   </widget>
+  <widget class="QPushButton" name="pushButton_Sulje">
+   <property name="geometry">
+    <rect>
+     <x>770</x>
+     <y>450</y>
+     <width>75</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Sulje</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButton_Search</sender>
+   <signal>clicked()</signal>
+   <receiver>Center</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>717</x>
+     <y>460</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>438</x>
+     <y>246</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_Sulje</sender>
+   <signal>clicked()</signal>
+   <receiver>Center</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>807</x>
+     <y>461</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>438</x>
+     <y>246</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
