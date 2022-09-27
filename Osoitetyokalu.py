@@ -125,7 +125,9 @@ class Osoitetyokalu:
         add_to_toolbar=True,
         status_tip=None,
         whats_this=None,
-        parent=None):
+        parent=None,
+        add_to_popupMenu=False,
+        default_action=False):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -165,6 +167,8 @@ class Osoitetyokalu:
         :rtype: QAction
         """
 
+        self.popupMenu = QMenu(self.iface.mainWindow())
+        self.toolButton = QToolButton()
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
         action.triggered.connect(callback)
@@ -184,6 +188,13 @@ class Osoitetyokalu:
             self.iface.addPluginToMenu(
                 self.menu,
                 action)
+        
+        if add_to_popupMenu is True:
+            # Adds action to a dropdown menu
+            self.popupMenu.addAction(action)
+
+        if default_action is True:
+            self.toolButton.setDefaultAction(action)
 
         self.actions.append(action)
 
@@ -194,83 +205,97 @@ class Osoitetyokalu:
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
         icon_path = ':/plugins/Osoitetyokalu/icon.png'
-        self.action1 = QAction(QIcon(icon_path), u'1. Tieosoite', self.iface.mainWindow())
-        self.action2 = QAction(QIcon(icon_path), u'2. Hakutyökalu', self.iface.mainWindow())
-        self.action3 = QAction(QIcon(icon_path), u'3. Tieosa', self.iface.mainWindow())
-        self.action4 = QAction(QIcon(icon_path), u'4. Tieosoite (Alku- ja loppupiste)', self.iface.mainWindow())
-        self.action5 = QAction(QIcon(icon_path), u'5. Kohdistustyökalu', self.iface.mainWindow())
-        self.action6 = QAction(QIcon(icon_path), u'6. Poistotyökalu', self.iface.mainWindow())
-
-        self.popupMenu = QMenu(self.iface.mainWindow())
-        self.popupMenu.addAction(self.action1)
-        self.popupMenu.addAction(self.action2)
-        self.popupMenu.addAction(self.action3)
-        self.popupMenu.addAction(self.action4)
-        self.popupMenu.addAction(self.action5)
-        self.popupMenu.addAction(self.action6)
-
-        self.action1.triggered.connect(self.road_address)
-        self.action2.triggered.connect(self.popup)
-        self.action3.triggered.connect(self.road_part)
-        self.action4.triggered.connect(self.two_points)
-        self.action5.triggered.connect(self.search_form)
-        self.action6.triggered.connect(self.delete_tool)
-
-        self.toolButton = QToolButton()
-
-        self.toolButton.setMenu(self.popupMenu)
-        self.toolButton.setDefaultAction(self.action1)
-        self.toolButton.setPopupMode(QToolButton.MenuButtonPopup)
-
-        self.iface.addToolBarWidget(self.toolButton) 
+        #self.action1 = QAction(QIcon(icon_path), u'1. Tieosoite', self.iface.mainWindow())
+        #self.action2 = QAction(QIcon(icon_path), u'2. Hakutyökalu', self.iface.mainWindow())
+        #self.action3 = QAction(QIcon(icon_path), u'3. Tieosa', self.iface.mainWindow())
+        #self.action4 = QAction(QIcon(icon_path), u'4. Tieosoite (Alku- ja loppupiste)', self.iface.mainWindow())
+        #self.action5 = QAction(QIcon(icon_path), u'5. Kohdistustyökalu', self.iface.mainWindow())
+        #self.action6 = QAction(QIcon(icon_path), u'6. Poistotyökalu', self.iface.mainWindow())
+#
+        #self.popupMenu = QMenu(self.iface.mainWindow())
+        #self.popupMenu.addAction(self.action1)
+        #self.popupMenu.addAction(self.action2)
+        #self.popupMenu.addAction(self.action3)
+        #self.popupMenu.addAction(self.action4)
+        #self.popupMenu.addAction(self.action5)
+        #self.popupMenu.addAction(self.action6)
+#
+        #self.action1.triggered.connect(self.road_address)
+        #self.action2.triggered.connect(self.popup)
+        #self.action3.triggered.connect(self.road_part)
+        #self.action4.triggered.connect(self.two_points)
+        #self.action5.triggered.connect(self.search_form)
+        #self.action6.triggered.connect(self.delete_tool)
+#
+        #self.toolButton = QToolButton()
+#
+        #self.toolButton.setMenu(self.popupMenu)
+        #self.toolButton.setDefaultAction(self.action1)
+        #self.toolButton.setPopupMode(QToolButton.MenuButtonPopup)
+#
+        #self.iface.addToolBarWidget(self.toolButton) 
         #self.iface.removeToolBarWidget(self.toolButton) 
 
         #will be set False in functions
-        self.first_start = True
-        
-        #self.add_action(
-        #    icon_path,
-        #    text=self.tr(u'1. Tieosoite'),
-        #    callback=self.road_address,
-        #    parent=self.iface.mainWindow())
-#
-        ## will be set False in run()
         #self.first_start = True
+        
+        self.add_action(
+            icon_path,
+            text=self.tr(u'1. Tieosoite'),
+            callback=self.road_address,
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            add_to_popupMenu=True,
+            default_action=True)
 #
-        #self.add_action(
-        #    icon_path,
-        #    text=self.tr(u'2. Hakutyökalu'),
-        #    callback=self.popup,
-        #    parent=self.iface.mainWindow(),
-        #    add_to_toolbar=False)
+        # will be set False in run()
+        self.first_start = True
 #
-        #self.add_action(
-        #    icon_path,
-        #    text=self.tr(u'3. Tieosa'),
-        #    callback=self.road_part,
-        #    parent=self.iface.mainWindow(),
-        #    add_to_toolbar=False)
+        self.add_action(
+            icon_path,
+            text=self.tr(u'2. Hakutyökalu'),
+            callback=self.popup,
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            add_to_popupMenu=True)
 #
-        #self.add_action(
-        #    icon_path,
-        #    text=self.tr(u'4. Tieosoite (Alku- ja loppupiste)'),
-        #    callback=self.two_points,
-        #    parent=self.iface.mainWindow(),
-        #    add_to_toolbar=False)
+        self.add_action(
+            icon_path,
+            text=self.tr(u'3. Tieosa'),
+            callback=self.road_part,
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            add_to_popupMenu=True)
 #
-        #self.add_action(
-        #    icon_path,
-        #    text=self.tr(u'5. Kohdistustyökalu'),
-        #    callback=self.search_form,
-        #    parent=self.iface.mainWindow(),
-        #    add_to_toolbar=False)
+        self.add_action(
+            icon_path,
+            text=self.tr(u'4. Tieosoite (Alku- ja loppupiste)'),
+            callback=self.two_points,
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            add_to_popupMenu=True)
 #
-        #self.add_action(
-        #    icon_path,
-        #    text=self.tr(u'6. Poistotyökalu'),
-        #    callback=self.delete_tool,
-        #    parent=self.iface.mainWindow(),
-        #    add_to_toolbar=False)
+        self.add_action(
+            icon_path,
+            text=self.tr(u'5. Kohdistustyökalu'),
+            callback=self.search_form,
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            add_to_popupMenu=True)
+#
+        self.add_action(
+            icon_path,
+            text=self.tr(u'6. Poistotyökalu'),
+            callback=self.delete_tool,
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            add_to_popupMenu=True)
+
+        
+        
+        self.toolButton.setMenu(self.popupMenu)
+        self.toolButton.setPopupMode(QToolButton.MenuButtonPopup)
+        self.iface.addToolBarWidget(self.toolButton)
 
 
     def unload(self):
