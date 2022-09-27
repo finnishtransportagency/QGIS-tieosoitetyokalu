@@ -99,6 +99,7 @@ class Osoitetyokalu:
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
 
+
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -167,8 +168,6 @@ class Osoitetyokalu:
         :rtype: QAction
         """
 
-        self.popupMenu = QMenu(self.iface.mainWindow())
-        self.toolButton = QToolButton()
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
         action.triggered.connect(callback)
@@ -203,7 +202,8 @@ class Osoitetyokalu:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-
+        self.popupMenu = QMenu(self.iface.mainWindow())
+        self.toolButton = QToolButton()
         icon_path = ':/plugins/Osoitetyokalu/icon.png'
         #self.action1 = QAction(QIcon(icon_path), u'1. Tieosoite', self.iface.mainWindow())
         #self.action2 = QAction(QIcon(icon_path), u'2. Hakutyökalu', self.iface.mainWindow())
@@ -246,10 +246,7 @@ class Osoitetyokalu:
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
             add_to_popupMenu=True,
-            default_action=True)
-#
-        # will be set False in run()
-        self.first_start = True
+            default_action=False)
 #
         self.add_action(
             icon_path,
@@ -291,11 +288,15 @@ class Osoitetyokalu:
             add_to_toolbar=False,
             add_to_popupMenu=True)
 
-        
-        
         self.toolButton.setMenu(self.popupMenu)
+        self.toolButton.setDefaultAction(self.actions[0])
         self.toolButton.setPopupMode(QToolButton.MenuButtonPopup)
-        self.iface.addToolBarWidget(self.toolButton)
+        self.toolWidget = self.iface.addToolBarWidget(self.toolButton)
+        self.actions.append(self.toolWidget)
+        self.iface.addToolBarIcon(self.toolWidget)
+
+        # will be set False in run()
+        self.first_start = True
 
 
     def unload(self):
@@ -305,7 +306,7 @@ class Osoitetyokalu:
                 self.tr(u'&Osoitetyokalu'),
                 action)
             self.iface.removeToolBarIcon(action)
-
+       
 
     def road_address(self):
         """Retrieves the road address from VKM-api using the coordinates that come from a click on canvas and displays it as a annotation."""
