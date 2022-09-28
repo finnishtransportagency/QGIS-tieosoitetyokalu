@@ -1519,8 +1519,7 @@ class Osoitetyokalu:
 
             roadways_file = open(str(user_path), 'w')
 
-            feature_count = 0
-            header_row = 'tie,ajorata,osa,etaisyys,ajorata_loppu,osa_loppu,etaisyys_loppu,pituus\n'
+            header_row = 'tie,ajr,aosa,aet,losa,let\n'
             roadways_file.write(header_row)
             for vkm_feature in vkm_data['features']:
 
@@ -1529,19 +1528,15 @@ class Osoitetyokalu:
                     raise VkmRequestException(error_msg)
 
                 else:
-                    feature_count += 1
                     road = str(vkm_feature['properties']['tie'])
                     roadway = str(vkm_feature['properties']['ajorata'])
                     part = str(vkm_feature['properties']['osa'])
                     distance = str(vkm_feature['properties']['etaisyys'])
 
-                    roadway_end = str(vkm_feature['properties']['ajorata_loppu'])
                     part_end = str(vkm_feature['properties']['osa_loppu'])
                     distance_end = str(vkm_feature['properties']['etaisyys_loppu'])
 
-                    length = str(vkm_feature['properties']['mitattu_pituus'])
-
-                    feature_row = f'{road},{roadway},{part},{distance},{roadway_end},{part_end},{distance_end},{length}\n'
+                    feature_row = f'{road},{roadway},{part},{distance},{part_end},{distance_end}\n'
                     roadways_file.write(feature_row)
 
             roadways_file.close()
