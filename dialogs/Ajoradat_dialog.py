@@ -19,7 +19,7 @@ class Ajoradat_dialog(QtWidgets.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
-        self.setFixedSize(794, 315)
+        self.setFixedSize(811, 340)
 
         self.PathlineEdit.textChanged.connect(self.enable_download)
         self.enable_download()
