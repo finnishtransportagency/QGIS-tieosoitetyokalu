@@ -772,107 +772,48 @@ class Osoitetyokalu:
             vkm_feature (json): One feature of VKM-API output that contains address information.
 
         Returns:
-            road_address (str): Road address that consists of road/roadway/(road)part/distance.
+            (str): Road address that consists of road/roadway/(road)part/distance or a street address.
         """
 
+        if 'katunimi' in  vkm_feature['properties'] and 'katunumero' in vkm_feature['properties']:
+            dlg.KatunimilineEdit.setText(str(vkm_feature['properties']['katunimi']))
+            dlg.KatunumerolineEdit.setText(str(vkm_feature['properties']['katunumero']))
+
         if 'tie' in vkm_feature['properties']:
-            try:
-                #getting road coordinates and road address that are nearest to the mouse click
-                point_x = vkm_feature['properties']['x']
-                point_y = vkm_feature['properties']['y']
-                tie = str(vkm_feature['properties']['tie'])
-                ajorata = str(vkm_feature['properties']['ajorata'])
-                osa = str(vkm_feature['properties']['osa'])
+            dlg.TielineEdit.setText(str(vkm_feature['properties']['tie']))
+            dlg.AjoratalineEdit.setText(str(vkm_feature['properties']['ajorata']))
+            dlg.OsalineEdit.setText(str(vkm_feature['properties']['osa']))
+            dlg.EtaisyyslineEdit.setText(str(vkm_feature['properties']['etaisyys']))
+
+        if 'ualuenimi' in vkm_feature['properties']:
+            dlg.UaluenimilineEdit.setText(str(vkm_feature['properties']['ualuenimi']))
+
+        #getting road coordinates and road address that are nearest to the mouse click
+        dlg.XlineEdit.setText(str(vkm_feature['properties']['x']))
+        dlg.YlineEdit.setText(str(vkm_feature['properties']['y']))
+        dlg.HaLulineEdit.setText(str(vkm_feature['properties']['hallinnollinen_luokka']))
+        dlg.KuntanimilineEdit.setText(str(vkm_feature['properties']['kuntanimi']))
+        dlg.ElynimilineEdit.setText(str(vkm_feature['properties']['elynimi']))
+        dlg.MaakuntanimilineEdit.setText(str(vkm_feature['properties']['maakuntanimi']))
+        dlg.Kmtk_idlineEdit.setText(str(vkm_feature['properties']['kmtk_id']))
+        dlg.M_arvolineEdit.setText(str(vkm_feature['properties']['m_arvo']))
+
+        if 'tie' in vkm_feature['properties']:
+            return '{tie}/{ajorata}/{osa}/{etaisyys}'.format(
+                tie = str(vkm_feature['properties']['tie']),
+                ajorata = str(vkm_feature['properties']['ajorata']),
+                osa = str(vkm_feature['properties']['osa']),
                 etaisyys = str(vkm_feature['properties']['etaisyys'])
-                hallinnollinen_luokka = str(vkm_feature['properties']['hallinnollinen_luokka'])
+            )
+        elif 'tie' not in vkm_feature['properties'] and 'katunumero' in vkm_feature['properties']:
+            return '{katunimi} {katunumero}, {kuntanimi}'.format(
+                katunimi = str(vkm_feature['properties']['katunimi']),
+                katunumero = str(vkm_feature['properties']['katunumero']),
                 kuntanimi = str(vkm_feature['properties']['kuntanimi'])
-                katunimi = str(vkm_feature['properties']['katunimi'])
-                katunumero = str(vkm_feature['properties']['katunumero'])
-                elynimi = str(vkm_feature['properties']['elynimi'])
-                ualuenimi = str(vkm_feature['properties']['ualuenimi'])
-                maakuntanimi = str(vkm_feature['properties']['maakuntanimi'])
-                kmtk_id = str(vkm_feature['properties']['kmtk_id'])
-                m_arvo = str(vkm_feature['properties']['m_arvo'])
-
-                dlg.XlineEdit.setText(str(point_x))
-                dlg.YlineEdit.setText(str(point_y))
-                dlg.TielineEdit.setText(tie)
-                dlg.AjoratalineEdit.setText(ajorata)
-                dlg.OsalineEdit.setText(osa)
-                dlg.EtaisyyslineEdit.setText(etaisyys)
-                dlg.HaLulineEdit.setText(hallinnollinen_luokka)
-                dlg.KuntanimilineEdit.setText(kuntanimi)
-                dlg.KatunimilineEdit.setText(katunimi)
-                dlg.KatunumerolineEdit.setText(katunumero)
-                dlg.ElynimilineEdit.setText(elynimi)
-                dlg.UaluenimilineEdit.setText(ualuenimi)
-                dlg.MaakuntanimilineEdit.setText(maakuntanimi)
-                dlg.Kmtk_idlineEdit.setText(kmtk_id)
-                dlg.M_arvolineEdit.setText(m_arvo)
-
-                road_address = f'{tie}/{ajorata}/{osa}/{etaisyys}'
-
-                return road_address
-
-            except KeyError:
-                point_x = vkm_feature['properties']['x']
-                point_y = vkm_feature['properties']['y']
-                tie = str(vkm_feature['properties']['tie'])
-                ajorata = str(vkm_feature['properties']['ajorata'])
-                osa = str(vkm_feature['properties']['osa'])
-                etaisyys = str(vkm_feature['properties']['etaisyys'])
-                hallinnollinen_luokka = str(vkm_feature['properties']['hallinnollinen_luokka'])
-                kuntanimi = str(vkm_feature['properties']['kuntanimi'])
-                #katunimi = str(vkm_feature['properties']['katunimi'])
-                #katunumero = str(vkm_feature['properties']['katunumero'])
-                elynimi = str(vkm_feature['properties']['elynimi'])
-                ualuenimi = str(vkm_feature['properties']['ualuenimi'])
-                maakuntanimi = str(vkm_feature['properties']['maakuntanimi'])
-                kmtk_id = str(vkm_feature['properties']['kmtk_id'])
-                m_arvo = str(vkm_feature['properties']['m_arvo'])
-
-                dlg.XlineEdit.setText(str(point_x))
-                dlg.YlineEdit.setText(str(point_y))
-                dlg.TielineEdit.setText(tie)
-                dlg.AjoratalineEdit.setText(ajorata)
-                dlg.OsalineEdit.setText(osa)
-                dlg.EtaisyyslineEdit.setText(etaisyys)
-                dlg.HaLulineEdit.setText(hallinnollinen_luokka)
-                dlg.KuntanimilineEdit.setText(kuntanimi)
-                #dlg.KatunimilineEdit.setText(katunimi)
-                #dlg.KatunumerolineEdit.setText(katunumero)
-                dlg.ElynimilineEdit.setText(elynimi)
-                dlg.UaluenimilineEdit.setText(ualuenimi)
-                dlg.MaakuntanimilineEdit.setText(maakuntanimi)
-                dlg.Kmtk_idlineEdit.setText(kmtk_id)
-                dlg.M_arvolineEdit.setText(m_arvo)
-
-                road_address = f'{tie}/{ajorata}/{osa}/{etaisyys}'
-
-                return road_address
-
+            )
         else:
-            point_x = vkm_feature['properties']['x']
-            point_y = vkm_feature['properties']['y']
-            hallinnollinen_luokka = str(vkm_feature['properties']['hallinnollinen_luokka'])
-            kuntanimi = str(vkm_feature['properties']['kuntanimi'])
-            katunimi = str(vkm_feature['properties']['katunimi'])
-            katunumero = str(vkm_feature['properties']['katunumero'])
-            elynimi = str(vkm_feature['properties']['elynimi'])
-            maakuntanimi = str(vkm_feature['properties']['maakuntanimi'])
-            kmtk_id = str(vkm_feature['properties']['kmtk_id'])
-            m_arvo = str(vkm_feature['properties']['m_arvo'])
+            return ""
 
-            dlg.XlineEdit.setText(str(point_x))
-            dlg.YlineEdit.setText(str(point_y))
-            dlg.HaLulineEdit.setText(hallinnollinen_luokka)
-            dlg.KuntanimilineEdit.setText(kuntanimi)
-            dlg.KatunimilineEdit.setText(katunimi)
-            dlg.KatunumerolineEdit.setText(katunumero)
-            dlg.ElynimilineEdit.setText(elynimi)
-            dlg.MaakuntanimilineEdit.setText(maakuntanimi)
-            dlg.Kmtk_idlineEdit.setText(kmtk_id)
-            dlg.M_arvolineEdit.setText(m_arvo)
 
     def vkm_request_coordinates(self, vkm_url, road, road_part, distance, output_parameters = '1,2'):
         """Returns coordinates from VKM-API request.
