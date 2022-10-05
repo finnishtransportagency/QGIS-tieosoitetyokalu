@@ -805,14 +805,13 @@ class Osoitetyokalu:
                 osa = str(vkm_feature['properties']['osa']),
                 etaisyys = str(vkm_feature['properties']['etaisyys'])
             )
-        elif 'tie' not in vkm_feature['properties'] and 'katunumero' in vkm_feature['properties']:
+        if 'katunumero' in vkm_feature['properties']:
             return '{katunimi} {katunumero}, {kuntanimi}'.format(
                 katunimi = str(vkm_feature['properties']['katunimi']),
                 katunumero = str(vkm_feature['properties']['katunumero']),
                 kuntanimi = str(vkm_feature['properties']['kuntanimi'])
             )
-        else:
-            return ""
+        return ""
 
 
     def vkm_request_coordinates(self, vkm_url, road, road_part, distance, output_parameters = '1,2'):
