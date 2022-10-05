@@ -204,43 +204,15 @@ class Osoitetyokalu:
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
         self.popupMenu = QMenu(self.iface.mainWindow())
         self.toolButton = QToolButton()
-        icon_path = ':/plugins/Osoitetyokalu/icon.png'
-        #self.action1 = QAction(QIcon(icon_path), u'1. Tieosoite', self.iface.mainWindow())
-        #self.action2 = QAction(QIcon(icon_path), u'2. Hakutyökalu', self.iface.mainWindow())
-        #self.action3 = QAction(QIcon(icon_path), u'3. Tieosa', self.iface.mainWindow())
-        #self.action4 = QAction(QIcon(icon_path), u'4. Tieosoite (Alku- ja loppupiste)', self.iface.mainWindow())
-        #self.action5 = QAction(QIcon(icon_path), u'5. Kohdistustyökalu', self.iface.mainWindow())
-        #self.action6 = QAction(QIcon(icon_path), u'6. Poistotyökalu', self.iface.mainWindow())
-#
-        #self.popupMenu = QMenu(self.iface.mainWindow())
-        #self.popupMenu.addAction(self.action1)
-        #self.popupMenu.addAction(self.action2)
-        #self.popupMenu.addAction(self.action3)
-        #self.popupMenu.addAction(self.action4)
-        #self.popupMenu.addAction(self.action5)
-        #self.popupMenu.addAction(self.action6)
-#
-        #self.action1.triggered.connect(self.road_address)
-        #self.action2.triggered.connect(self.popup)
-        #self.action3.triggered.connect(self.road_part)
-        #self.action4.triggered.connect(self.two_points)
-        #self.action5.triggered.connect(self.search_form)
-        #self.action6.triggered.connect(self.delete_tool)
-#
-        #self.toolButton = QToolButton()
-#
-        #self.toolButton.setMenu(self.popupMenu)
-        #self.toolButton.setDefaultAction(self.action1)
-        #self.toolButton.setPopupMode(QToolButton.MenuButtonPopup)
-#
-        #self.iface.addToolBarWidget(self.toolButton) 
-        #self.iface.removeToolBarWidget(self.toolButton) 
-
-        #will be set False in functions
-        #self.first_start = True
+        icon_path_1 = ':/plugins/osoitetyokalu/tool_icons/tool_1_v2.png'
+        icon_path_2 = ':/plugins/osoitetyokalu/tool_icons/tool_2.png'
+        icon_path_3 = ':/plugins/osoitetyokalu/tool_icons/tool_3.png'
+        icon_path_4 = ':/plugins/osoitetyokalu/tool_icons/tool_4.png'
+        icon_path_5 = ':/plugins/osoitetyokalu/tool_icons/tool_5.png'
+        icon_path_6 = ':/plugins/osoitetyokalu/tool_icons/tool_6.png'
         
         self.add_action(
-            icon_path,
+            icon_path_1,
             text=self.tr(u'1. Tieosoite'),
             callback=self.road_address,
             parent=self.iface.mainWindow(),
@@ -249,7 +221,7 @@ class Osoitetyokalu:
             default_action=False)
 #
         self.add_action(
-            icon_path,
+            icon_path_2,
             text=self.tr(u'2. Hakutyökalu'),
             callback=self.popup,
             parent=self.iface.mainWindow(),
@@ -257,7 +229,7 @@ class Osoitetyokalu:
             add_to_popupMenu=True)
 #
         self.add_action(
-            icon_path,
+            icon_path_3,
             text=self.tr(u'3. Tieosa'),
             callback=self.road_part,
             parent=self.iface.mainWindow(),
@@ -265,7 +237,7 @@ class Osoitetyokalu:
             add_to_popupMenu=True)
 #
         self.add_action(
-            icon_path,
+            icon_path_4,
             text=self.tr(u'4. Tieosoite (Alku- ja loppupiste)'),
             callback=self.two_points,
             parent=self.iface.mainWindow(),
@@ -273,7 +245,7 @@ class Osoitetyokalu:
             add_to_popupMenu=True)
 #
         self.add_action(
-            icon_path,
+            icon_path_5,
             text=self.tr(u'5. Kohdistustyökalu'),
             callback=self.search_form,
             parent=self.iface.mainWindow(),
@@ -281,7 +253,7 @@ class Osoitetyokalu:
             add_to_popupMenu=True)
 #
         self.add_action(
-            icon_path,
+            icon_path_6,
             text=self.tr(u'6. Poistotyökalu'),
             callback=self.delete_tool,
             parent=self.iface.mainWindow(),
@@ -293,7 +265,6 @@ class Osoitetyokalu:
         self.toolButton.setPopupMode(QToolButton.MenuButtonPopup)
         self.toolWidget = self.iface.addToolBarWidget(self.toolButton)
         self.actions.append(self.toolWidget)
-        self.iface.addToolBarIcon(self.toolWidget)
 
         # will be set False in run()
         self.first_start = True
@@ -310,8 +281,8 @@ class Osoitetyokalu:
 
     def road_address(self):
         """Retrieves the road address from VKM-api using the coordinates that come from a click on canvas and displays it as a annotation."""
-
-
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[0])
         # Create the dialog with elements (after translation) and keep reference
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
         if self.first_start == True:
@@ -381,6 +352,9 @@ class Osoitetyokalu:
     def popup(self):
         """Retrieves all possible address information from VKM-API using the coordinates that come from a click on canvas and displays it on a dialog(Pop-Up window).
         """
+
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[1])
         if self.first_start == True:
             self.first_start = False
         dlg = PopUp_dialog()
@@ -450,6 +424,9 @@ class Osoitetyokalu:
 
     def road_part(self):
         """Highlights a clicked road part's roadway(s), draws its ending and starting points and displays their road addresses on an annotation."""
+
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[2])
 
         if self.first_start == True:
             self.first_start = False
@@ -548,6 +525,9 @@ class Osoitetyokalu:
 
     def two_points(self):
         """Highlights every roadway between two clicked points on the same road."""
+
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[3])
 
         if self.first_start == True:
             self.first_start = False
@@ -736,6 +716,9 @@ class Osoitetyokalu:
             depending on the search parameters given.
         """
 
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[4])
+
         QgsProject.instance().setCrs(self.my_crs)
         self.vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
         self.search_form_dlg = SearchForm_dialog()
@@ -748,6 +731,9 @@ class Osoitetyokalu:
 
     def delete_tool(self):
         """ A dialog with buttons that either delete one annotation or all of them."""
+
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[5])
 
         QgsProject.instance().setCrs(self.my_crs)
         delete_dlg = DeleteLayer_dialog()
