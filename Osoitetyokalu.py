@@ -34,14 +34,14 @@ logging.basicConfig(filename=Path.joinpath(logPath, 'log.txt'), level=logging.DE
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QVariant
 from qgis.PyQt.QtGui import QIcon, QColor
-from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtWidgets import QAction, QToolButton, QMenu
 from qgis.gui import QgsMapToolEmitPoint
 from qgis.core import QgsField, QgsFeature, QgsVectorLayer, QgsProject, QgsCoordinateReferenceSystem, QgsGeometry, QgsPointXY
 from qgis.core import QgsTextAnnotation, QgsMarkerSymbol, QgsSingleSymbolRenderer, Qgis
 from PyQt5.QtWidgets import QLineEdit
 
 from PyQt5.QtGui import QTextDocument
-from PyQt5.QtCore import QSizeF,QPoint
+from PyQt5.QtCore import QSizeF, QPoint
 
 from requests import get
 import json
@@ -99,6 +99,7 @@ class Osoitetyokalu:
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
 
+
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -125,7 +126,9 @@ class Osoitetyokalu:
         add_to_toolbar=True,
         status_tip=None,
         whats_this=None,
-        parent=None):
+        parent=None,
+        add_to_popupMenu=False,
+        default_action=False):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -184,6 +187,13 @@ class Osoitetyokalu:
             self.iface.addPluginToMenu(
                 self.menu,
                 action)
+        
+        if add_to_popupMenu is True:
+            # Adds action to a dropdown menu
+            self.popupMenu.addAction(action)
+
+        if default_action is True:
+            self.toolButton.setDefaultAction(action)
 
         self.actions.append(action)
 
@@ -192,52 +202,72 @@ class Osoitetyokalu:
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
-
-        icon_path = ':/plugins/Osoitetyokalu/icon.png'
+        self.popupMenu = QMenu(self.iface.mainWindow())
+        self.toolButton = QToolButton()
+        icon_path_1 = ':/plugins/osoitetyokalu/tool_icons/tool_1_v2.png'
+        icon_path_2 = ':/plugins/osoitetyokalu/tool_icons/tool_2.png'
+        icon_path_3 = ':/plugins/osoitetyokalu/tool_icons/tool_3.png'
+        icon_path_4 = ':/plugins/osoitetyokalu/tool_icons/tool_4.png'
+        icon_path_5 = ':/plugins/osoitetyokalu/tool_icons/tool_5.png'
+        icon_path_6 = ':/plugins/osoitetyokalu/tool_icons/tool_6.png'
+        
         self.add_action(
-            icon_path,
+            icon_path_1,
             text=self.tr(u'1. Tieosoite'),
             callback=self.road_address,
             parent=self.iface.mainWindow(),
-            add_to_toolbar=False)
-
-        # will be set False in run()
-        self.first_start = True
-
+            add_to_toolbar=False,
+            add_to_popupMenu=True,
+            default_action=False)
+#
         self.add_action(
-            icon_path,
+            icon_path_2,
             text=self.tr(u'2. Hakutyökalu'),
             callback=self.popup,
             parent=self.iface.mainWindow(),
-            add_to_toolbar=False)
-
+            add_to_toolbar=False,
+            add_to_popupMenu=True)
+#
         self.add_action(
-            icon_path,
+            icon_path_3,
             text=self.tr(u'3. Tieosa'),
             callback=self.road_part,
             parent=self.iface.mainWindow(),
-            add_to_toolbar=False)
-
+            add_to_toolbar=False,
+            add_to_popupMenu=True)
+#
         self.add_action(
-            icon_path,
+            icon_path_4,
             text=self.tr(u'4. Tieosoite (Alku- ja loppupiste)'),
             callback=self.two_points,
             parent=self.iface.mainWindow(),
-            add_to_toolbar=False)
-
+            add_to_toolbar=False,
+            add_to_popupMenu=True)
+#
         self.add_action(
-            icon_path,
+            icon_path_5,
             text=self.tr(u'5. Kohdistustyökalu'),
             callback=self.search_form,
             parent=self.iface.mainWindow(),
-            add_to_toolbar=False)
-
+            add_to_toolbar=False,
+            add_to_popupMenu=True)
+#
         self.add_action(
-            icon_path,
+            icon_path_6,
             text=self.tr(u'6. Poistotyökalu'),
             callback=self.delete_tool,
             parent=self.iface.mainWindow(),
-            add_to_toolbar=False)
+            add_to_toolbar=False,
+            add_to_popupMenu=True)
+
+        self.toolButton.setMenu(self.popupMenu)
+        self.toolButton.setDefaultAction(self.actions[0])
+        self.toolButton.setPopupMode(QToolButton.MenuButtonPopup)
+        self.toolWidget = self.iface.addToolBarWidget(self.toolButton)
+        self.actions.append(self.toolWidget)
+
+        # will be set False in run()
+        self.first_start = True
 
 
     def unload(self):
@@ -247,12 +277,12 @@ class Osoitetyokalu:
                 self.tr(u'&Osoitetyokalu'),
                 action)
             self.iface.removeToolBarIcon(action)
-
+       
 
     def road_address(self):
         """Retrieves the road address from VKM-api using the coordinates that come from a click on canvas and displays it as a annotation."""
-
-
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[0])
         # Create the dialog with elements (after translation) and keep reference
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
         if self.first_start == True:
@@ -322,6 +352,9 @@ class Osoitetyokalu:
     def popup(self):
         """Retrieves all possible address information from VKM-API using the coordinates that come from a click on canvas and displays it on a dialog(Pop-Up window).
         """
+
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[1])
         if self.first_start == True:
             self.first_start = False
         dlg = PopUp_dialog()
@@ -391,6 +424,9 @@ class Osoitetyokalu:
 
     def road_part(self):
         """Highlights a clicked road part's roadway(s), draws its ending and starting points and displays their road addresses on an annotation."""
+
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[2])
 
         if self.first_start == True:
             self.first_start = False
@@ -489,6 +525,9 @@ class Osoitetyokalu:
 
     def two_points(self):
         """Highlights every roadway between two clicked points on the same road."""
+
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[3])
 
         if self.first_start == True:
             self.first_start = False
@@ -679,6 +718,9 @@ class Osoitetyokalu:
             depending on the search parameters given.
         """
 
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[4])
+
         QgsProject.instance().setCrs(self.my_crs)
         self.vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
         self.search_form_dlg = SearchForm_dialog()
@@ -691,6 +733,9 @@ class Osoitetyokalu:
 
     def delete_tool(self):
         """ A dialog with buttons that either delete one annotation or all of them."""
+
+        # drop-down menu icon = latest tool used
+        self.toolButton.setDefaultAction(self.actions[5])
 
         QgsProject.instance().setCrs(self.my_crs)
         delete_dlg = DeleteLayer_dialog()
