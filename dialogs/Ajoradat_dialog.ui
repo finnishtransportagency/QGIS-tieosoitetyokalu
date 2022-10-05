@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>816</width>
-    <height>315</height>
+    <width>811</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,10 +16,10 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>40</y>
-     <width>106</width>
-     <height>131</height>
+     <x>20</x>
+     <y>30</y>
+     <width>131</width>
+     <height>151</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -33,7 +33,7 @@
     <item alignment="Qt::AlignRight">
      <widget class="QLabel" name="label_3">
       <property name="text">
-       <string>Ajorata 1 (keltainen):</string>
+       <string>Ajorata 1 (punainen):</string>
       </property>
      </widget>
     </item>
@@ -47,7 +47,14 @@
     <item alignment="Qt::AlignRight">
      <widget class="QLabel" name="label_4">
       <property name="text">
-       <string>Kokonaispituus:</string>
+       <string>Tiepituus:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>Ajoratojen kokonaispituus:</string>
       </property>
      </widget>
     </item>
@@ -56,10 +63,10 @@
   <widget class="QWidget" name="verticalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>160</x>
      <y>30</y>
      <width>631</width>
-     <height>151</height>
+     <height>161</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -75,6 +82,9 @@
     <item>
      <widget class="QLineEdit" name="PituuslineEdit"/>
     </item>
+    <item>
+     <widget class="QLineEdit" name="AjoradatPituuslineEdit"/>
+    </item>
    </layout>
   </widget>
   <widget class="QPushButton" name="pushButton_Download">
@@ -83,8 +93,8 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>590</x>
-     <y>220</y>
+     <x>610</x>
+     <y>250</y>
      <width>181</width>
      <height>23</height>
     </rect>
@@ -96,9 +106,9 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>190</y>
-     <width>671</width>
+     <x>110</x>
+     <y>220</y>
+     <width>681</width>
      <height>25</height>
     </rect>
    </property>
@@ -129,8 +139,8 @@
   <widget class="QPushButton" name="pushButton_Sulje">
    <property name="geometry">
     <rect>
-     <x>700</x>
-     <y>270</y>
+     <x>710</x>
+     <y>300</y>
      <width>75</width>
      <height>23</height>
     </rect>
