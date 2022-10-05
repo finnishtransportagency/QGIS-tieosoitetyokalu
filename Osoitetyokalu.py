@@ -37,7 +37,7 @@ from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import QAction, QToolButton, QMenu
 from qgis.gui import QgsMapToolEmitPoint
 from qgis.core import QgsField, QgsFeature, QgsVectorLayer, QgsProject, QgsCoordinateReferenceSystem, QgsGeometry, QgsPointXY
-from qgis.core import QgsTextAnnotation, QgsMarkerSymbol, QgsSingleSymbolRenderer, Qgis
+from qgis.core import QgsTextAnnotation, QgsMarkerSymbol, QgsSingleSymbolRenderer, QgsLayerTreeLayer, Qgis
 from PyQt5.QtWidgets import QLineEdit
 
 from PyQt5.QtGui import QTextDocument
@@ -97,6 +97,84 @@ class Osoitetyokalu:
         self.first_start = None
 
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
+
+        #creating a layer group for each tool
+        root = QgsProject.instance().layerTreeRoot()
+        group_1 = root.findGroup('1. Tieosoite')
+        if group_1 is None:
+            group_1 = root.addGroup('1. Tieosoite')
+
+        group_2 = root.findGroup('2. Hakutyökalu')
+        if group_2 is None:
+            group_2 = root.addGroup('2. Hakutyökalu')
+
+        group_3 = root.findGroup('3. Tieosa')
+        if group_3 is None:
+            group_3 = root.addGroup('3. Tieosa')
+
+        group_4 = root.findGroup('4. Tieosoite (Alku- ja loppupiste)')
+        if group_4 is None:
+            group_4 = root.addGroup('4. Tieosoite (Alku- ja loppupiste)')
+
+        group_5 = root.findGroup('5. Kohdistustyökalu')
+        if group_5 is None:
+            group_5 = root.addGroup('5. Kohdistustyökalu')
+
+        #creating a layer for each geometry shape
+        #Annotations ----
+        #layers = QgsProject.instance().mapLayersByName('Piste')
+        #print(layers[0])
+        #print(type(layers[0]))
+        #layer_ids = [layer.id() for layer in QgsProject.instance().mapLayers().values()]
+        #print(layer_ids)
+
+        #Annotations ----
+        
+        #if '' group_1.children():
+            
+        self.annotation_layer = QgsVectorLayer('Point', f'Karttavihjeet', 'memory')
+        self.annotation_pr = self.annotation_layer.dataProvider()
+        self.annotation_pr.addAttributes([QgsField("NAME", QVariant.String)])
+        self.annotation_pr.addAttributes([QgsField("ID", QVariant.String)])
+        self.annotation_layer.updateFields()
+
+        #point style
+        symbol = QgsMarkerSymbol.createSimple({
+        'color': '0,0,0',
+        'name': 'circle',
+        'size': '0.0'
+        })
+
+        self.annotation_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+        self.annotation_layer.setCrs(self.my_crs)
+
+        QgsProject.instance().addMapLayer(self.annotation_layer, False)
+        group_1.addLayer(self.annotation_layer)
+
+        #2. Hakutyökalu ----
+        
+        #print(layers[0])
+        #print(type(layers[0]))
+        
+        self.road_address_layer = QgsVectorLayer('Point', f'Pisteet', 'memory')
+        self.road_address_pr = self.road_address_layer.dataProvider()
+        self.road_address_pr.addAttributes([QgsField("NAME", QVariant.String)])
+        self.road_address_pr.addAttributes([QgsField("ID", QVariant.String)])
+        self.road_address_layer.updateFields()
+
+        #point style
+        symbol = QgsMarkerSymbol.createSimple({
+        'color': '255,0,0',
+        'name': 'circle',
+        'size': '1.0'
+        })
+
+        self.road_address_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+        self.road_address_layer.setCrs(self.my_crs)
+
+        QgsProject.instance().addMapLayer(self.road_address_layer, False)
+        group_1.addLayer(self.road_address_layer)
+
 
 
 
@@ -315,7 +393,7 @@ class Osoitetyokalu:
 
                 dlg.AddrLineEdit.setText(road_address)
                 #draws a point with clicked coordinates
-                self.add_point(road_address=road_address, point_x=point_x, point_y=point_y, size='1.0')
+                self.add_point(road_address, point_x, point_y, self.road_address_pr, '1')
 
                 #adding an annotation with road address to the latest point
                 self.add_annotation(road_address=road_address, point_x=point_x, point_y=point_y)
@@ -908,7 +986,7 @@ class Osoitetyokalu:
         return point_x, point_y
 
 
-    def add_point(self, road_address, point_x, point_y, color='255,0,0', shape='circle', size='2.5'):
+    def add_point(self, road_address, point_x, point_y, layer_pr, tool_id):
         """Draws a point to given coordinates as a layer.
 
         Args:
@@ -920,29 +998,13 @@ class Osoitetyokalu:
             size (str, optional): Point's size Defaults to '2.5'.
         """
 
-        point_layer = QgsVectorLayer('Point', f'Piste ({road_address})', 'memory')
-        pr = point_layer.dataProvider()
-        pr.addAttributes([QgsField("ID", QVariant.String)])
-        point_layer.updateFields()
         feature = QgsFeature()
         feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, point_y)))
-        feature.setAttributes(['1'])
+        feature.setAttributes([road_address, tool_id])
 
         #each point is added as a separate layer
-        pr.addFeature(feature)
-        point_layer.updateExtents()
-        point_layer.setCrs(self.my_crs)
-
-        #point style
-        symbol = QgsMarkerSymbol.createSimple({
-        'color': color,
-        'name': shape,
-        'size': size
-        })
-
-        point_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-
-        QgsProject.instance().addMapLayer(point_layer)
+        layer_pr.addFeature(feature)
+        #layer.updateExtents()
 
 
     def add_annotation(self, road_address, point_x, point_y, number_of_rows=None, position_x=14, position_y=11):
@@ -957,8 +1019,7 @@ class Osoitetyokalu:
             position_y (int, optional): Position of the annotation from reference point. Defaults to 11.
         """
 
-
-        layer = self.iface.activeLayer()
+        layer = self.annotation_layer
 
         annot = QgsTextAnnotation()
 
