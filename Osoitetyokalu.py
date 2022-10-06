@@ -54,6 +54,7 @@ from .dialogs.SearchForm_dialog import SearchForm_dialog
 from .dialogs.DeleteLayer_dialog import DeleteLayer_dialog
 from .CustomExceptions.VkmApiException import VkmApiException
 from .CustomExceptions.VkmRequestException import VkmRequestException
+from LayerHandler import LayerHandler
 
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -565,7 +566,6 @@ class Osoitetyokalu:
 
                 point_x, point_y = self.vkm_request_coordinates(vkm_url, road=tie, road_part=osa, distance=road_part_halfway)
 
-
                 self.add_annotation(road_address=roadway, point_x=point_x, point_y=point_y, number_of_rows=5)
                 self.zoom_to_layer()
 
@@ -1052,7 +1052,7 @@ class Osoitetyokalu:
 
         if color == 'green':
             polyline_color = QColor(0,255,0)
-        elif color == 'yellow':
+        elif color == 'red':
             polyline_color = QColor(255,127,80)
         elif color == 'blue':
             polyline_color = QColor(0,0,255)
@@ -1060,6 +1060,7 @@ class Osoitetyokalu:
         polyline_layer = QgsVectorLayer('LineString?crs=3067&field=id:integer&index=yes', f'({roadway})', 'memory')
         pr = polyline_layer.dataProvider()
         pr.addAttributes([QgsField("ID", QVariant.String)])
+        pr.addAttributes([QgsField("NAME", QVariant.String)])
         polyline_ft = QgsFeature()
 
         polyline_ft.setGeometry(QgsGeometry.fromPolylineXY(xy_points))
