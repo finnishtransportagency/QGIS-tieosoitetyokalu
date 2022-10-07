@@ -54,7 +54,7 @@ from .dialogs.SearchForm_dialog import SearchForm_dialog
 from .dialogs.DeleteLayer_dialog import DeleteLayer_dialog
 from .CustomExceptions.VkmApiException import VkmApiException
 from .CustomExceptions.VkmRequestException import VkmRequestException
-from LayerHandler import LayerHandler
+from .LayerHandler import LayerHandler
 
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -99,86 +99,9 @@ class Osoitetyokalu:
 
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
-        #creating a layer group for each tool
-        root = QgsProject.instance().layerTreeRoot()
-        group_1 = root.findGroup('1. Tieosoite')
-        if group_1 is None:
-            group_1 = root.addGroup('1. Tieosoite')
+        self.LayerHandler = LayerHandler()
 
-        group_2 = root.findGroup('2. Hakutyökalu')
-        if group_2 is None:
-            group_2 = root.addGroup('2. Hakutyökalu')
-
-        group_3 = root.findGroup('3. Tieosa')
-        if group_3 is None:
-            group_3 = root.addGroup('3. Tieosa')
-
-        group_4 = root.findGroup('4. Tieosoite (Alku- ja loppupiste)')
-        if group_4 is None:
-            group_4 = root.addGroup('4. Tieosoite (Alku- ja loppupiste)')
-
-        group_5 = root.findGroup('5. Kohdistustyökalu')
-        if group_5 is None:
-            group_5 = root.addGroup('5. Kohdistustyökalu')
-
-        #creating a layer for each geometry shape
-        #Annotations ----
-        #layers = QgsProject.instance().mapLayersByName('Piste')
-        #print(layers[0])
-        #print(type(layers[0]))
-        #layer_ids = [layer.id() for layer in QgsProject.instance().mapLayers().values()]
-        #print(layer_ids)
-
-        #Annotations ----
-        
-        #if '' group_1.children():
-            
-        self.annotation_layer = QgsVectorLayer('Point', f'Karttavihjeet', 'memory')
-        self.annotation_pr = self.annotation_layer.dataProvider()
-        self.annotation_pr.addAttributes([QgsField("NAME", QVariant.String)])
-        self.annotation_pr.addAttributes([QgsField("ID", QVariant.String)])
-        self.annotation_layer.updateFields()
-
-        #point style
-        symbol = QgsMarkerSymbol.createSimple({
-        'color': '0,0,0',
-        'name': 'circle',
-        'size': '0.0'
-        })
-
-        self.annotation_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        self.annotation_layer.setCrs(self.my_crs)
-
-        QgsProject.instance().addMapLayer(self.annotation_layer, False)
-        group_1.addLayer(self.annotation_layer)
-
-        #2. Hakutyökalu ----
-        
-        #print(layers[0])
-        #print(type(layers[0]))
-        
-        self.road_address_layer = QgsVectorLayer('Point', f'Pisteet', 'memory')
-        self.road_address_pr = self.road_address_layer.dataProvider()
-        self.road_address_pr.addAttributes([QgsField("NAME", QVariant.String)])
-        self.road_address_pr.addAttributes([QgsField("ID", QVariant.String)])
-        self.road_address_layer.updateFields()
-
-        #point style
-        symbol = QgsMarkerSymbol.createSimple({
-        'color': '255,0,0',
-        'name': 'circle',
-        'size': '1.0'
-        })
-
-        self.road_address_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        self.road_address_layer.setCrs(self.my_crs)
-
-        QgsProject.instance().addMapLayer(self.road_address_layer, False)
-        group_1.addLayer(self.road_address_layer)
-
-
-
-
+    
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -369,6 +292,7 @@ class Osoitetyokalu:
         dlg = ShowCoordinates_dialog()
         dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
+        self.LayerHandler.init_tool1()
 
         def display_point(pointTool):
             """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
@@ -390,14 +314,14 @@ class Osoitetyokalu:
 
                 road_address, point_x, point_y, _, _, _, _ = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y)
 
-
-
                 dlg.AddrLineEdit.setText(road_address)
                 #draws a point with clicked coordinates
-                self.add_point(road_address, point_x, point_y, self.road_address_pr, '1')
+                #self.add_point(road_address, point_x, point_y, self.road_address_pr, '1')
+
+                self.LayerHandler.add_annotation('1', road_address, point_x, point_y)
 
                 #adding an annotation with road address to the latest point
-                self.add_annotation(road_address=road_address, point_x=point_x, point_y=point_y)
+                #self.add_annotation(road_address=road_address, point_x=point_x, point_y=point_y)
 
             except AttributeError:
                 self.error_popup('Pistettä ei ole asetettu.')
@@ -432,6 +356,7 @@ class Osoitetyokalu:
         """Retrieves all possible address information from VKM-API using the coordinates that come from a click on canvas and displays it on a dialog(Pop-Up window).
         """
 
+        QgsProject.instance().setCrs(self.my_crs)
         # drop-down menu icon = latest tool used
         self.toolButton.setDefaultAction(self.actions[1])
         if self.first_start == True:
@@ -454,8 +379,6 @@ class Osoitetyokalu:
                     line.clear()
 
             try:
-                QgsProject.instance().setCrs(self.my_crs)
-
                 point_x = str(pointTool.x())
                 point_y = str(pointTool.y())
                 #get new coordinates and address from VKM
@@ -615,7 +538,6 @@ class Osoitetyokalu:
         self.ajoradat_dlg = Ajoradat_dialog()
         self.ajoradat_dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
-        #setting values that functions A and B need to use
         QgsProject.instance().setCrs(self.my_crs)
         self.canvas = self.iface.mapCanvas()
 
@@ -986,96 +908,96 @@ class Osoitetyokalu:
         return point_x, point_y
 
 
-    def add_point(self, road_address, point_x, point_y, layer_pr, tool_id):
-        """Draws a point to given coordinates as a layer.
-
-        Args:
-            road_address (str): Road address that consists of road/roadway/(road)part/distance. Is used as point's name.
-            point_x (float): X coordiante.
-            point_y (float): Y coordinate.
-            color (str, optional): Point's color. Defaults to '255,0,0'.
-            shape (str, optional): Point's shape. Defaults to 'circle'.
-            size (str, optional): Point's size Defaults to '2.5'.
-        """
-
-        feature = QgsFeature()
-        feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, point_y)))
-        feature.setAttributes([road_address, tool_id])
-
-        #each point is added as a separate layer
-        layer_pr.addFeature(feature)
-        #layer.updateExtents()
-
-
-    def add_annotation(self, road_address, point_x, point_y, number_of_rows=None, position_x=14, position_y=11):
-        """Adds an annotation to given coordinates.
-
-        Args:
-            road_address (str): Road address that consists of road/roadway/(road)part/distance. Is used as annotation's content.
-            point_x (float): X coordiante.
-            point_y (float): Y coordinate.
-            number_of_rows (int, optional): Width of the annotation. Defaults to None.
-            position_x (int, optional): Position of the annotation from reference point. Defaults to 14.
-            position_y (int, optional): Position of the annotation from reference point. Defaults to 11.
-        """
-
-        layer = self.annotation_layer
-
-        annot = QgsTextAnnotation()
-
-        if number_of_rows != None:
-            annot_length = len(road_address) // 1.5
-            annot_width = number_of_rows * 6
-            annot.setFrameSizeMm(QSizeF(annot_length, annot_width))
-        else:
-            annot_length = len(road_address) * 3
-            annot.setFrameSizeMm(QSizeF(annot_length, 6))
-        annot.setMapLayer(layer)
-        annot.setFrameOffsetFromReferencePointMm(QPoint(position_x, position_y))
-        annot.setDocument(QTextDocument(road_address))
-
-        # X and Y are defined previously
-        annot.setMapPositionCrs(QgsCoordinateReferenceSystem(layer.crs()))
-        annot.setMapPosition(QgsPointXY(point_x, point_y))
-
-        QgsProject.instance().annotationManager().addAnnotation(annot)
-
-
-    def add_polyline(self, xy_points, roadway, color):
-        """Draws a linestring as a layer.
-
-        Args:
-            xy_points (list): List of linestring coordinates as QgsPointXY.
-            roadway (str): Linestring's name.
-            color (str): Linestring's color.
-        """
-
-        if color == 'green':
-            polyline_color = QColor(0,255,0)
-        elif color == 'red':
-            polyline_color = QColor(255,127,80)
-        elif color == 'blue':
-            polyline_color = QColor(0,0,255)
-
-        polyline_layer = QgsVectorLayer('LineString?crs=3067&field=id:integer&index=yes', f'({roadway})', 'memory')
-        pr = polyline_layer.dataProvider()
-        pr.addAttributes([QgsField("ID", QVariant.String)])
-        pr.addAttributes([QgsField("NAME", QVariant.String)])
-        polyline_ft = QgsFeature()
-
-        polyline_ft.setGeometry(QgsGeometry.fromPolylineXY(xy_points))
-        polyline_ft.setAttributes(['1'])
+    #def add_point(self, road_address, point_x, point_y, layer_pr, tool_id):
+    #    """Draws a point to given coordinates as a layer.
 #
-        pr.addFeature(polyline_ft)
-        polyline_layer.updateExtents()
-        polyline_layer.setCrs(self.my_crs)
+    #    Args:
+    #        road_address (str): Road address that consists of road/roadway/(road)part/distance. Is used as point's name.
+    #        point_x (float): X coordiante.
+    #        point_y (float): Y coordinate.
+    #        color (str, optional): Point's color. Defaults to '255,0,0'.
+    #        shape (str, optional): Point's shape. Defaults to 'circle'.
+    #        size (str, optional): Point's size Defaults to '2.5'.
+    #    """
+#
+    #    feature = QgsFeature()
+    #    feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, point_y)))
+    #    feature.setAttributes([road_address, tool_id])
+#
+    #    #each point is added as a separate layer
+    #    layer_pr.addFeature(feature)
+    #    #layer.updateExtents()
 
-        renderer = polyline_layer.renderer()
-        renderer.symbol().setWidth(0.6)
-        renderer.symbol().setColor(polyline_color)
-        polyline_layer.triggerRepaint()
 
-        QgsProject.instance().addMapLayer(polyline_layer)
+    #def add_annotation(self, road_address, point_x, point_y, number_of_rows=None, position_x=14, position_y=11):
+    #    """Adds an annotation to given coordinates.
+#
+    #    Args:
+    #        road_address (str): Road address that consists of road/roadway/(road)part/distance. Is used as annotation's content.
+    #        point_x (float): X coordiante.
+    #        point_y (float): Y coordinate.
+    #        number_of_rows (int, optional): Width of the annotation. Defaults to None.
+    #        position_x (int, optional): Position of the annotation from reference point. Defaults to 14.
+    #        position_y (int, optional): Position of the annotation from reference point. Defaults to 11.
+    #    """
+#
+    #    layer = self.annotation_layer
+#
+    #    annot = QgsTextAnnotation()
+#
+    #    if number_of_rows != None:
+    #        annot_length = len(road_address) // 1.5
+    #        annot_width = number_of_rows * 6
+    #        annot.setFrameSizeMm(QSizeF(annot_length, annot_width))
+    #    else:
+    #        annot_length = len(road_address) * 3
+    #        annot.setFrameSizeMm(QSizeF(annot_length, 6))
+    #    annot.setMapLayer(layer)
+    #    annot.setFrameOffsetFromReferencePointMm(QPoint(position_x, position_y))
+    #    annot.setDocument(QTextDocument(road_address))
+#
+    #    # X and Y are defined previously
+    #    annot.setMapPositionCrs(QgsCoordinateReferenceSystem(layer.crs()))
+    #    annot.setMapPosition(QgsPointXY(point_x, point_y))
+#
+    #    QgsProject.instance().annotationManager().addAnnotation(annot)
+
+
+    #def add_polyline(self, xy_points, roadway, color):
+    #    """Draws a linestring as a layer.
+#
+    #    Args:
+    #        xy_points (list): List of linestring coordinates as QgsPointXY.
+    #        roadway (str): Linestring's name.
+    #        color (str): Linestring's color.
+    #    """
+#
+    #    if color == 'green':
+    #        polyline_color = QColor(0,255,0)
+    #    elif color == 'red':
+    #        polyline_color = QColor(255,127,80)
+    #    elif color == 'blue':
+    #        polyline_color = QColor(0,0,255)
+#
+    #    polyline_layer = QgsVectorLayer('LineString?crs=3067&field=id:integer&index=yes', f'({roadway})', 'memory')
+    #    pr = polyline_layer.dataProvider()
+    #    pr.addAttributes([QgsField("ID", QVariant.String)])
+    #    pr.addAttributes([QgsField("NAME", QVariant.String)])
+    #    polyline_ft = QgsFeature()
+#
+    #    polyline_ft.setGeometry(QgsGeometry.fromPolylineXY(xy_points))
+    #    polyline_ft.setAttributes(['1'])
+##
+    #    pr.addFeature(polyline_ft)
+    #    polyline_layer.updateExtents()
+    #    polyline_layer.setCrs(self.my_crs)
+#
+    #    renderer = polyline_layer.renderer()
+    #    renderer.symbol().setWidth(0.6)
+    #    renderer.symbol().setColor(polyline_color)
+    #    polyline_layer.triggerRepaint()
+#
+    #    QgsProject.instance().addMapLayer(polyline_layer)
 
 
     def convert_coordinates_to_XY(self, linestring):
@@ -1522,7 +1444,7 @@ class Osoitetyokalu:
                     if polyline_roadway == '0':
                         self.add_polyline(xy_points, polyline_adress, color='green')
                     elif polyline_roadway == '1':
-                        self.add_polyline(xy_points, polyline_adress, color='yellow')
+                        self.add_polyline(xy_points, polyline_adress, color='red')
                     elif polyline_roadway == '2':
                         self.add_polyline(xy_points, polyline_adress, color='blue')
 
@@ -1550,7 +1472,6 @@ class Osoitetyokalu:
             if result:
                 roadways_dlg.pushButton.setEnabled(False)
                 return
-
 
     def zoom_to_layer(self, point_x = None, point_y = None):
         """Zooms and centers to given coordinates(available in the next version) or to an active layer.
@@ -1646,5 +1567,4 @@ class Osoitetyokalu:
         except OSError as e:
             self.error_popup('Virhe tiedostoa ladattaessa. Yritä uudelleen.')
             logging.info(e)
-
 

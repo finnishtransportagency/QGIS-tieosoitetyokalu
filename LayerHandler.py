@@ -1,7 +1,10 @@
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsField
-from qgis.core import QgsMarkerSymbol, QgsSingleSymbolRenderer
+from qgis.core import QgsMarkerSymbol, QgsSingleSymbolRenderer, QgsFeature, QgsGeometry, QgsPointXY
+from qgis.core import QgsTextAnnotation
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QColor
+from PyQt5.QtCore import QSizeF, QPoint
+from PyQt5.QtGui import QTextDocument
 
 
 class LayerHandler(object):
@@ -31,10 +34,9 @@ class LayerHandler(object):
 
         self.group_1 = self.root.addGroup('1. Tieosoite')
 
+        #annotation layer
         self.tool1_annotation_layer = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet')
-
         QgsProject.instance().addMapLayer(self.tool1_annotation_layer, False)
-
         self.group_1.addLayer(self.tool1_annotation_layer)
 
         self.is_tool1_initialized = True
@@ -43,24 +45,11 @@ class LayerHandler(object):
     def init_tool2(self):
         if self.is_tool2_initialized:
             return
+
         self.group_2 = self.root.addGroup('2. Hakutyökalu')
 
-        self.tool2_point_layer = QgsVectorLayer('Point', f'Pisteet', 'memory')
-        self.tool2_point_pr = self.tool2_point_layer.dataProvider()
-        self.tool2_point_pr.addAttributes([QgsField("NAME", QVariant.String)])
-        self.tool2_point_pr.addAttributes([QgsField("ID", QVariant.String)])
-        self.tool2_point_layer.updateFields()
-
-        #style
-        symbol = QgsMarkerSymbol.createSimple({
-        'color': '255,0,0',
-        'name': 'circle',
-        'size': '2.5'
-        })
-
-        self.tool2_point_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        self.tool2_point_layer.setCrs(self.my_crs)
-
+        #point layer
+        self.tool2_point_layer = self.init_point_layer('255,0,0', 'circle', '2.5', 'Pisteet')
         QgsProject.instance().addMapLayer(self.tool2_point_layer, False)
         self.group_2.addLayer(self.tool2_point_layer)
 
@@ -70,42 +59,193 @@ class LayerHandler(object):
     def init_tool3(self):
         if self.is_tool3_initialized:
             return
+
         self.group_3 = self.root.addGroup('3. Tieosa')
 
         #annotation layer
-        self.tool3_annotation_layer = QgsVectorLayer('Point', f'Karttavihjeet', 'memory')
-        self.tool3_annotation_pr = self.tool3_annotation_layer.dataProvider()
-        self.tool3_annotation_pr.addAttributes([QgsField("NAME", QVariant.String)])
-        self.tool3_annotation_pr.addAttributes([QgsField("ID", QVariant.String)])
-        self.tool3_annotation_layer.updateFields()
-
-        #style
-        symbol = QgsMarkerSymbol.createSimple({
-        'color': '0,0,0',
-        'name': 'circle',
-        'size': '0.0'
-        })
-
-        self.tool3_annotation_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        self.tool3_annotation_layer.setCrs(self.my_crs)
-
+        self.tool3_annotation_layer = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet')
         QgsProject.instance().addMapLayer(self.tool3_annotation_layer, False)
         self.group_3.addLayer(self.tool3_annotation_layer)
 
+        #starting point layer
+        self.tool3_starting_point_layer = self.init_point_layer('0,255,0', 'square', '3.0', 'Alkupisteet')
+        QgsProject.instance().addMapLayer(self.tool3_starting_point_layer, False)
+        self.group_3.addLayer(self.tool3_starting_point_layer)
+
+        #ending point layer
+        self.tool3_ending_point_layer = self.init_point_layer('255,0,0', 'square', '3.0', 'Loppupisteet')
+        QgsProject.instance().addMapLayer(self.tool3_ending_point_layer, False)
+        self.group_3.addLayer(self.tool3_ending_point_layer)
+
         #roadway 0-2 layers
         roadway_layer_list = self.init_roadway_layers()
+        #creating variables to reference them when adding features
         self.tool3_roadway0_layer = roadway_layer_list[0]
         self.tool3_roadway1_layer = roadway_layer_list[1]
         self.tool3_roadway2_layer = roadway_layer_list[2]
 
-        QgsProject.instance().addMapLayer(self.tool3_roadway0_layer, False)
-        self.group_3.addLayer(self.tool3_roadway0_layer)
-        QgsProject.instance().addMapLayer(self.tool3_roadway1_layer, False)
-        self.group_3.addLayer(self.tool3_roadway1_layer)
-        QgsProject.instance().addMapLayer(self.tool3_roadway2_layer, False)
-        self.group_3.addLayer(self.tool3_roadway2_layer)
+        for roadway_layer in roadway_layer_list:
+            QgsProject.instance().addMapLayer(roadway_layer, False)
+            self.group_3.addLayer(roadway_layer)
 
         self.is_tool3_initialized = True
+
+
+    def init_tool4(self):
+        if self.is_tool4_initialized:
+            return
+
+        self.group_4 = self.root.addGroup('4. Tieosoite (Alku- ja loppupiste)')
+
+        #annotation layer
+        self.tool4_annotation_layer = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet')
+        QgsProject.instance().addMapLayer(self.tool4_annotation_layer, False)
+        self.group_3.addLayer(self.tool4_annotation_layer)
+
+        #roadway 0-2 layers
+        roadway_layer_list = self.init_roadway_layers()
+        #creating variables to reference them when adding features
+        self.tool4_roadway0_layer = roadway_layer_list[0]
+        self.tool4_roadway1_layer = roadway_layer_list[1]
+        self.tool4_roadway2_layer = roadway_layer_list[2]
+
+        for roadway_layer in roadway_layer_list:
+            QgsProject.instance().addMapLayer(roadway_layer, False)
+            self.group_4.addLayer(roadway_layer)
+
+        self.is_tool4_initialized = True
+
+
+    def init_tool5(self):
+        if self.is_tool5_initialized:
+            return
+        self.group_5 = self.root.addGroup('5. Kohdistustyökalu')
+
+        #point layer
+        self.tool5_point_layer = self.init_point_layer('0,255,0', 'triangle', '3.5', 'Pisteet')
+        QgsProject.instance().addMapLayer(self.tool5_point_layer, False)
+        self.group_5.addLayer(self.tool5_point_layer)
+
+        #starting point layer
+        self.tool5_starting_point_layer = self.init_point_layer('0,255,0', 'square', '3.0', 'Alkupisteet')
+        QgsProject.instance().addMapLayer(self.tool5_starting_point_layer, False)
+        self.group_5.addLayer(self.tool5_starting_point_layer)
+
+        #ending point layer
+        self.tool5_ending_point_layer = self.init_point_layer('255,0,0', 'square', '3.0', 'Loppupisteet')
+        QgsProject.instance().addMapLayer(self.tool5_ending_point_layer, False)
+        self.group_5.addLayer(self.tool5_ending_point_layer)
+
+        #roadway 0-2 layers
+        roadway_layer_list = self.init_roadway_layers()
+        #creating variables to reference them when adding features
+        self.tool5_roadway0_layer = roadway_layer_list[0]
+        self.tool5_roadway1_layer = roadway_layer_list[1]
+        self.tool5_roadway2_layer = roadway_layer_list[2]
+
+        for roadway_layer in roadway_layer_list:
+            QgsProject.instance().addMapLayer(roadway_layer, False)
+            self.group_5.addLayer(roadway_layer)
+
+        self.is_tool5_initialized = True
+
+
+    def add_annotation(self, tool_id:str, text:str, point_x:float, point_y:float, number_of_rows:int=None, position_x:int=14, position_y:int=11):
+        if tool_id == '1':
+            layer = self.tool1_annotation_layer
+        if tool_id == '3':
+            layer = self.tool3_annotation_layer
+        if tool_id == '4':
+            layer = self.tool4_annotation_layer
+
+        annot = QgsTextAnnotation()
+
+        if number_of_rows != None:
+            annot_length = len(text) // 1.5
+            annot_width = number_of_rows * 6
+            annot.setFrameSizeMm(QSizeF(annot_length, annot_width))
+        else:
+            annot_length = len(text) * 3
+            annot.setFrameSizeMm(QSizeF(annot_length, 6))
+        annot.setMapLayer(layer)
+        annot.setFrameOffsetFromReferencePointMm(QPoint(position_x, position_y))
+        annot.setDocument(QTextDocument(text))
+
+        # X and Y are defined previously
+        annot.setMapPositionCrs(QgsCoordinateReferenceSystem(layer.crs()))
+        annot.setMapPosition(QgsPointXY(point_x, point_y))
+
+        QgsProject.instance().annotationManager().addAnnotation(annot)
+
+
+    def add_point_feature(self, tool_id:str, feature_name:str, point_x:float, point_y:float, point_type:str):
+        feature = QgsFeature()
+        feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, point_y)))
+        feature.setAttributes([tool_id, feature_name])
+
+        if tool_id == '2':
+            self.tool2_point_layer.addFeature(feature)
+            self.tool2_point_layer.updateExtents()
+
+        if tool_id == '3':
+            if point_type == 'starting':
+                self.tool3_starting_point_layer.addFeature(feature)
+                self.tool3_starting_point_layer.updateExtents()
+            if point_type == 'ending':
+                self.tool3_ending_point_layer.addFeature(feature)
+                self.tool3_ending_point_layer.updateExtents()
+
+        if tool_id == '5':
+            if point_type == 'starting':
+                self.tool5_starting_point_layer.addFeature(feature)
+                self.tool5_starting_point_layer.updateExtents()
+            if point_type == 'ending':
+                self.tool5_ending_point_layer.addFeature(feature)
+                self.tool5_ending_point_layer.updateExtents()
+
+            
+    def add_roadway_feature(self, tool_id:str, feature_name:str, xy_points:list, roadway:str):
+        feature = QgsFeature()
+        feature.setGeometry(QgsGeometry.fromPolylineXY(xy_points))
+        feature.setAttributes([tool_id, feature_name])
+#       
+        if tool_id == '3':
+            if roadway == '0':
+                self.tool3_roadway0_layer.addFeature(feature)
+                self.tool3_roadway0_layer.updateExtents()
+            if roadway == '1':
+                self.tool3_roadway1_layer.addFeature(feature)
+                self.tool3_roadway1_layer.updateExtents()
+            if roadway == '2':
+                self.tool3_roadway2_layer.addFeature(feature)
+                self.tool3_roadway2_layer.updateExtents()
+
+        if tool_id == '4':
+            if roadway == '0':
+                self.tool4_roadway0_layer.addFeature(feature)
+                self.tool4_roadway0_layer.updateExtents()
+            if roadway == '1':
+                self.tool4_roadway1_layer.addFeature(feature)
+                self.tool4_roadway1_layer.updateExtents()
+            if roadway == '2':
+                self.tool4_roadway2_layer.addFeature(feature)
+                self.tool4_roadway2_layer.updateExtents()
+
+        if tool_id == '5':
+            if roadway == '0':
+                self.tool5_roadway0_layer.addFeature(feature)
+                self.tool5_roadway0_layer.updateExtents()
+            if roadway == '1':
+                self.tool5_roadway1_layer.addFeature(feature)
+                self.tool5_roadway1_layer.updateExtents()
+            if roadway == '2':
+                self.tool5_roadway2_layer.addFeature(feature)
+                self.tool5_roadway2_layer.updateExtents()
+        
+
+
+
+# ------------------------------------------------------#
 
 
     def init_roadway_layers(self):
