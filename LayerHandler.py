@@ -1,6 +1,6 @@
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsField
 from qgis.core import QgsMarkerSymbol, QgsSingleSymbolRenderer, QgsFeature, QgsGeometry, QgsPointXY
-from qgis.core import QgsTextAnnotation
+from qgis.core import QgsTextAnnotation, QgsLayerTree
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QColor
 from PyQt5.QtCore import QSizeF, QPoint
@@ -15,8 +15,8 @@ class LayerHandler(object):
             return cls.instance
 
 
-    def __init__(self, iface):
-        self.iface = iface
+    def __init__(self, iface=None):
+        #self.iface = iface
 
         self.is_tool1_initialized = False
         self.is_tool2_initialized = False
@@ -24,11 +24,14 @@ class LayerHandler(object):
         self.is_tool4_initialized = False
         self.is_tool5_initialized = False
 
-        self.root = QgsProject.instance().layerTreeRoot()
+        self.layers = []
+
+        self.project = QgsProject.instance()
+        self.root = self.project.layerTreeRoot()
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
 
-    def init_tool1(self):
+    def init_tool1(self, qgis_interface):
         if self.is_tool1_initialized:
             return
 
@@ -36,13 +39,14 @@ class LayerHandler(object):
 
         #annotation layer
         self.tool1_annotation_layer = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet')
-        QgsProject.instance().addMapLayer(self.tool1_annotation_layer, False)
+        self.project.addMapLayer(self.tool1_annotation_layer, False)
         self.group_1.addLayer(self.tool1_annotation_layer)
 
+        self.rearrange_layers(self.layers, qgis_interface)
         self.is_tool1_initialized = True
 
 
-    def init_tool2(self):
+    def init_tool2(self, qgis_interface):
         if self.is_tool2_initialized:
             return
 
@@ -50,13 +54,14 @@ class LayerHandler(object):
 
         #point layer
         self.tool2_point_layer = self.init_point_layer('255,0,0', 'circle', '2.5', 'Pisteet')
-        QgsProject.instance().addMapLayer(self.tool2_point_layer, False)
+        self.project.addMapLayer(self.tool2_point_layer, False)
         self.group_2.addLayer(self.tool2_point_layer)
 
+        self.rearrange_layers(self.layers, qgis_interface)
         self.is_tool2_initialized = True
 
 
-    def init_tool3(self):
+    def init_tool3(self, qgis_interface):
         if self.is_tool3_initialized:
             return
 
@@ -64,17 +69,17 @@ class LayerHandler(object):
 
         #annotation layer
         self.tool3_annotation_layer = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet')
-        QgsProject.instance().addMapLayer(self.tool3_annotation_layer, False)
+        self.project.addMapLayer(self.tool3_annotation_layer, False)
         self.group_3.addLayer(self.tool3_annotation_layer)
 
         #starting point layer
         self.tool3_starting_point_layer = self.init_point_layer('0,255,0', 'square', '3.0', 'Alkupisteet')
-        QgsProject.instance().addMapLayer(self.tool3_starting_point_layer, False)
+        self.project.addMapLayer(self.tool3_starting_point_layer, False)
         self.group_3.addLayer(self.tool3_starting_point_layer)
 
         #ending point layer
         self.tool3_ending_point_layer = self.init_point_layer('255,0,0', 'square', '3.0', 'Loppupisteet')
-        QgsProject.instance().addMapLayer(self.tool3_ending_point_layer, False)
+        self.project.addMapLayer(self.tool3_ending_point_layer, False)
         self.group_3.addLayer(self.tool3_ending_point_layer)
 
         #roadway 0-2 layers
@@ -85,13 +90,14 @@ class LayerHandler(object):
         self.tool3_roadway2_layer = roadway_layer_list[2]
 
         for roadway_layer in roadway_layer_list:
-            QgsProject.instance().addMapLayer(roadway_layer, False)
+            self.project.addMapLayer(roadway_layer, False)
             self.group_3.addLayer(roadway_layer)
 
+        self.rearrange_layers(self.layers, qgis_interface)
         self.is_tool3_initialized = True
 
 
-    def init_tool4(self):
+    def init_tool4(self, qgis_interface):
         if self.is_tool4_initialized:
             return
 
@@ -99,7 +105,7 @@ class LayerHandler(object):
 
         #annotation layer
         self.tool4_annotation_layer = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet')
-        QgsProject.instance().addMapLayer(self.tool4_annotation_layer, False)
+        self.project.addMapLayer(self.tool4_annotation_layer, False)
         self.group_3.addLayer(self.tool4_annotation_layer)
 
         #roadway 0-2 layers
@@ -110,30 +116,31 @@ class LayerHandler(object):
         self.tool4_roadway2_layer = roadway_layer_list[2]
 
         for roadway_layer in roadway_layer_list:
-            QgsProject.instance().addMapLayer(roadway_layer, False)
+            self.project.addMapLayer(roadway_layer, False)
             self.group_4.addLayer(roadway_layer)
 
+        self.rearrange_layers(self.layers, qgis_interface)
         self.is_tool4_initialized = True
 
 
-    def init_tool5(self):
+    def init_tool5(self, qgis_interface):
         if self.is_tool5_initialized:
             return
         self.group_5 = self.root.addGroup('5. Kohdistustyökalu')
 
         #point layer
         self.tool5_point_layer = self.init_point_layer('0,255,0', 'triangle', '3.5', 'Pisteet')
-        QgsProject.instance().addMapLayer(self.tool5_point_layer, False)
+        self.project.addMapLayer(self.tool5_point_layer, False)
         self.group_5.addLayer(self.tool5_point_layer)
 
         #starting point layer
         self.tool5_starting_point_layer = self.init_point_layer('0,255,0', 'square', '3.0', 'Alkupisteet')
-        QgsProject.instance().addMapLayer(self.tool5_starting_point_layer, False)
+        self.project.addMapLayer(self.tool5_starting_point_layer, False)
         self.group_5.addLayer(self.tool5_starting_point_layer)
 
         #ending point layer
         self.tool5_ending_point_layer = self.init_point_layer('255,0,0', 'square', '3.0', 'Loppupisteet')
-        QgsProject.instance().addMapLayer(self.tool5_ending_point_layer, False)
+        self.project.addMapLayer(self.tool5_ending_point_layer, False)
         self.group_5.addLayer(self.tool5_ending_point_layer)
 
         #roadway 0-2 layers
@@ -144,9 +151,10 @@ class LayerHandler(object):
         self.tool5_roadway2_layer = roadway_layer_list[2]
 
         for roadway_layer in roadway_layer_list:
-            QgsProject.instance().addMapLayer(roadway_layer, False)
+            self.project.addMapLayer(roadway_layer, False)
             self.group_5.addLayer(roadway_layer)
 
+        self.rearrange_layers(self.layers, qgis_interface)
         self.is_tool5_initialized = True
 
 
@@ -175,32 +183,32 @@ class LayerHandler(object):
         annot.setMapPositionCrs(QgsCoordinateReferenceSystem(layer.crs()))
         annot.setMapPosition(QgsPointXY(point_x, point_y))
 
-        QgsProject.instance().annotationManager().addAnnotation(annot)
+        self.project.annotationManager().addAnnotation(annot)
 
 
-    def add_point_feature(self, tool_id:str, feature_name:str, point_x:float, point_y:float, point_type:str):
+    def add_point_feature(self, tool_id:str, feature_name:str, point_x:float, point_y:float, point_type:str=None):
         feature = QgsFeature()
         feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, point_y)))
         feature.setAttributes([tool_id, feature_name])
 
         if tool_id == '2':
-            self.tool2_point_layer.addFeature(feature)
+            self.tool2_point_layer.dataProvider().addFeature(feature)
             self.tool2_point_layer.updateExtents()
 
         if tool_id == '3':
             if point_type == 'starting':
-                self.tool3_starting_point_layer.addFeature(feature)
+                self.tool3_starting_point_layer.dataProvider().addFeature(feature)
                 self.tool3_starting_point_layer.updateExtents()
             if point_type == 'ending':
-                self.tool3_ending_point_layer.addFeature(feature)
+                self.tool3_ending_point_layer.dataProvider().addFeature(feature)
                 self.tool3_ending_point_layer.updateExtents()
 
         if tool_id == '5':
             if point_type == 'starting':
-                self.tool5_starting_point_layer.addFeature(feature)
+                self.tool5_starting_point_layer.dataProvider().addFeature(feature)
                 self.tool5_starting_point_layer.updateExtents()
             if point_type == 'ending':
-                self.tool5_ending_point_layer.addFeature(feature)
+                self.tool5_ending_point_layer.dataProvider().addFeature(feature)
                 self.tool5_ending_point_layer.updateExtents()
 
             
@@ -211,35 +219,35 @@ class LayerHandler(object):
 #       
         if tool_id == '3':
             if roadway == '0':
-                self.tool3_roadway0_layer.addFeature(feature)
+                self.tool3_roadway0_layer.dataProvider().addFeature(feature)
                 self.tool3_roadway0_layer.updateExtents()
             if roadway == '1':
-                self.tool3_roadway1_layer.addFeature(feature)
+                self.tool3_roadway1_layer.dataProvider().addFeature(feature)
                 self.tool3_roadway1_layer.updateExtents()
             if roadway == '2':
-                self.tool3_roadway2_layer.addFeature(feature)
+                self.tool3_roadway2_layer.dataProvider().addFeature(feature)
                 self.tool3_roadway2_layer.updateExtents()
 
         if tool_id == '4':
             if roadway == '0':
-                self.tool4_roadway0_layer.addFeature(feature)
+                self.tool4_roadway0_layer.dataProvider().addFeature(feature)
                 self.tool4_roadway0_layer.updateExtents()
             if roadway == '1':
-                self.tool4_roadway1_layer.addFeature(feature)
+                self.tool4_roadway1_layer.dataProvider().addFeature(feature)
                 self.tool4_roadway1_layer.updateExtents()
             if roadway == '2':
-                self.tool4_roadway2_layer.addFeature(feature)
+                self.tool4_roadway2_layer.dataProvider().addFeature(feature)
                 self.tool4_roadway2_layer.updateExtents()
 
         if tool_id == '5':
             if roadway == '0':
-                self.tool5_roadway0_layer.addFeature(feature)
+                self.tool5_roadway0_layer.dataProvider().addFeature(feature)
                 self.tool5_roadway0_layer.updateExtents()
             if roadway == '1':
-                self.tool5_roadway1_layer.addFeature(feature)
+                self.tool5_roadway1_layer.dataProvider().addFeature(feature)
                 self.tool5_roadway1_layer.updateExtents()
             if roadway == '2':
-                self.tool5_roadway2_layer.addFeature(feature)
+                self.tool5_roadway2_layer.dataProvider().addFeature(feature)
                 self.tool5_roadway2_layer.updateExtents()
         
 
@@ -296,11 +304,12 @@ class LayerHandler(object):
         self.roadway2_layer.setCrs(self.my_crs)
         layer_list.append(self.roadway2_layer)
 
+        self.layers.extend(layer_list)
         return layer_list
 
 
     def init_point_layer(self, color:str, shape:str, size:str, layer_name:str):
-        point_layer = QgsVectorLayer('Point', layer_name, 'memory')
+        point_layer = QgsVectorLayer('Point?crs=epsg:3067', layer_name, 'memory')
 
         point_pr = point_layer.dataProvider()
         point_pr.addAttributes([QgsField("NAME", QVariant.String)])
@@ -318,6 +327,14 @@ class LayerHandler(object):
         
         point_layer.setCrs(self.my_crs)
 
+        self.layers.append(point_layer)
         return point_layer
+
+
+    def rearrange_layers(self, layers, qgis_interface):
+        order = QgsLayerTree().customLayerOrder()
+        for layer in layers: # How many layers we need to move
+            order.insert(0, order.pop()) # Last layer to first position
+        QgsLayerTree().setCustomLayerOrder(order)
 
 

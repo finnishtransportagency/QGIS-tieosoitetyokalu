@@ -37,7 +37,7 @@ from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import QAction, QToolButton, QMenu
 from qgis.gui import QgsMapToolEmitPoint
 from qgis.core import QgsField, QgsFeature, QgsVectorLayer, QgsProject, QgsCoordinateReferenceSystem, QgsGeometry, QgsPointXY
-from qgis.core import QgsTextAnnotation, QgsMarkerSymbol, QgsSingleSymbolRenderer, QgsLayerTreeLayer, Qgis
+from qgis.core import QgsTextAnnotation, QgsMarkerSymbol, QgsSingleSymbolRenderer, QgsLayerTreeLayer, Qgis, QgsRectangle
 from PyQt5.QtWidgets import QLineEdit
 
 from PyQt5.QtGui import QTextDocument
@@ -292,7 +292,7 @@ class Osoitetyokalu:
         dlg = ShowCoordinates_dialog()
         dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
-        self.LayerHandler.init_tool1()
+        self.LayerHandler.init_tool1(self.iface)
 
         def display_point(pointTool):
             """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
@@ -364,6 +364,8 @@ class Osoitetyokalu:
         dlg = PopUp_dialog()
         dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
+        self.LayerHandler.init_tool2(self.iface)
+
 
         def display_popup(pointTool):
             """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
@@ -373,6 +375,7 @@ class Osoitetyokalu:
             Args:
                 pointTool (QgsMapToolEmitPoint()): Tool that returns coordinates from clicking on the canvas that it's connected to.
             """
+
             lineEdits = dlg.findChildren(QLineEdit)
             for line in lineEdits:
                 if line.text():
@@ -405,7 +408,8 @@ class Osoitetyokalu:
 
                     point_x = vkm_feature['properties']['x']
                     point_y = vkm_feature['properties']['y']
-                    self.add_point(road_address=road_address, point_x=point_x, point_y=point_y)
+                    self.LayerHandler.add_point_feature('2', road_address, point_x, point_y)
+                    #self.add_point(road_address=road_address, point_x=point_x, point_y=point_y)
 
             except AttributeError:
                 self.error_popup('Pistettä ei ole asetettu.')
@@ -435,6 +439,7 @@ class Osoitetyokalu:
         dlg = ShowCoordinates_dialog()
         dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
+        self.LayerHandler.init_tool3(self.iface)
 
         def display_road_part(pointTool):
             """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
@@ -478,23 +483,29 @@ class Osoitetyokalu:
                         for linestring in coordinates:
                             xy_points = self.convert_coordinates_to_XY(linestring)
                             if ajorata == '0':
-                                self.add_polyline(xy_points, roadway, color='green')
+                                self.LayerHandler.add_roadway_feature('3', roadway, xy_points, '0')
+                                #self.add_polyline(xy_points, roadway, color='green')
                             elif ajorata == '1':
-                                self.add_polyline(xy_points, roadway, color='yellow')
+                                self.LayerHandler.add_roadway_feature('3', roadway, xy_points, '1')
+                                #self.add_polyline(xy_points, roadway, color='yellow')
                             elif ajorata == '2':
-                                self.add_polyline(xy_points, roadway, color='blue')
+                                self.LayerHandler.add_roadway_feature('3', roadway, xy_points, '2')
+                                #self.add_polyline(xy_points, roadway, color='blue')
 
                 #getting road part's halfway coordinates for annotation
                 road_part_halfway = road_part_length // 2
 
                 point_x, point_y = self.vkm_request_coordinates(vkm_url, road=tie, road_part=osa, distance=road_part_halfway)
-
-                self.add_annotation(road_address=roadway, point_x=point_x, point_y=point_y, number_of_rows=5)
-                self.zoom_to_layer()
+                
+                self.LayerHandler.add_annotation('3', roadway, point_x, point_y, 5)
+                #self.add_annotation(road_address=roadway, point_x=point_x, point_y=point_y, number_of_rows=5)
+                self.zoom_to_feature(point_x, point_y)
 
                 #adding a point to each end of the road part
-                self.add_point(road_address=starting_road_address, point_x=starting_point[0], point_y=starting_point[1], color='0,255,0', shape='square', size='3.0')
-                self.add_point(road_address=ending_road_address, point_x=ending_point[0], point_y=ending_point[1], color='255,0,0', shape='square', size='3.0')
+                self.LayerHandler.add_point_feature('3', starting_road_address, starting_point[0], starting_point[1], 'starting')
+                #self.add_point(road_address=starting_road_address, point_x=starting_point[0], point_y=starting_point[1], color='0,255,0', shape='square', size='3.0')
+                self.LayerHandler.add_point_feature('3', ending_road_address, ending_point[0], ending_point[1], 'ending')
+                #self.add_point(road_address=ending_road_address, point_x=ending_point[0], point_y=ending_point[1], color='255,0,0', shape='square', size='3.0')
 
             except AttributeError:
                 self.error_popup('Pistettä ei ole asetettu.')
@@ -1338,7 +1349,7 @@ class Osoitetyokalu:
                 point_x = vkm_feature['properties']['x']
                 point_y = vkm_feature['properties']['y']
                 self.add_point('Pistemäinen haku', point_x, point_y, color='0,255,0', shape='triangle', size='3.5')
-                self.zoom_to_layer()
+                self.zoom_to_feature(point_x, point_y)
                 popup_dlg.show()
                 result = popup_dlg.exec_()
                 if result:
@@ -1473,22 +1484,19 @@ class Osoitetyokalu:
                 roadways_dlg.pushButton.setEnabled(False)
                 return
 
-    def zoom_to_layer(self, point_x = None, point_y = None):
+    def zoom_to_feature(self, point_x = None, point_y = None):
         """Zooms and centers to given coordinates(available in the next version) or to an active layer.
 
         Args:
             point_x (float, optional): X coordinate. Defaults to None.
             point_y (float, optional): Y coordiante. Defaults to None.
         """
-        if point_x != None and point_y != None:
-            pass
-        else:
-            #zoom to latest active layer
-            layer = self.iface.activeLayer()
-            canvas = self.iface.mapCanvas()
-            extent = layer.extent()
-            canvas.setExtent(extent)
-            canvas.zoomScale(16555 / 1)
+        
+        #zoom to latest active layer
+        rectangle = QgsRectangle(point_x, point_y, point_x, point_y)
+        canvas = self.iface.mapCanvas()
+        canvas.setExtent(rectangle)
+        canvas.zoomScale(16555 / 1)
 
 
     def delete_all_annotations(self):
