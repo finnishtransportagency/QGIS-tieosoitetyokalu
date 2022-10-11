@@ -293,6 +293,7 @@ class Osoitetyokalu:
         dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
         self.LayerHandler.init_tool1(self.iface)
+        self.iface.mapCanvas().refresh()
 
         def display_point(pointTool):
             """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
@@ -365,7 +366,7 @@ class Osoitetyokalu:
         dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
         self.LayerHandler.init_tool2(self.iface)
-
+        self.iface.mapCanvas().refresh()
 
         def display_popup(pointTool):
             """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
@@ -440,6 +441,7 @@ class Osoitetyokalu:
         dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
         self.LayerHandler.init_tool3(self.iface)
+        self.iface.mapCanvas().refresh()
 
         def display_road_part(pointTool):
             """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
@@ -552,6 +554,9 @@ class Osoitetyokalu:
         QgsProject.instance().setCrs(self.my_crs)
         self.canvas = self.iface.mapCanvas()
 
+        self.LayerHandler.init_tool4(self.iface)
+        self.iface.mapCanvas().refresh()
+
 
         def display_point_A(pointTool_A):
             """ Operates the same way as display_point(), but in addition: clears the roadway dialog lines at the start, creates road address parameters for VKM-API
@@ -583,10 +588,11 @@ class Osoitetyokalu:
                 road_address, point_x, point_y, tie_A, ajorata_A, osa_A, etaisyys_A = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y, display_point='A')
 
                 #dlg.AddrLineEdit.setText(road_address)
-                self.add_point(road_address=road_address, point_x=point_x, point_y=point_y, size='1.0')
+                #self.add_point(road_address=road_address, point_x=point_x, point_y=point_y, size='1.0')
 
                 #adding an annotation with road address to the latest point
-                self.add_annotation(road_address=road_address, point_x=point_x, point_y=point_y)
+                #self.add_annotation(road_address=road_address, point_x=point_x, point_y=point_y)
+                self.LayerHandler.add_annotation('4', road_address, point_x, point_y)
 
                 self.tie_A = tie_A
                 self.ajorata_A = ajorata_A
@@ -634,10 +640,11 @@ class Osoitetyokalu:
                     return
 
                 else:
-                    self.add_point(road_address=road_address, point_x=point_x_B, point_y=point_y_B, size='1.0')
+                    #self.add_point(road_address=road_address, point_x=point_x_B, point_y=point_y_B, size='1.0')
 
                     #adding an annotation with road address to the latest point
-                    self.add_annotation(road_address=road_address, point_x=point_x_B, point_y=point_y_B, position_x=-34, position_y=-21)
+                    #self.add_annotation(road_address=road_address, point_x=point_x_B, point_y=point_y_B, position_x=-34, position_y=-21)
+                    self.LayerHandler.add_annotation('4', road_address, point_x_B, point_y_B, position_x=-34, point_y=-21)
 
                     #getting road address and calculating the distance of roadway(s) between points A and B
                     try:
@@ -728,6 +735,9 @@ class Osoitetyokalu:
         """ A dialog with a search form for VKM-API requests. Uses the same search parameteres as VKM-API. Either returns and draws a point or line(s)
             depending on the search parameters given.
         """
+
+        self.LayerHandler.init_tool5(self.iface)
+        self.iface.mapCanvas().refresh()
 
         # drop-down menu icon = latest tool used
         self.toolButton.setDefaultAction(self.actions[4])

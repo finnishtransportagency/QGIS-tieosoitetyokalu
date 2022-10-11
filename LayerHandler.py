@@ -194,6 +194,7 @@ class LayerHandler(object):
         if tool_id == '2':
             self.tool2_point_layer.dataProvider().addFeature(feature)
             self.tool2_point_layer.updateExtents()
+            self.tool2_point_layer.reload()
 
         if tool_id == '3':
             if point_type == 'starting':
@@ -221,34 +222,43 @@ class LayerHandler(object):
             if roadway == '0':
                 self.tool3_roadway0_layer.dataProvider().addFeature(feature)
                 self.tool3_roadway0_layer.updateExtents()
+                self.tool3_roadway0_layer.reload()
             if roadway == '1':
                 self.tool3_roadway1_layer.dataProvider().addFeature(feature)
                 self.tool3_roadway1_layer.updateExtents()
+                self.tool3_roadway1_layer.reload()
             if roadway == '2':
                 self.tool3_roadway2_layer.dataProvider().addFeature(feature)
                 self.tool3_roadway2_layer.updateExtents()
+                self.tool3_roadway2_layer.reload()
 
         if tool_id == '4':
             if roadway == '0':
                 self.tool4_roadway0_layer.dataProvider().addFeature(feature)
                 self.tool4_roadway0_layer.updateExtents()
+                self.tool4_roadway0_layer.reload()
             if roadway == '1':
                 self.tool4_roadway1_layer.dataProvider().addFeature(feature)
                 self.tool4_roadway1_layer.updateExtents()
+                self.tool4_roadway1_layer.reload()
             if roadway == '2':
                 self.tool4_roadway2_layer.dataProvider().addFeature(feature)
                 self.tool4_roadway2_layer.updateExtents()
+                self.tool4_roadway2_layer.reload()
 
         if tool_id == '5':
             if roadway == '0':
                 self.tool5_roadway0_layer.dataProvider().addFeature(feature)
                 self.tool5_roadway0_layer.updateExtents()
+                self.tool5_roadway0_layer.reload()
             if roadway == '1':
                 self.tool5_roadway1_layer.dataProvider().addFeature(feature)
                 self.tool5_roadway1_layer.updateExtents()
+                self.tool5_roadway1_layer.reload()
             if roadway == '2':
                 self.tool5_roadway2_layer.dataProvider().addFeature(feature)
                 self.tool5_roadway2_layer.updateExtents()
+                self.tool5_roadway2_layer.reload()
         
 
 
@@ -331,10 +341,18 @@ class LayerHandler(object):
         return point_layer
 
 
-    def rearrange_layers(self, layers, qgis_interface):
-        order = QgsLayerTree().customLayerOrder()
-        for layer in layers: # How many layers we need to move
-            order.insert(0, order.pop()) # Last layer to first position
-        QgsLayerTree().setCustomLayerOrder(order)
+    def rearrange_layers(self, layer_list, qgis_interface):
+        self.root.setHasCustomLayerOrder(True)
+        order = self.root.customLayerOrder()
+
+        for layer in layer_list: # How many layers we need to move
+            order.insert(0, order.pop(order.index(layer))) # Last layer to first position
+    
+        self.root.setCustomLayerOrder(order)
+
+        #for layer in layer_list: # Refreshing each layer
+        #    layer.updateExtents()
+        #    qgis_interface.mapCanvas().refresh()
+        #qgis_interface.mapCanvas().refreshAllLayers()
 
 
