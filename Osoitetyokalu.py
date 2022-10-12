@@ -40,9 +40,6 @@ from qgis.core import QgsField, QgsFeature, QgsVectorLayer, QgsProject, QgsCoord
 from qgis.core import QgsTextAnnotation, QgsMarkerSymbol, QgsSingleSymbolRenderer, QgsLayerTreeLayer, Qgis, QgsRectangle
 from PyQt5.QtWidgets import QLineEdit
 
-from PyQt5.QtGui import QTextDocument
-from PyQt5.QtCore import QSizeF, QPoint
-
 from requests import get
 import json
 
@@ -292,7 +289,7 @@ class Osoitetyokalu:
         dlg = ShowCoordinates_dialog()
         dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
-        self.LayerHandler.init_tool1(self.iface)
+        self.LayerHandler.init_tool1()
         self.iface.mapCanvas().refresh()
 
         def display_point(pointTool):
@@ -365,7 +362,7 @@ class Osoitetyokalu:
         dlg = PopUp_dialog()
         dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
-        self.LayerHandler.init_tool2(self.iface)
+        self.LayerHandler.init_tool2()
         self.iface.mapCanvas().refresh()
 
         def display_popup(pointTool):
@@ -440,7 +437,7 @@ class Osoitetyokalu:
         dlg = ShowCoordinates_dialog()
         dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
 
-        self.LayerHandler.init_tool3(self.iface)
+        self.LayerHandler.init_tool3()
         self.iface.mapCanvas().refresh()
 
         def display_road_part(pointTool):
@@ -485,13 +482,13 @@ class Osoitetyokalu:
                         for linestring in coordinates:
                             xy_points = self.convert_coordinates_to_XY(linestring)
                             if ajorata == '0':
-                                self.LayerHandler.add_roadway_feature('3', roadway, xy_points, '0')
+                                self.LayerHandler.add_roadway_feature('3', roadway, xy_points, ajorata)
                                 #self.add_polyline(xy_points, roadway, color='green')
                             elif ajorata == '1':
-                                self.LayerHandler.add_roadway_feature('3', roadway, xy_points, '1')
+                                self.LayerHandler.add_roadway_feature('3', roadway, xy_points, ajorata)
                                 #self.add_polyline(xy_points, roadway, color='yellow')
                             elif ajorata == '2':
-                                self.LayerHandler.add_roadway_feature('3', roadway, xy_points, '2')
+                                self.LayerHandler.add_roadway_feature('3', roadway, xy_points, ajorata)
                                 #self.add_polyline(xy_points, roadway, color='blue')
 
                 #getting road part's halfway coordinates for annotation
@@ -554,7 +551,7 @@ class Osoitetyokalu:
         QgsProject.instance().setCrs(self.my_crs)
         self.canvas = self.iface.mapCanvas()
 
-        self.LayerHandler.init_tool4(self.iface)
+        self.LayerHandler.init_tool4()
         self.iface.mapCanvas().refresh()
 
 
@@ -644,7 +641,7 @@ class Osoitetyokalu:
 
                     #adding an annotation with road address to the latest point
                     #self.add_annotation(road_address=road_address, point_x=point_x_B, point_y=point_y_B, position_x=-34, position_y=-21)
-                    self.LayerHandler.add_annotation('4', road_address, point_x_B, point_y_B, position_x=-34, point_y=-21)
+                    self.LayerHandler.add_annotation('4', road_address, point_x_B, point_y_B, None, -34, -21)
 
                     #getting road address and calculating the distance of roadway(s) between points A and B
                     try:
@@ -665,11 +662,14 @@ class Osoitetyokalu:
                             for linestring in coordinates:
                                 xy_points = self.convert_coordinates_to_XY(linestring)
                                 if ajorata == '0':
-                                    self.add_polyline(xy_points, roadway, color='green')
+                                    #self.add_polyline(xy_points, roadway, color='green')
+                                    self.LayerHandler.add_roadway_feature('4', roadway, xy_points, ajorata)
                                 elif ajorata == '1':
-                                    self.add_polyline(xy_points, roadway, color='yellow')
+                                    #self.add_polyline(xy_points, roadway, color='yellow')
+                                    self.LayerHandler.add_roadway_feature('4', roadway, xy_points, ajorata)
                                 elif ajorata == '2':
-                                    self.add_polyline(xy_points, roadway, color='blue')
+                                    #self.add_polyline(xy_points, roadway, color='blue')
+                                    self.LayerHandler.add_roadway_feature('4', roadway, xy_points, ajorata)
 
                             if ajorata == '0':
                                 self.ajoradat_dlg.Ajorata0lineEdit.clear()
@@ -692,8 +692,6 @@ class Osoitetyokalu:
 
                         if result:
                             self.canvas.setMapTool(pointTool_A)
-
-
 
                     except VkmApiException as e:
                         self.error_popup(e)
@@ -736,7 +734,7 @@ class Osoitetyokalu:
             depending on the search parameters given.
         """
 
-        self.LayerHandler.init_tool5(self.iface)
+        self.LayerHandler.init_tool5()
         self.iface.mapCanvas().refresh()
 
         # drop-down menu icon = latest tool used
@@ -765,8 +763,10 @@ class Osoitetyokalu:
 
         delete_dlg.pushButton_delete_annotations.clicked.connect(self.delete_all_annotations)
         delete_dlg.pushButton_delete_annotation.clicked.connect(self.delete_annotation)
+        delete_dlg.pushButton_delete_feature.clicked.connect(self.LayerHandler.remove_feature)
+        delete_dlg.pushButton_delete_all_features.clicked.connect(self.LayerHandler.remove_all_features)
         delete_dlg.exec_()
-
+        
 
 # ---------------- EXTRA FUNCTIONS ----------------------
 
@@ -1358,7 +1358,8 @@ class Osoitetyokalu:
                 self.set_popup_text(popup_dlg, vkm_feature)
                 point_x = vkm_feature['properties']['x']
                 point_y = vkm_feature['properties']['y']
-                self.add_point('Pistemäinen haku', point_x, point_y, color='0,255,0', shape='triangle', size='3.5')
+                #self.add_point('Pistemäinen haku', point_x, point_y, color='0,255,0', shape='triangle', size='3.5')
+                self.LayerHandler.add_point_feature('5', 'Pistemäinen haku', point_x, point_y)
                 self.zoom_to_feature(point_x, point_y)
                 popup_dlg.show()
                 result = popup_dlg.exec_()
@@ -1463,11 +1464,14 @@ class Osoitetyokalu:
                 for linestring in coordinates:
                     xy_points = self.convert_coordinates_to_XY(linestring)
                     if polyline_roadway == '0':
-                        self.add_polyline(xy_points, polyline_adress, color='green')
+                        #self.add_polyline(xy_points, polyline_adress, color='green')
+                        self.LayerHandler.add_roadway_feature('5', polyline_adress, xy_points, polyline_roadway)
                     elif polyline_roadway == '1':
-                        self.add_polyline(xy_points, polyline_adress, color='red')
+                        #self.add_polyline(xy_points, polyline_adress, color='red')
+                        self.LayerHandler.add_roadway_feature('5', polyline_adress, xy_points, polyline_roadway)
                     elif polyline_roadway == '2':
-                        self.add_polyline(xy_points, polyline_adress, color='blue')
+                        #self.add_polyline(xy_points, polyline_adress, color='blue')
+                        self.LayerHandler.add_roadway_feature('5', polyline_adress, xy_points, polyline_roadway)
 
                 if polyline_roadway == '0':
                     roadways_dlg.Ajorata0lineEdit.clear()
@@ -1480,13 +1484,14 @@ class Osoitetyokalu:
                     roadways_dlg.Ajorata2lineEdit.setText(polyline_adress)
 
             #draw ending and starting points, zoom to starting point
-            self.add_point('Alkupiste', x, y, color='0,255,0', shape='square', size='3.0')
-            self.zoom_to_layer()
+            #self.add_point('Alkupiste', x, y, color='0,255,0', shape='square', size='3.0')
+            self.LayerHandler.add_point_feature('5', 'Alkupiste', x, y, 'starting')
+            self.zoom_to_feature(x, y)
             #getting ending coordinates
             x_end, y_end = self.vkm_request_coordinates(self.vkm_url, road_end, part_end, distance_end)
-            self.add_point('Loppupiste', x_end, y_end, color='255,0,0', shape='square', size='3.0')
+            #self.add_point('Loppupiste', x_end, y_end, color='255,0,0', shape='square', size='3.0')
+            self.LayerHandler.add_point_feature('5', 'Loppupiste', x_end, y_end, 'ending')
 
-            #roadways_file_name = f'{road}_{roadway}_{part}_{distance}--{road_end}_{roadway_end}_{part_end}_{distance_end}.csv'
             roadways_dlg.pushButton_Download.clicked.connect(lambda: self.write_roadways_to_csv(final_url, roadways_dlg))
             roadways_dlg.show()
             result = roadways_dlg.exec_()
@@ -1495,7 +1500,7 @@ class Osoitetyokalu:
                 return
 
     def zoom_to_feature(self, point_x = None, point_y = None):
-        """Zooms and centers to given coordinates(available in the next version) or to an active layer.
+        """Zooms and centers to given coordinates.
 
         Args:
             point_x (float, optional): X coordinate. Defaults to None.
