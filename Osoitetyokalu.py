@@ -44,6 +44,8 @@ from PyQt5.QtGui import QTextDocument
 from PyQt5.QtCore import QSizeF, QPoint
 
 from requests import get
+import requests
+from requests.adapters import HTTPAdapter, Retry
 import json
 
 #Import modules
@@ -772,15 +774,15 @@ class Osoitetyokalu:
         """
 
         request_url = f'{vkm_url}muunna?x={point_x}&y={point_y}&palautusarvot={palautus_arvot}&vaylan_luonne=0&sade=50'
-        response = get(request_url)
+        
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+        response = s.get(request_url)
+        s.close()
 
-        retry_times = 0
-        while response.status_code !=200: #retry
-            logging.info('retrying')
-            response = get(request_url)
-            retry_times +=1
-            if retry_times > 20:
-                raise VkmApiException(request_url)
+        if response.status_code != 200:
+            raise VkmApiException(request_url)
 
         vkm_data = json.loads(response.content)
         for vkm_feature in vkm_data['features']:
@@ -882,15 +884,14 @@ class Osoitetyokalu:
 
         request_url = f'{vkm_url}muunna?tie={road}&osa={road_part}&etaisyys={distance}&palautusarvot={output_parameters}&vaylan_luonne=0'
 
-        response = get(request_url)
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+        response = s.get(request_url)
+        s.close()
 
-        retry_times = 0
-        while response.status_code !=200: #retry
-            logging.info('retrying')
-            response = get(request_url)
-            retry_times +=1
-            if retry_times > 20:
-                raise VkmApiException(request_url)
+        if response.status_code != 200:
+            raise VkmApiException(request_url)
 
         vkm_data = json.loads(response.content)
 
@@ -1065,18 +1066,18 @@ class Osoitetyokalu:
         """
 
         request_url = f'{vkm_url}muunna?tie={tie_A}&osa={osa_A}&etaisyys={etaisyys_A}&tie_loppu={tie_B}&osa_loppu={osa_B}&etaisyys_loppu={etaisyys_B}&vaylan_luonne=0&valihaku=true&palautusarvot={palautus_arvot}'
-        response = get(request_url)
 
         polyline_dict = {}
         pituus_dict = {}
 
-        retry_times = 0
-        while response.status_code !=200: #retry
-            logging.info('retrying')
-            response = get(request_url)
-            retry_times += 1
-            if retry_times > 20:
-                raise VkmApiException(request_url)
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+        response = s.get(request_url)
+        s.close()
+
+        if response.status_code != 200:
+            raise VkmApiException(request_url)
 
         vkm_data = json.loads(response.content)
 
@@ -1140,16 +1141,17 @@ class Osoitetyokalu:
         """
 
         request_url = f'{vkm_url}muunna?tie={tie}&osa={osa}&osa_loppu={osa}&vaylan_luonne=0&valihaku=true&palautusarvot={palautus_arvot}'
-        response = get(request_url)
+        
         polyline_dict = {}
 
-        retry_times = 0
-        while response.status_code !=200: #retry
-            logging.info('retrying')
-            response = get(request_url)
-            retry_times += 1
-            if retry_times > 20:
-                raise VkmApiException(request_url)
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+        response = s.get(request_url)
+        s.close()
+
+        if response.status_code != 200:
+            raise VkmApiException(request_url)
 
         vkm_data = json.loads(response.content)
 
@@ -1299,16 +1301,16 @@ class Osoitetyokalu:
             valihaku = 'true'
 
         final_url = f'{url}&valihaku={valihaku}&palautusarvot={output_parameters}'
-        response = get(final_url)
 
-        retry_times = 0
-        while response.status_code !=200: #retry
-            logging.info('retrying')
-            response = get(final_url)
-            retry_times += 1
-            if retry_times > 20:
-                self.error_popup(f'VKM-API ei vastaa. URL: {final_url}')
-                return
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+        response = s.get(final_url)
+        s.close()
+
+        if response.status_code != 200:
+            self.error_popup(f'VKM-API ei vastaa. URL: {final_url}')
+            return
 
         vkm_data = json.loads(response.content)
 
@@ -1534,16 +1536,16 @@ class Osoitetyokalu:
             VkmApiException: VKM API doesn't respond.
             VkmRequestException: Wrong request parameters.
         """
+        
         try:
-            response = get(request_url)
+            s = requests.Session()
+            retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+            s.mount('http://', HTTPAdapter(max_retries=retries))
+            response = s.get(request_url)
+            s.close()
 
-            retry_times = 0
-            while response.status_code !=200: #retry
-                logging.info('retrying')
-                response = get(request_url)
-                retry_times +=1
-                if retry_times > 20:
-                    raise VkmApiException(request_url)
+            if response.status_code != 200:
+                raise VkmApiException(request_url)
 
             vkm_data = json.loads(response.content)
 
