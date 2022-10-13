@@ -386,7 +386,7 @@ class LayerHandler(object):
             layer_name (str): Name of the layer.
 
         Returns:
-            _type_: _description_
+            point_layer (QgsVectorLayer): _description_
         """
         point_layer = QgsVectorLayer('Point?crs=epsg:3067', layer_name, 'memory')
 
