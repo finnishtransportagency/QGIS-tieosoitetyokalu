@@ -32,12 +32,12 @@ logPath = Path.joinpath(rootPath, 'logs')
 logPath.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(filename=Path.joinpath(logPath, 'log.txt'), level=logging.DEBUG, format=formatter)
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, QVariant
-from qgis.PyQt.QtGui import QIcon, QColor
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolButton, QMenu
 from qgis.gui import QgsMapToolEmitPoint
-from qgis.core import QgsField, QgsFeature, QgsVectorLayer, QgsProject, QgsCoordinateReferenceSystem, QgsGeometry, QgsPointXY
-from qgis.core import QgsTextAnnotation, QgsMarkerSymbol, QgsSingleSymbolRenderer, QgsLayerTreeLayer, Qgis, QgsRectangle
+from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsPointXY
+from qgis.core import Qgis, QgsRectangle
 from PyQt5.QtWidgets import QLineEdit
 
 from requests import get

@@ -170,9 +170,9 @@ class LayerHandler(object):
         """
         if tool_id == '1':
             layer = self.tool1_annotation_layer
-        if tool_id == '3':
+        elif tool_id == '3':
             layer = self.tool3_annotation_layer
-        if tool_id == '4':
+        elif tool_id == '4':
             layer = self.tool4_annotation_layer
 
         annot = QgsTextAnnotation()
@@ -210,33 +210,21 @@ class LayerHandler(object):
         feature.setAttributes([tool_id, feature_name])
 
         if tool_id == '2':
-            self.tool2_point_layer.dataProvider().addFeature(feature)
-            self.tool2_point_layer.updateExtents()
-            self.tool2_point_layer.reload()
+            self.add_feature(self.tool2_point_layer, feature)
 
-        if tool_id == '3':
+        elif tool_id == '3':
             if point_type == 'starting':
-                self.tool3_starting_point_layer.dataProvider().addFeature(feature)
-                self.tool3_starting_point_layer.updateExtents()
-                self.tool3_starting_point_layer.reload()
-            if point_type == 'ending':
-                self.tool3_ending_point_layer.dataProvider().addFeature(feature)
-                self.tool3_ending_point_layer.updateExtents()
-                self.tool3_ending_point_layer.reload()
+                self.add_feature(self.tool3_starting_point_layer, feature)
+            elif point_type == 'ending':
+                self.add_feature(self.tool3_ending_point_layer, feature)
 
-        if tool_id == '5':
+        elif tool_id == '5':
             if point_type == 'starting':
-                self.tool5_starting_point_layer.dataProvider().addFeature(feature)
-                self.tool5_starting_point_layer.updateExtents()
-                self.tool5_starting_point_layer.reload()
-            if point_type == 'ending':
-                self.tool5_ending_point_layer.dataProvider().addFeature(feature)
-                self.tool5_ending_point_layer.updateExtents()
-                self.tool5_ending_point_layer.reload()
-            if point_type == None:
-                self.tool5_point_layer.dataProvider().addFeature(feature)
-                self.tool5_point_layer.updateExtents()
-                self.tool5_point_layer.reload()
+                self.add_feature(self.tool5_starting_point_layer, feature)
+            elif point_type == 'ending':
+                self.add_feature(self.tool5_ending_point_layer, feature)
+            elif point_type == None:
+                self.add_feature(self.tool5_point_layer, feature)
 
             
     def add_roadway_feature(self, tool_id:str, feature_name:str, xy_points:list, roadway:str):
@@ -254,47 +242,41 @@ class LayerHandler(object):
 #       
         if tool_id == '3':
             if roadway == '0':
-                self.tool3_roadway0_layer.dataProvider().addFeature(feature)
-                self.tool3_roadway0_layer.updateExtents()
-                self.tool3_roadway0_layer.reload()
-            if roadway == '1':
-                self.tool3_roadway1_layer.dataProvider().addFeature(feature)
-                self.tool3_roadway1_layer.updateExtents()
-                self.tool3_roadway1_layer.reload()
-            if roadway == '2':
-                self.tool3_roadway2_layer.dataProvider().addFeature(feature)
-                self.tool3_roadway2_layer.updateExtents()
-                self.tool3_roadway2_layer.reload()
+                self.add_feature(self.tool3_roadway0_layer, feature)
+            elif roadway == '1':
+                self.add_feature(self.tool3_roadway1_layer, feature)
+            elif roadway == '2':
+                self.add_feature(self.tool3_roadway2_layer, feature)
 
-        if tool_id == '4':
+        elif tool_id == '4':
             if roadway == '0':
-                self.tool4_roadway0_layer.dataProvider().addFeature(feature)
-                self.tool4_roadway0_layer.updateExtents()
-                self.tool4_roadway0_layer.reload()
-            if roadway == '1':
-                self.tool4_roadway1_layer.dataProvider().addFeature(feature)
-                self.tool4_roadway1_layer.updateExtents()
-                self.tool4_roadway1_layer.reload()
-            if roadway == '2':
-                self.tool4_roadway2_layer.dataProvider().addFeature(feature)
-                self.tool4_roadway2_layer.updateExtents()
-                self.tool4_roadway2_layer.reload()
+                self.add_feature(self.tool4_roadway0_layer, feature)
+            elif roadway == '1':
+                self.add_feature(self.tool4_roadway1_layer, feature)
+            elif roadway == '2':
+                self.add_feature(self.tool4_roadway2_layer, feature)
 
-        if tool_id == '5':
+        elif tool_id == '5':
             if roadway == '0':
-                self.tool5_roadway0_layer.dataProvider().addFeature(feature)
-                self.tool5_roadway0_layer.updateExtents()
-                self.tool5_roadway0_layer.reload()
-            if roadway == '1':
-                self.tool5_roadway1_layer.dataProvider().addFeature(feature)
-                self.tool5_roadway1_layer.updateExtents()
-                self.tool5_roadway1_layer.reload()
-            if roadway == '2':
-                self.tool5_roadway2_layer.dataProvider().addFeature(feature)
-                self.tool5_roadway2_layer.updateExtents()
-                self.tool5_roadway2_layer.reload()
+                self.add_feature(self.tool5_roadway0_layer, feature)
+            elif roadway == '1':
+                self.add_feature(self.tool5_roadway1_layer, feature)
+            elif roadway == '2':
+                self.add_feature(self.tool5_roadway2_layer, feature)
         
     
+    def add_feature(self, layer:QgsVectorLayer, feature:QgsFeature):
+        """Adds and reloads a layer after adding a feature.
+
+        Args:
+            layer (QgsVectorLayer): Layer to add the feature to.
+            feature (QgsFeature): Feature being added.
+        """
+        layer.dataProvider().addFeature(feature)
+        layer.updateExtents()
+        layer.reload()
+
+
     def remove_feature(self):
         """Removes one random feature that was added using this plugin.
         """

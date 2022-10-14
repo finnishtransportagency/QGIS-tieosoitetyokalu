@@ -1,5 +1,6 @@
 - Asennus. 
-	1. Lataa Osoitetyokalu.zip-tiedosto Githubista.
+	1. Lataa Osoitetyokalu.zip-tiedosto Githubista:
+	https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/releases
 	
 	2. QGIS > Hallitse ja asenna lisäosia > Asenna ZIP-tiedostosta > valitse ladattu ZIP-tiedosto > Asenna lisäosa.
 	
@@ -50,6 +51,7 @@
 
 - Installation.
     1. Download the Osoitetyokalu.zip file from Github release.
+	https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/releases
 
     2. Open Qgis > Plugins > Manage and Install Plugins > Install from Zip > choose the downloaded zip file > press Install Plugin.
 
