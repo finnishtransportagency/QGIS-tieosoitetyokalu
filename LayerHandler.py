@@ -8,7 +8,7 @@ from PyQt5.QtGui import QTextDocument
 
 
 class LayerHandler(object):
-    
+
     def __new__(cls):
         if not hasattr(cls, 'instance'):
             cls.instance = super(LayerHandler, cls).__new__(cls)
@@ -22,23 +22,45 @@ class LayerHandler(object):
         self.is_tool4_initialized = False
         self.is_tool5_initialized = False
 
+        self.tool_layers = {
+            "1": {
+                "Karttavihjeet": None
+            },
+            "3": {
+                "Karttavihjeet": None,
+                "Alkupisteet": None,
+                "Loppupisteet": None
+            }
+        }
+
         self.layers = []
 
         self.project = QgsProject.instance()
         self.root = self.project.layerTreeRoot()
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
+        self.tool_layers['1']['Karttavihjeet'] = None
+
+    def create_layer_group(self, group_name:str):
+        """Creates a layer group.
+
+        Args:
+            group_name (str): Name of the group.
+        """
+        if self.root.findGroup(group_name) is None:
+            return self.root.addGroup(group_name)
+        return self.root.findGroup(group_name)
 
     def init_tool1(self):
-        if self.is_tool1_initialized:
+        if self.tool_layers['1']['Karttavihjeet'] in self.project.mapLayers().values():
             return
 
-        self.group_1 = self.root.addGroup('1. Tieosoite')
+        self.group_1 = self.create_layer_group('1. Tieosoite')
 
         #annotation layer
-        self.tool1_annotation_layer = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet')
-        self.project.addMapLayer(self.tool1_annotation_layer, False)
-        self.group_1.addLayer(self.tool1_annotation_layer)
+        self.tool_layers['1']['Karttavihjeet'] = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet', "1")
+        self.project.addMapLayer(self.tool_layers['1']['Karttavihjeet'], False)
+        self.group_1.addLayer(self.tool_layers['1']['Karttavihjeet'])
 
         self.rearrange_layers(self.layers)
         self.is_tool1_initialized = True
@@ -48,7 +70,7 @@ class LayerHandler(object):
         if self.is_tool2_initialized:
             return
 
-        self.group_2 = self.root.addGroup('2. Hakutyökalu')
+        self.group_2 = self.create_layer_group('2. Hakutyökalu')
 
         #point layer
         self.tool2_point_layer = self.init_point_layer('255,0,0', 'circle', '2.5', 'Pisteet')
@@ -63,7 +85,7 @@ class LayerHandler(object):
         if self.is_tool3_initialized:
             return
 
-        self.group_3 = self.root.addGroup('3. Tieosa')
+        self.group_3 = self.create_layer_group('3. Tieosa')
 
         #annotation layer
         self.tool3_annotation_layer = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet')
@@ -99,7 +121,7 @@ class LayerHandler(object):
         if self.is_tool4_initialized:
             return
 
-        self.group_4 = self.root.addGroup('4. Tieosoite (Alku- ja loppupiste)')
+        self.group_4 = self.create_layer_group('4. Tieosoite (Alku- ja loppupiste)')
 
         #annotation layer
         self.tool4_annotation_layer = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet')
@@ -124,7 +146,7 @@ class LayerHandler(object):
     def init_tool5(self):
         if self.is_tool5_initialized:
             return
-        self.group_5 = self.root.addGroup('5. Kohdistustyökalu')
+        self.group_5 = self.create_layer_group('5. Kohdistustyökalu')
 
         #point layer
         self.tool5_point_layer = self.init_point_layer('0,255,0', 'triangle', '3.5', 'Pisteet')
@@ -169,7 +191,7 @@ class LayerHandler(object):
             position_y (int, optional): X position of the annotation box in reference to the coordinates. Defaults to 11.
         """
         if tool_id == '1':
-            layer = self.tool1_annotation_layer
+            layer = self.tool_layers['1']['Karttavihjeet']
         elif tool_id == '3':
             layer = self.tool3_annotation_layer
         elif tool_id == '4':
@@ -226,7 +248,7 @@ class LayerHandler(object):
             elif point_type == None:
                 self.add_feature(self.tool5_point_layer, feature)
 
-            
+
     def add_roadway_feature(self, tool_id:str, feature_name:str, xy_points:list, roadway:str):
         """Draws a line using list of XY coordinates.
 
@@ -239,7 +261,7 @@ class LayerHandler(object):
         feature = QgsFeature()
         feature.setGeometry(QgsGeometry.fromPolylineXY(xy_points))
         feature.setAttributes([tool_id, feature_name])
-#       
+#
         if tool_id == '3':
             if roadway == '0':
                 self.add_feature(self.tool3_roadway0_layer, feature)
@@ -263,8 +285,8 @@ class LayerHandler(object):
                 self.add_feature(self.tool5_roadway1_layer, feature)
             elif roadway == '2':
                 self.add_feature(self.tool5_roadway2_layer, feature)
-        
-    
+
+
     def add_feature(self, layer:QgsVectorLayer, feature:QgsFeature):
         """Adds and reloads a layer after adding a feature.
 
@@ -287,7 +309,7 @@ class LayerHandler(object):
                     layer.reload()
                     break
 
-    
+
     def remove_all_features(self):
         """Removes all features that were added using this plugin.
         """
@@ -358,7 +380,7 @@ class LayerHandler(object):
         return layer_list
 
 
-    def init_point_layer(self, color:str, shape:str, size:str, layer_name:str):
+    def init_point_layer(self, color:str, shape:str, size:str, layer_name:str, tool:str):
         """Creates a point layer with given style variables.
 
         Args:
@@ -370,6 +392,12 @@ class LayerHandler(object):
         Returns:
             point_layer (QgsVectorLayer): _description_
         """
+        if self.tool_layers[tool][layer_name] != None and self.tool_layers[tool][layer_name] in self.project.mapLayers().values():
+            layer = self.tool_layers[tool][layer_name]
+            if layer not in self.layers:
+                self.layers.append(layer)
+            return layer
+
         point_layer = QgsVectorLayer('Point?crs=epsg:3067', layer_name, 'memory')
 
         point_pr = point_layer.dataProvider()
@@ -385,10 +413,11 @@ class LayerHandler(object):
         'size': size
         })
         point_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
-        
+
         point_layer.setCrs(self.my_crs)
 
-        self.layers.append(point_layer)
+        if point_layer not in self.layers:
+                self.layers.append(layer)
         return point_layer
 
 
@@ -403,7 +432,7 @@ class LayerHandler(object):
 
         for layer in layer_list: # How many layers we need to move
             order.insert(0, order.pop(order.index(layer))) # Last layer to first position
-    
+
         self.root.setCustomLayerOrder(order)
 
 
