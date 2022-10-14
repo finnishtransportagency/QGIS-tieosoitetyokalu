@@ -40,7 +40,11 @@ from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsPointXY
 from qgis.core import Qgis, QgsRectangle
 from PyQt5.QtWidgets import QLineEdit
 
-from requests import get
+from PyQt5.QtGui import QTextDocument
+from PyQt5.QtCore import QSizeF, QPoint
+
+import requests
+from requests.adapters import HTTPAdapter, Retry
 import json
 
 #Import modules
@@ -98,7 +102,7 @@ class Osoitetyokalu:
 
         self.LayerHandler = LayerHandler()
 
-    
+
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
@@ -186,7 +190,7 @@ class Osoitetyokalu:
             self.iface.addPluginToMenu(
                 self.menu,
                 action)
-        
+
         if add_to_popupMenu is True:
             # Adds action to a dropdown menu
             self.popupMenu.addAction(action)
@@ -209,7 +213,7 @@ class Osoitetyokalu:
         icon_path_4 = ':/plugins/osoitetyokalu/tool_icons/tool_4.png'
         icon_path_5 = ':/plugins/osoitetyokalu/tool_icons/tool_5.png'
         icon_path_6 = ':/plugins/osoitetyokalu/tool_icons/tool_6.png'
-        
+
         self.add_action(
             icon_path_1,
             text=self.tr(u'1. Tieosoite'),
@@ -276,7 +280,7 @@ class Osoitetyokalu:
                 self.tr(u'&Osoitetyokalu'),
                 action)
             self.iface.removeToolBarIcon(action)
-       
+
 
     def road_address(self):
         """Retrieves the road address from VKM-api using the coordinates that come from a click on canvas and displays it as a annotation."""
@@ -313,7 +317,7 @@ class Osoitetyokalu:
                 road_address, point_x, point_y, _, _, _, _ = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y)
 
                 dlg.AddrLineEdit.setText(road_address)
-                
+
                 #adding an annotation with road address to the coordinates
                 self.LayerHandler.add_annotation('1', road_address, point_x, point_y)
 
@@ -382,15 +386,14 @@ class Osoitetyokalu:
                 vkm_url = 'https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
                 request_url = f'{vkm_url}muunna?x={point_x}&y={point_y}&palautusarvot=1,2,3,4,5,6&vaylan_luonne=0'
 
-                response = get(request_url)
+                s = requests.Session()
+                retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+                s.mount('http://', HTTPAdapter(max_retries=retries))
+                response = s.get(request_url)
+                s.close()
 
-                retry_times = 0
-                while response.status_code !=200: #retry
-                    logging.info('retrying')
-                    response = get(request_url)
-                    retry_times += 1
-                    if retry_times > 20:
-                        raise VkmApiException(request_url)
+                if response.status_code != 200:
+                    raise VkmApiException(request_url)
 
                 vkm_data = json.loads(response.content)
                 for vkm_feature in vkm_data['features']:
@@ -487,7 +490,7 @@ class Osoitetyokalu:
                 road_part_halfway = road_part_length // 2
 
                 point_x, point_y = self.vkm_request_coordinates(vkm_url, road=tie, road_part=osa, distance=road_part_halfway)
-                
+
                 self.LayerHandler.add_annotation('3', roadway, point_x, point_y, 5)
                 self.zoom_to_feature(point_x, point_y)
 
@@ -743,7 +746,7 @@ class Osoitetyokalu:
         delete_dlg.pushButton_delete_feature.clicked.connect(self.LayerHandler.remove_feature)
         delete_dlg.pushButton_delete_all_features.clicked.connect(self.LayerHandler.remove_all_features)
         delete_dlg.exec_()
-        
+
 
 # ---------------- EXTRA FUNCTIONS ----------------------
 
@@ -770,15 +773,15 @@ class Osoitetyokalu:
         """
 
         request_url = f'{vkm_url}muunna?x={point_x}&y={point_y}&palautusarvot={palautus_arvot}&vaylan_luonne=0&sade=50'
-        response = get(request_url)
 
-        retry_times = 0
-        while response.status_code !=200: #retry
-            logging.info('retrying')
-            response = get(request_url)
-            retry_times +=1
-            if retry_times > 20:
-                raise VkmApiException(request_url)
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+        response = s.get(request_url)
+        s.close()
+
+        if response.status_code != 200:
+            raise VkmApiException(request_url)
 
         vkm_data = json.loads(response.content)
         for vkm_feature in vkm_data['features']:
@@ -880,15 +883,14 @@ class Osoitetyokalu:
 
         request_url = f'{vkm_url}muunna?tie={road}&osa={road_part}&etaisyys={distance}&palautusarvot={output_parameters}&vaylan_luonne=0'
 
-        response = get(request_url)
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+        response = s.get(request_url)
+        s.close()
 
-        retry_times = 0
-        while response.status_code !=200: #retry
-            logging.info('retrying')
-            response = get(request_url)
-            retry_times +=1
-            if retry_times > 20:
-                raise VkmApiException(request_url)
+        if response.status_code != 200:
+            raise VkmApiException(request_url)
 
         vkm_data = json.loads(response.content)
 
@@ -955,18 +957,18 @@ class Osoitetyokalu:
         """
 
         request_url = f'{vkm_url}muunna?tie={tie_A}&osa={osa_A}&etaisyys={etaisyys_A}&tie_loppu={tie_B}&osa_loppu={osa_B}&etaisyys_loppu={etaisyys_B}&vaylan_luonne=0&valihaku=true&palautusarvot={palautus_arvot}'
-        response = get(request_url)
 
         polyline_dict = {}
         pituus_dict = {}
 
-        retry_times = 0
-        while response.status_code !=200: #retry
-            logging.info('retrying')
-            response = get(request_url)
-            retry_times += 1
-            if retry_times > 20:
-                raise VkmApiException(request_url)
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+        response = s.get(request_url)
+        s.close()
+
+        if response.status_code != 200:
+            raise VkmApiException(request_url)
 
         vkm_data = json.loads(response.content)
 
@@ -1030,16 +1032,17 @@ class Osoitetyokalu:
         """
 
         request_url = f'{vkm_url}muunna?tie={tie}&osa={osa}&osa_loppu={osa}&vaylan_luonne=0&valihaku=true&palautusarvot={palautus_arvot}'
-        response = get(request_url)
+
         polyline_dict = {}
 
-        retry_times = 0
-        while response.status_code !=200: #retry
-            logging.info('retrying')
-            response = get(request_url)
-            retry_times += 1
-            if retry_times > 20:
-                raise VkmApiException(request_url)
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+        response = s.get(request_url)
+        s.close()
+
+        if response.status_code != 200:
+            raise VkmApiException(request_url)
 
         vkm_data = json.loads(response.content)
 
@@ -1189,16 +1192,16 @@ class Osoitetyokalu:
             valihaku = 'true'
 
         final_url = f'{url}&valihaku={valihaku}&palautusarvot={output_parameters}'
-        response = get(final_url)
 
-        retry_times = 0
-        while response.status_code !=200: #retry
-            logging.info('retrying')
-            response = get(final_url)
-            retry_times += 1
-            if retry_times > 20:
-                self.error_popup(f'VKM-API ei vastaa. URL: {final_url}')
-                return
+        s = requests.Session()
+        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+        s.mount('http://', HTTPAdapter(max_retries=retries))
+        response = s.get(final_url)
+        s.close()
+
+        if response.status_code != 200:
+            self.error_popup(f'VKM-API ei vastaa. URL: {final_url}')
+            return
 
         vkm_data = json.loads(response.content)
 
@@ -1298,7 +1301,7 @@ class Osoitetyokalu:
                     distance_end = params['lineEdit_Etaisyys_loppu']
                     if vkm_feature['properties']['ajorata'] == 0 or vkm_feature['properties']['ajorata'] == 1:
                         road_length = road_length + vkm_feature['properties']['mitattu_pituus']
-                     
+
                 #search was a road part search -> distance_end = highest ending distance of all the features(lines)
                 elif 'lineEdit_Osa_loppu' in params and 'lineEdit_Etaisyys_loppu' not in params:
                     part_end = params['lineEdit_Osa_loppu']
@@ -1337,7 +1340,7 @@ class Osoitetyokalu:
             roadways_dlg.AjoradatPituuslineEdit.setText(str(overall_length))
             roadways_dlg.PituuslineEdit.clear()
             roadways_dlg.PituuslineEdit.setText(str(road_length))
-                   
+
             for polyline_roadway, coordinates in polyline_dict.items():
                 for length_dict_roadway, length in length_dict.items():
                     if length_dict_roadway == polyline_roadway:
@@ -1385,7 +1388,7 @@ class Osoitetyokalu:
             point_x (float, optional): X coordinate. Defaults to None.
             point_y (float, optional): Y coordiante. Defaults to None.
         """
-        
+
         rectangle = QgsRectangle(point_x, point_y, point_x, point_y)
         canvas = self.iface.mapCanvas()
         canvas.setExtent(rectangle)
@@ -1418,16 +1421,16 @@ class Osoitetyokalu:
             VkmApiException: VKM API doesn't respond.
             VkmRequestException: Wrong request parameters.
         """
-        try:
-            response = get(request_url)
 
-            retry_times = 0
-            while response.status_code !=200: #retry
-                logging.info('retrying')
-                response = get(request_url)
-                retry_times +=1
-                if retry_times > 20:
-                    raise VkmApiException(request_url)
+        try:
+            s = requests.Session()
+            retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+            s.mount('http://', HTTPAdapter(max_retries=retries))
+            response = s.get(request_url)
+            s.close()
+
+            if response.status_code != 200:
+                raise VkmApiException(request_url)
 
             vkm_data = json.loads(response.content)
 
