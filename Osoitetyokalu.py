@@ -43,7 +43,6 @@ from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtGui import QTextDocument
 from PyQt5.QtCore import QSizeF, QPoint
 
-from requests import get
 import requests
 from requests.adapters import HTTPAdapter, Retry
 import json
@@ -385,15 +384,14 @@ class Osoitetyokalu:
                 vkm_url = 'https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
                 request_url = f'{vkm_url}muunna?x={point_x}&y={point_y}&palautusarvot=1,2,3,4,5,6&vaylan_luonne=0'
 
-                response = get(request_url)
-
-                retry_times = 0
-                while response.status_code !=200: #retry
-                    logging.info('retrying')
-                    response = get(request_url)
-                    retry_times += 1
-                    if retry_times > 20:
-                        raise VkmApiException(request_url)
+                s = requests.Session()
+                retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
+                s.mount('http://', HTTPAdapter(max_retries=retries))
+                response = s.get(request_url)
+                s.close()
+                
+                if response.status_code != 200:
+                    raise VkmApiException(request_url)
 
                 vkm_data = json.loads(response.content)
                 for vkm_feature in vkm_data['features']:
