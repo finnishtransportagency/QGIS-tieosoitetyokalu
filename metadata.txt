@@ -6,7 +6,7 @@
 name=Osoitetyokalu
 qgisMinimumVersion=3.0
 description=Osoitetyokalu
-version=1.0.0
+version=1.1.0
 author=Sitowise
 email=support@sitowise.com
 
@@ -19,9 +19,6 @@ repository=https://github.com/sitowise/QGIS-tieosoitetyokalu
 # Recommended items:
 
 hasProcessingProvider=no
-# Uncomment the following line and add your changelog:
-# changelog=
-  1.0.0 First stable release
 
 # Tags are comma separated with spaces allowed
 tags=python
