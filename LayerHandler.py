@@ -162,13 +162,9 @@ class LayerHandler(object):
             position_x (int, optional): X position of the annotation box in reference to the coordinates. Defaults to 14.
             position_y (int, optional): X position of the annotation box in reference to the coordinates. Defaults to 11.
         """
-        if tool_id == '1':
-            layer = self.tool_layers['1']['Karttavihjeet']
-        elif tool_id == '3':
-            layer = self.tool_layers['3']['Karttavihjeet']
-        elif tool_id == '4':
-            layer = self.tool_layers['4']['Karttavihjeet']
-
+        
+        layer = self.tool_layers[tool_id]['Karttavihjeet']
+       
         annot = QgsTextAnnotation()
 
         if number_of_rows != None:
@@ -203,22 +199,12 @@ class LayerHandler(object):
         feature.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(point_x, point_y)))
         feature.setAttributes([tool_id, feature_name])
 
-        if tool_id == '2':
+        if point_type == 'starting':
+            self.add_feature(self.tool_layers[tool_id]['Alkupisteet'], feature)
+        elif point_type == 'ending':
+            self.add_feature(self.tool_layers[tool_id]['Loppupisteet'], feature)
+        elif point_type == None:
             self.add_feature(self.tool_layers[tool_id]['Pisteet'], feature)
-
-        elif tool_id == '3':
-            if point_type == 'starting':
-                self.add_feature(self.tool_layers[tool_id]['Alkupisteet'], feature)
-            elif point_type == 'ending':
-                self.add_feature(self.tool_layers[tool_id]['Loppupisteet'], feature)
-
-        elif tool_id == '5':
-            if point_type == 'starting':
-                self.add_feature(self.tool_layers[tool_id]['Alkupisteet'], feature)
-            elif point_type == 'ending':
-                self.add_feature(self.tool_layers[tool_id]['Loppupisteet'], feature)
-            elif point_type == None:
-                self.add_feature(self.tool_layers[tool_id]['Pisteet'], feature)
 
 
     def add_roadway_feature(self, tool_id:str, feature_name:str, xy_points:list, roadway:str):
@@ -254,21 +240,23 @@ class LayerHandler(object):
         """Removes one random feature that was added using this plugin.
         """
         for layer in self.layers:
-            with edit(layer):
-                for feature in layer.getFeatures():
-                    layer.deleteFeature(feature.id())
-                    layer.reload()
-                    break
+            if layer in self.project.mapLayers().values():
+                with edit(layer):
+                    for feature in layer.getFeatures():
+                        layer.deleteFeature(feature.id())
+                        layer.reload()
+                        break
 
 
     def remove_all_features(self):
         """Removes all features that were added using this plugin.
         """
         for layer in self.layers:
-            with edit(layer):
-                feature_id_list = [feature.id() for feature in layer.getFeatures()]
-                layer.deleteFeatures(feature_id_list)
-                layer.reload()
+            if layer in self.project.mapLayers().values():
+                with edit(layer):
+                    feature_id_list = [feature.id() for feature in layer.getFeatures()]
+                    layer.deleteFeatures(feature_id_list)
+                    layer.reload()
 
 
 # ------------------------------------------------------#
@@ -276,6 +264,10 @@ class LayerHandler(object):
 
     def init_roadway_layers(self, tool:str, group=None):
         """Create a different layer for each roadway number for roadway features.
+
+        Args:
+            tool (str): Tool number.
+            group (): A group to add the layer to.
 
         Returns:
             layer_list (list): List of roadway layers.
@@ -383,6 +375,8 @@ class LayerHandler(object):
             shape (str): _description_
             size (str): _description_
             layer_name (str): Name of the layer.
+            tool (str): Tool number.
+            group (): A group to add the layer to.
 
         Returns:
             point_layer (QgsVectorLayer): _description_
@@ -431,7 +425,7 @@ class LayerHandler(object):
         order = self.root.customLayerOrder()
 
         for layer in layer_list: # How many layers we need to move
-            if isinstance(layer, QgsVectorLayer):
+            if isinstance(layer, QgsVectorLayer) and layer in self.project.mapLayers().values():
                 order.insert(0, order.pop(order.index(layer))) # Last layer to first position
 
         self.root.setCustomLayerOrder(order)
