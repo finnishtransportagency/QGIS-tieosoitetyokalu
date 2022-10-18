@@ -280,26 +280,15 @@ class LayerHandler(object):
                 self.layers.append(layer)
 
         else:
-            self.roadway0_layer = QgsVectorLayer('LineString?crs=3067&field=id:integer&index=yes', 'Ajoradat 0', 'memory')
-            self.roadway0_pr = self.roadway0_layer.dataProvider()
-            self.roadway0_pr.addAttributes([QgsField("TOOL_ID", QVariant.String)])
-            self.roadway0_pr.addAttributes([QgsField("NAME", QVariant.String)])
-            self.roadway0_layer.updateFields()
+            roadway0_layer = self.create_roadway_layer('Ajoradat 0', QColor(0,255,0))
 
-            renderer = self.roadway0_layer.renderer()
-            renderer.symbol().setWidth(0.6)
-            renderer.symbol().setColor(QColor(0,255,0))
-            self.roadway0_layer.triggerRepaint()
+            self.project.addMapLayer(roadway0_layer, False)
+            group.addLayer(roadway0_layer)
 
-            self.roadway0_layer.setCrs(self.my_crs)
+            layer_list.append(roadway0_layer)
 
-            self.project.addMapLayer(self.roadway0_layer, False)
-            group.addLayer(self.roadway0_layer)
-
-            layer_list.append(self.roadway0_layer)
-
-            if self.roadway0_layer not in self.layers:
-                self.layers.append(self.roadway0_layer)
+            if roadway0_layer not in self.layers:
+                self.layers.append(roadway0_layer)
 
         #roadway 1 layer
         if self.tool_layers[tool]['Ajoradat 1'] != None and self.tool_layers[tool]['Ajoradat 1'] in self.project.mapLayers().values():
@@ -310,26 +299,15 @@ class LayerHandler(object):
                 self.layers.append(layer)
 
         else:
-            self.roadway1_layer = QgsVectorLayer('LineString?crs=3067&field=id:integer&index=yes', 'Ajoradat 1', 'memory')
-            self.roadway1_pr = self.roadway1_layer.dataProvider()
-            self.roadway1_pr.addAttributes([QgsField("TOOL_ID", QVariant.String)])
-            self.roadway1_pr.addAttributes([QgsField("NAME", QVariant.String)])
-            self.roadway1_layer.updateFields()
+            roadway1_layer = self.create_roadway_layer('Ajoradat 1', QColor(255,127,80))
 
-            renderer = self.roadway1_layer.renderer()
-            renderer.symbol().setWidth(0.6)
-            renderer.symbol().setColor(QColor(255,127,80))
-            self.roadway1_layer.triggerRepaint()
+            self.project.addMapLayer(roadway1_layer, False)
+            group.addLayer(roadway1_layer)
 
-            self.roadway1_layer.setCrs(self.my_crs)
+            layer_list.append(roadway1_layer)
 
-            self.project.addMapLayer(self.roadway1_layer, False)
-            group.addLayer(self.roadway1_layer)
-
-            layer_list.append(self.roadway1_layer)
-
-            if self.roadway1_layer not in self.layers:
-                self.layers.append(self.roadway1_layer)
+            if roadway1_layer not in self.layers:
+                self.layers.append(roadway1_layer)
 
         #roadway 2 layer
         if self.tool_layers[tool]['Ajoradat 2'] != None and self.tool_layers[tool]['Ajoradat 2'] in self.project.mapLayers().values():
@@ -340,28 +318,32 @@ class LayerHandler(object):
                 self.layers.append(layer)
 
         else:
-            self.roadway2_layer = QgsVectorLayer('LineString?crs=3067&field=id:integer&index=yes', 'Ajoradat 2', 'memory')
-            self.roadway2_pr = self.roadway2_layer.dataProvider()
-            self.roadway2_pr.addAttributes([QgsField("TOOL_ID", QVariant.String)])
-            self.roadway2_pr.addAttributes([QgsField("NAME", QVariant.String)])
-            self.roadway2_layer.updateFields()
+            roadway2_layer = self.create_roadway_layer('Ajoradat 2', QColor(0,0,255))
 
-            renderer = self.roadway2_layer.renderer()
-            renderer.symbol().setWidth(0.6)
-            renderer.symbol().setColor(QColor(0,0,255))
-            self.roadway2_layer.triggerRepaint()
+            self.project.addMapLayer(roadway2_layer, False)
+            group.addLayer(roadway2_layer)
 
-            self.roadway2_layer.setCrs(self.my_crs)
+            layer_list.append(roadway2_layer)
 
-            self.project.addMapLayer(self.roadway2_layer, False)
-            group.addLayer(self.roadway2_layer)
-
-            layer_list.append(self.roadway2_layer)
-
-            if self.roadway2_layer not in self.layers:
-                    self.layers.append(self.roadway2_layer)
+            if roadway2_layer not in self.layers:
+                    self.layers.append(roadway2_layer)
 
         return layer_list
+
+    def create_roadway_layer(self, name, color):
+        layer = QgsVectorLayer('LineString?crs=3067&field=id:integer&index=yes', name, 'memory')
+        pr = layer.dataProvider()
+        pr.addAttributes([QgsField("TOOL_ID", QVariant.String), QgsField("NAME", QVariant.String)])
+        layer.updateFields()
+
+        renderer = layer.renderer()
+        renderer.symbol().setWidth(0.6)
+        renderer.symbol().setColor(color)
+        layer.triggerRepaint()
+
+        layer.setCrs(self.my_crs)
+
+        return layer
 
 
     def init_point_layer(self, color:str, shape:str, size:str, layer_name:str, tool:str, group=None):
