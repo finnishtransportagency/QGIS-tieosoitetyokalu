@@ -58,8 +58,6 @@ class LayerHandler(object):
         self.root = self.project.layerTreeRoot()
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
-        self.tool_layers['1']['Karttavihjeet'] = None
-
 
     def create_layer_group(self, group_name:str):
         """Creates a layer group.
@@ -67,17 +65,16 @@ class LayerHandler(object):
         Args:
             group_name (str): Name of the group.
         """
-        if self.root.findGroup(group_name) is None:
-            return self.root.addGroup(group_name)
-        return self.root.findGroup(group_name)
+        group = self.root.findGroup(group_name)
 
+        return self.root.addGroup(group_name) if group is None else group
 
     def init_tool1(self):
         self.group_1 = self.create_layer_group('1. Tieosoite')
 
         #annotation layer
         self.tool_layers['1']['Karttavihjeet'] = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet', '1', self.group_1)
-        
+
         self.rearrange_layers(self.layers)
 
 
@@ -98,7 +95,7 @@ class LayerHandler(object):
 
         #starting point layer
         self.tool_layers['3']['Alkupisteet'] = self.init_point_layer('0,255,0', 'square', '3.0', 'Alkupisteet', '3', self.group_3)
- 
+
         #ending point layer
         self.tool_layers['3']['Loppupisteet'] = self.init_point_layer('255,0,0', 'square', '3.0', 'Loppupisteet', '3', self.group_3)
 
@@ -133,7 +130,7 @@ class LayerHandler(object):
 
         #point layer
         self.tool_layers['5']['Pisteet'] = self.init_point_layer('0,255,0', 'triangle', '3.5', 'Pisteet', '5', self.group_5)
-   
+
         #starting point layer
         self.tool_layers['5']['Alkupisteet'] = self.init_point_layer('0,255,0', 'square', '3.0', 'Alkupisteet', '5', self.group_5)
 
@@ -162,9 +159,9 @@ class LayerHandler(object):
             position_x (int, optional): X position of the annotation box in reference to the coordinates. Defaults to 14.
             position_y (int, optional): X position of the annotation box in reference to the coordinates. Defaults to 11.
         """
-        
+
         layer = self.tool_layers[tool_id]['Karttavihjeet']
-       
+
         annot = QgsTextAnnotation()
 
         if number_of_rows != None:
@@ -203,7 +200,7 @@ class LayerHandler(object):
             self.add_feature(self.tool_layers[tool_id]['Alkupisteet'], feature)
         elif point_type == 'ending':
             self.add_feature(self.tool_layers[tool_id]['Loppupisteet'], feature)
-        elif point_type == None:
+        elif point_type is None:
             self.add_feature(self.tool_layers[tool_id]['Pisteet'], feature)
 
 
@@ -221,7 +218,7 @@ class LayerHandler(object):
         feature.setAttributes([tool_id, feature_name])
 #
         self.add_feature(self.tool_layers[tool_id][f'Ajoradat {roadway}'], feature)
-            
+
 
 
     def add_feature(self, layer:QgsVectorLayer, feature:QgsFeature):
@@ -341,7 +338,7 @@ class LayerHandler(object):
 
             if layer not in self.layers:
                 self.layers.append(layer)
-        
+
         else:
             self.roadway2_layer = QgsVectorLayer('LineString?crs=3067&field=id:integer&index=yes', 'Ajoradat 2', 'memory')
             self.roadway2_pr = self.roadway2_layer.dataProvider()
@@ -363,7 +360,7 @@ class LayerHandler(object):
 
             if self.roadway2_layer not in self.layers:
                     self.layers.append(self.roadway2_layer)
-        
+
         return layer_list
 
 
@@ -404,7 +401,7 @@ class LayerHandler(object):
         point_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
 
         point_layer.setCrs(self.my_crs)
-        
+
         self.project.addMapLayer(point_layer, False)
         if group:
             group.addLayer(point_layer)
