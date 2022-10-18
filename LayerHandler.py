@@ -65,9 +65,13 @@ class LayerHandler(object):
         Args:
             group_name (str): Name of the group.
         """
-        group = self.root.findGroup(group_name)
+        tool_group = self.root.findGroup('Osoitetyökalu')
+        if tool_group is None:
+            tool_group = self.root.insertGroup(0, 'Osoitetyökalu')
+        group = tool_group.findGroup(group_name)
 
-        return self.root.addGroup(group_name) if group is None else group
+        return tool_group.addGroup(group_name) if group is None else group
+
 
     def init_tool1(self):
         self.group_1 = self.create_layer_group('1. Tieosoite')
@@ -75,16 +79,12 @@ class LayerHandler(object):
         #annotation layer
         self.tool_layers['1']['Karttavihjeet'] = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet', '1', self.group_1)
 
-        self.rearrange_layers(self.layers)
-
 
     def init_tool2(self):
         self.group_2 = self.create_layer_group('2. Hakutyökalu')
 
         #point layer
         self.tool_layers['2']['Pisteet'] = self.init_point_layer('255,0,0', 'circle', '2.5', 'Pisteet', '2', self.group_2)
-
-        self.rearrange_layers(self.layers)
 
 
     def init_tool3(self):
@@ -106,8 +106,6 @@ class LayerHandler(object):
         self.tool_layers['3']['Ajoradat 1'] = roadway_layer_list[1]
         self.tool_layers['3']['Ajoradat 2'] = roadway_layer_list[2]
 
-        self.rearrange_layers(self.layers)
-
 
     def init_tool4(self):
         self.group_4 = self.create_layer_group('4. Tieosoite (Alku- ja loppupiste)')
@@ -121,8 +119,6 @@ class LayerHandler(object):
         self.tool_layers['4']['Ajoradat 0'] = roadway_layer_list[0]
         self.tool_layers['4']['Ajoradat 1'] = roadway_layer_list[1]
         self.tool_layers['4']['Ajoradat 2'] = roadway_layer_list[2]
-
-        self.rearrange_layers(self.layers)
 
 
     def init_tool5(self):
@@ -143,8 +139,6 @@ class LayerHandler(object):
         self.tool_layers['5']['Ajoradat 0'] = roadway_layer_list[0]
         self.tool_layers['5']['Ajoradat 1'] = roadway_layer_list[1]
         self.tool_layers['5']['Ajoradat 2'] = roadway_layer_list[2]
-
-        self.rearrange_layers(self.layers)
 
 
     def add_annotation(self, tool_id:str, text:str, point_x:float, point_y:float, number_of_rows:int=None, position_x:int=14, position_y:int=11):
@@ -218,7 +212,6 @@ class LayerHandler(object):
         feature.setAttributes([tool_id, feature_name])
 #
         self.add_feature(self.tool_layers[tool_id][f'Ajoradat {roadway}'], feature)
-
 
 
     def add_feature(self, layer:QgsVectorLayer, feature:QgsFeature):
@@ -394,19 +387,19 @@ class LayerHandler(object):
         return point_layer
 
 
-    def rearrange_layers(self, layer_list):
-        """Moves every new layer created by this plugin on top.
-
-        Args:
-            layer_list (list): List of existing layers.
-        """
-        self.root.setHasCustomLayerOrder(True)
-        order = self.root.customLayerOrder()
-
-        for layer in layer_list: # How many layers we need to move
-            if isinstance(layer, QgsVectorLayer) and layer in self.project.mapLayers().values():
-                order.insert(0, order.pop(order.index(layer))) # Last layer to first position
-
-        self.root.setCustomLayerOrder(order)
+    #def rearrange_layers(self, layer_list):
+    #    """Moves every new layer created by this plugin on top.
+#
+    #    Args:
+    #        layer_list (list): List of existing layers.
+    #    """
+    #    self.root.setHasCustomLayerOrder(True)
+    #    order = self.root.customLayerOrder()
+#
+    #    for layer in layer_list: # How many layers we need to move
+    #        if isinstance(layer, QgsVectorLayer) and layer in self.project.mapLayers().values():
+    #            order.insert(0, order.pop(order.index(layer))) # Last layer to first position
+#
+    #    self.root.setCustomLayerOrder(order)
 
 
