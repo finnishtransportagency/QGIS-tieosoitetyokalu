@@ -389,7 +389,7 @@ class Osoitetyokalu:
                 s = requests.Session()
                 retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
                 s.mount('http://', HTTPAdapter(max_retries=retries))
-                response = s.get(request_url)
+                response = s.get(request_url, verify=False)
                 s.close()
 
                 if response.status_code != 200:
@@ -777,7 +777,7 @@ class Osoitetyokalu:
         s = requests.Session()
         retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
         s.mount('http://', HTTPAdapter(max_retries=retries))
-        response = s.get(request_url)
+        response = s.get(request_url, verify=False)
         s.close()
 
         if response.status_code != 200:
@@ -886,7 +886,7 @@ class Osoitetyokalu:
         s = requests.Session()
         retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
         s.mount('http://', HTTPAdapter(max_retries=retries))
-        response = s.get(request_url)
+        response = s.get(request_url, verify=False)
         s.close()
 
         if response.status_code != 200:
@@ -964,7 +964,7 @@ class Osoitetyokalu:
         s = requests.Session()
         retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
         s.mount('http://', HTTPAdapter(max_retries=retries))
-        response = s.get(request_url)
+        response = s.get(request_url, verify=False)
         s.close()
 
         if response.status_code != 200:
@@ -1038,7 +1038,7 @@ class Osoitetyokalu:
         s = requests.Session()
         retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
         s.mount('http://', HTTPAdapter(max_retries=retries))
-        response = s.get(request_url)
+        response = s.get(request_url, verify=False)
         s.close()
 
         if response.status_code != 200:
@@ -1196,7 +1196,7 @@ class Osoitetyokalu:
         s = requests.Session()
         retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
         s.mount('http://', HTTPAdapter(max_retries=retries))
-        response = s.get(final_url)
+        response = s.get(final_url, verify=False)
         s.close()
 
         if response.status_code != 200:
@@ -1426,7 +1426,7 @@ class Osoitetyokalu:
             s = requests.Session()
             retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
             s.mount('http://', HTTPAdapter(max_retries=retries))
-            response = s.get(request_url)
+            response = s.get(request_url, verify=False)
             s.close()
 
             if response.status_code != 200:
