@@ -1310,6 +1310,14 @@ class Osoitetyokalu:
                         distance_end = str(road_part_length)
                         road_length = distance_end
 
+                #search was a road-only search
+                elif 'lineEdit_Tie' in params and 'lineEdit_Osa' not in params and 'lineEdit_Osa_loppu' not in params:
+                    if vkm_feature['properties']['osa_loppu'] > part_end:
+                        part_end = vkm_feature['properties']['osa_loppu']
+                        distance_end = vkm_feature['properties']['etaisyys_loppu']
+                    if vkm_feature['properties']['ajorata'] == 0 or vkm_feature['properties']['ajorata'] == 1:
+                        road_length = road_length + vkm_feature['properties']['mitattu_pituus']
+
                 polyline_roadway = str(vkm_feature['properties']['ajorata'])
                 new_type = str(vkm_feature['geometry']['type'])
 
