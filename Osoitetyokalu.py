@@ -724,8 +724,7 @@ class Osoitetyokalu:
         self.search_form_dlg = SearchForm_dialog()
         self.search_form_dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
         self.search_form_dlg.show()
-        result = self.search_form_dlg.exec_()
-        if result:
+        if self.search_form_dlg.exec_():
             self.vkm_request_form_search()
 
 
@@ -805,7 +804,7 @@ class Osoitetyokalu:
                     point_x = vkm_feature['properties']['x']
                     point_y = vkm_feature['properties']['y']
 
-                    road_address = f'Ei tieosoitetta'
+                    road_address = 'Ei tieosoitetta'
 
 
         return road_address, point_x, point_y, tie, ajorata, osa, etaisyys
@@ -917,11 +916,7 @@ class Osoitetyokalu:
             xy_points (list): List of linestring coordinates as QgsPointXY.
         """
 
-        xy_points = []
-
-        for coordinates in linestring:
-            xy_points.append(QgsPointXY(coordinates[0], coordinates[1]))
-        return xy_points
+        return [QgsPointXY(coordinates[0], coordinates[1]) for coordinates in linestring]
 
 
     def error_popup(self, error_msg):
@@ -990,11 +985,11 @@ class Osoitetyokalu:
                     else:
                         for linestring in vkm_feature['geometry']['coordinates']:
                             polyline_dict[roadway].append(linestring)
+
+                elif new_type == 'LineString':
+                    polyline_dict[roadway] = [vkm_feature['geometry']['coordinates']]
                 else:
-                    if new_type == 'LineString':
-                        polyline_dict[roadway] = [vkm_feature['geometry']['coordinates']]
-                    else:
-                        polyline_dict[roadway] = vkm_feature['geometry']['coordinates']
+                    polyline_dict[roadway] = vkm_feature['geometry']['coordinates']
 
                 #get total legnth of certain roadway lines
                 if roadway in pituus_dict:
@@ -1006,7 +1001,7 @@ class Osoitetyokalu:
             kokonaispituus = kokonaispituus + vkm_feature['properties']['mitattu_pituus']
 
             #get road length
-            if roadway == '0' or roadway == '1':
+            if roadway in ['0', '1']:
                 road_length = road_length + vkm_feature['properties']['mitattu_pituus']
 
 
@@ -1077,11 +1072,11 @@ class Osoitetyokalu:
                     else:
                         for linestring in vkm_feature['geometry']['coordinates']:
                             polyline_dict[ajorata].append(linestring)
+                            
+                elif new_type == 'LineString':
+                    polyline_dict[ajorata] = [vkm_feature['geometry']['coordinates']]
                 else:
-                    if new_type == 'LineString':
-                        polyline_dict[ajorata] = [vkm_feature['geometry']['coordinates']]
-                    else:
-                        polyline_dict[ajorata] = vkm_feature['geometry']['coordinates']
+                    polyline_dict[ajorata] = vkm_feature['geometry']['coordinates']
 
         ending_point = [x_end, y_end, roadway_end]
 
@@ -1110,14 +1105,8 @@ class Osoitetyokalu:
             params_dict (dict): Dictionary with VKM-API request parameters.
         """
 
-        params_dict = {}
-
         lineEdits = self.search_form_dlg.findChildren(QLineEdit)
-        for line in lineEdits:
-            if line.text():
-                params_dict[line.objectName()] = line.text()
-
-        return params_dict
+        return {line.objectName(): line.text() for line in lineEdits if line.text()}
 
 
     def process_center_form_params(self, params, output_parameters = '1,2,3,4,5,6'):
@@ -1210,8 +1199,8 @@ class Osoitetyokalu:
         roadways_dlg = Ajoradat_dialog()
 
         #variables for starting and ending road adresses of a polyline
-        x = 0
-        y = 0
+        x_start = 0
+        y_start = 0
         road = 0
         roadway = 0
         part = 0
@@ -1224,6 +1213,15 @@ class Osoitetyokalu:
         part_end = 0
         distance_end = 0
 
+        #variables for extracting starting and ending points' params
+        distance_int = 0
+        part_end_int = 0
+        distance_end_int = 0
+
+
+        #used to find smallest road part in road-only search
+        part_min = 999999999
+    
         #sum of all the roadways
         overall_length = 0
 
@@ -1260,16 +1258,12 @@ class Osoitetyokalu:
             else:
                 #process and draw a polyline
 
-                #starting params for road address to display and for getting marking the starting point of the road
-                if x == 0 and 'lineEdit_X' not in params:
-                    x = vkm_feature['properties']['x']
-                elif 'lineEdit_X' in params:
-                    x = float(params['lineEdit_X'])
+                #starting params for road address to display and for marking the starting point of the road
+                if 'lineEdit_X' in params:
+                    x_start = float(params['lineEdit_X'])
 
-                if y == 0 and 'lineEdit_Y' not in params:
-                    y = vkm_feature['properties']['y']
-                elif 'lineEdit_Y' in params:
-                    y = float(params['lineEdit_Y'])
+                if 'lineEdit_Y' in params:
+                    y_start = float(params['lineEdit_Y'])
 
                 if road == 0 and 'lineEdit_Tie' not in params:
                     road = str(vkm_feature['properties']['tie'])
@@ -1291,15 +1285,18 @@ class Osoitetyokalu:
                 elif 'lineEdit_Etaisyys' in params:
                     distance = params['lineEdit_Etaisyys']
 
-                #ending params
-                #polylines are always on the same road
+            
+                #line searches are always on the same road
                 road_end = road
 
                 roadway_end = str(vkm_feature['properties']['ajorata'])
 
                 if 'lineEdit_Osa_loppu' in params and 'lineEdit_Etaisyys_loppu' in params:
+                    #ending point
                     part_end = params['lineEdit_Osa_loppu']
                     distance_end = params['lineEdit_Etaisyys_loppu']
+
+                    #line search length
                     if vkm_feature['properties']['ajorata'] == 0 or vkm_feature['properties']['ajorata'] == 1:
                         road_length = road_length + vkm_feature['properties']['mitattu_pituus']
 
@@ -1307,17 +1304,58 @@ class Osoitetyokalu:
                 elif 'lineEdit_Osa_loppu' in params and 'lineEdit_Etaisyys_loppu' not in params:
                     part_end = params['lineEdit_Osa_loppu']
                     if vkm_feature['properties']['etaisyys_loppu'] > road_part_length:
+                        roadway_end = str(vkm_feature['properties']['ajorata_loppu'])
                         road_part_length = vkm_feature['properties']['etaisyys_loppu']
                         distance_end = str(road_part_length)
                         road_length = distance_end
 
+                    #starting point from a feature where road part's distance = 0
+                    if vkm_feature['properties']['etaisyys'] == 0:
+                        x_start = vkm_feature['properties']['x']
+                        y_start = vkm_feature['properties']['y']
+                        distance = 0
+                        roadway = str(vkm_feature['properties']['ajorata'])
+
                 #search was a road-only search
                 elif 'lineEdit_Tie' in params and 'lineEdit_Osa' not in params and 'lineEdit_Osa_loppu' not in params:
-                    if vkm_feature['properties']['osa_loppu'] > part_end:
-                        part_end = vkm_feature['properties']['osa_loppu']
-                        distance_end = vkm_feature['properties']['etaisyys_loppu']
+                    #ending point
+                    if vkm_feature['properties']['osa_loppu'] > part_end_int:
+                        roadway_end = str(vkm_feature['properties']['ajorata_loppu'])
+                        part_end_int = vkm_feature['properties']['osa_loppu']
+                        part_end = str(part_end_int)
+                        distance_end_int = vkm_feature['properties']['etaisyys_loppu']
+                        distance_end = str(distance_end_int)
+
+                    elif vkm_feature['properties']['osa_loppu'] == part_end_int:
+                        if vkm_feature['properties']['etaisyys_loppu'] > distance_end_int:
+                            roadway_end = str(vkm_feature['properties']['ajorata_loppu'])
+                            part_end_int = vkm_feature['properties']['osa_loppu']
+                            part_end = str(part_end_int)
+                            distance_end_int = vkm_feature['properties']['etaisyys_loppu']
+                            distance_end = str(distance_end_int)
+
+                    #line search length
                     if vkm_feature['properties']['ajorata'] == 0 or vkm_feature['properties']['ajorata'] == 1:
                         road_length = road_length + vkm_feature['properties']['mitattu_pituus']
+
+                    #starting point
+                    if vkm_feature['properties']['osa'] < part_min:
+                        part_min = vkm_feature['properties']['osa']
+                        part = str(part_min)
+                        roadway = str(vkm_feature['properties']['ajorata'])
+                        distance_int = vkm_feature['properties']['etaisyys']
+                        distance = str(distance_int)
+                        x_start = vkm_feature['properties']['x']
+                        y_start = vkm_feature['properties']['y']
+                    elif vkm_feature['properties']['osa'] == part_min:
+                        if vkm_feature['properties']['etaisyys'] < distance_int:
+                            part = str(vkm_feature['properties']['osa'])
+                            roadway = str(vkm_feature['properties']['ajorata'])
+                            distance_int = vkm_feature['properties']['etaisyys']
+                            distance = str(distance_int)
+                            x_start = vkm_feature['properties']['x']
+                            y_start = vkm_feature['properties']['y']
+                            
 
                 polyline_roadway = str(vkm_feature['properties']['ajorata'])
                 new_type = str(vkm_feature['geometry']['type'])
@@ -1377,8 +1415,12 @@ class Osoitetyokalu:
                     roadways_dlg.Ajorata2lineEdit.setText(polyline_adress)
 
             #draw ending and starting points, zoom to starting point
-            self.LayerHandler.add_point_feature('5', 'Alkupiste', x, y, 'starting')
-            self.zoom_to_feature(x, y)
+            
+            if x_start == 0 and y_start == 0:
+                #getting starting coordinates
+                x_start, y_start = self.vkm_request_coordinates(self.vkm_url, road, part, distance)
+            self.LayerHandler.add_point_feature('5', 'Alkupiste', x_start, y_start, 'starting')
+            self.zoom_to_feature(x_start, y_start)
             #getting ending coordinates
             x_end, y_end = self.vkm_request_coordinates(self.vkm_url, road_end, part_end, distance_end)
             self.LayerHandler.add_point_feature('5', 'Loppupiste', x_end, y_end, 'ending')
@@ -1420,6 +1462,7 @@ class Osoitetyokalu:
 
 
     def write_roadways_to_csv(self, request_url, dlg):
+        # sourcery skip: ensure-file-closed
         """Writes ending and starting address data of every feature in linestring VKM output to a CSV-file.
 
         Args:

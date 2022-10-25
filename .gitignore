@@ -219,3 +219,4 @@ logs/
 roadways/
 zip_build/
 resources.py
+.env
