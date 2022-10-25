@@ -23,42 +23,39 @@
 """
 
 
+import logging
 import os.path
 from pathlib import Path
-import logging
+
 formatter = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 rootPath = Path(__file__).parent
 logPath = Path.joinpath(rootPath, 'logs')
 logPath.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(filename=Path.joinpath(logPath, 'log.txt'), level=logging.DEBUG, format=formatter)
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtWidgets import QAction, QToolButton, QMenu
-from qgis.gui import QgsMapToolEmitPoint
-from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsPointXY
-from qgis.core import Qgis, QgsRectangle
-from PyQt5.QtWidgets import QLineEdit
-
-from PyQt5.QtGui import QTextDocument
-from PyQt5.QtCore import QSizeF, QPoint
-
-import requests
-from requests.adapters import HTTPAdapter, Retry
 import json
 
-#Import modules
-from .dialogs.ShowCoordinates_dialog import ShowCoordinates_dialog
-from .dialogs.PopUp_dialog import PopUp_dialog
-from .dialogs.Ajoradat_dialog import Ajoradat_dialog
-from .dialogs.SearchForm_dialog import SearchForm_dialog
-from .dialogs.DeleteLayer_dialog import DeleteLayer_dialog
+import requests
+from qgis.core import (Qgis, QgsCoordinateReferenceSystem, QgsPointXY,
+                       QgsProject, QgsRectangle)
+from qgis.gui import QgsMapToolEmitPoint
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction, QLineEdit, QMenu, QToolButton
+from requests.adapters import HTTPAdapter, Retry
+
 from .CustomExceptions.VkmApiException import VkmApiException
 from .CustomExceptions.VkmRequestException import VkmRequestException
+from .dialogs.Ajoradat_dialog import Ajoradat_dialog
+from .dialogs.DeleteLayer_dialog import DeleteLayer_dialog
+from .dialogs.PopUp_dialog import PopUp_dialog
+from .dialogs.SearchForm_dialog import SearchForm_dialog
+#Import modules
+from .dialogs.ShowCoordinates_dialog import ShowCoordinates_dialog
 from .LayerHandler import LayerHandler
-
 # Initialize Qt resources from file resources.py
 from .resources import *
+
 # Import the code for the dialog
 
 
@@ -469,10 +466,12 @@ class Osoitetyokalu:
                 for ajorata, coordinates in polyline_dict.items():
                         ending_road_address_split = road_address.split('/')
                         ending_road_address_split[3] = str(road_part_length)
+                        ending_road_address_split[1] = ending_point[2]
                         ending_road_address = '/'.join(ending_road_address_split)
 
                         starting_road_address_split = road_address.split('/')
                         starting_road_address_split[3] = '0'
+                        starting_road_address_split[1] = starting_point[2]
                         starting_road_address = '/'.join(starting_road_address_split)
 
                         roadway = f'Alkupiste: {starting_road_address}\nLoppupiste: {ending_road_address}\npituus: {road_part_length}m'
@@ -1060,11 +1059,13 @@ class Osoitetyokalu:
                 if vkm_feature['properties']['etaisyys'] == 0:
                     starting_point.append(vkm_feature['properties']['x'])
                     starting_point.append(vkm_feature['properties']['y'])
+                    starting_point.append(str(vkm_feature['properties']['ajorata']))
 
                 if vkm_feature['properties']['etaisyys_loppu'] > road_part_length:
                     road_part_length = vkm_feature['properties']['etaisyys_loppu']
                     x_end = vkm_feature['properties']['x_loppu']
                     y_end = vkm_feature['properties']['y_loppu']
+                    roadway_end = str(vkm_feature['properties']['ajorata_loppu'])
 
                 ajorata = str(vkm_feature['properties']['ajorata'])
                 new_type = str(vkm_feature['geometry']['type'])
@@ -1082,7 +1083,7 @@ class Osoitetyokalu:
                     else:
                         polyline_dict[ajorata] = vkm_feature['geometry']['coordinates']
 
-        ending_point = [x_end, y_end]
+        ending_point = [x_end, y_end, roadway_end]
 
         return polyline_dict, road_part_length, starting_point, ending_point, request_url
 

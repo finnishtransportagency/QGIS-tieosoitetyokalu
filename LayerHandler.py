@@ -1,10 +1,9 @@
-from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsVectorLayer, QgsField
-from qgis.core import QgsMarkerSymbol, QgsSingleSymbolRenderer, QgsFeature, QgsGeometry, QgsPointXY
-from qgis.core import QgsTextAnnotation, edit
-from qgis.PyQt.QtCore import QVariant
-from qgis.PyQt.QtGui import QColor
-from PyQt5.QtCore import QSizeF, QPoint
-from PyQt5.QtGui import QTextDocument
+from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsField,
+                       QgsGeometry, QgsMarkerSymbol, QgsPointXY, QgsProject,
+                       QgsSingleSymbolRenderer, QgsTextAnnotation,
+                       QgsVectorLayer, edit)
+from qgis.PyQt.QtCore import QPoint, QSizeF, QVariant
+from qgis.PyQt.QtGui import QColor, QTextDocument
 
 
 class LayerHandler(object):
