@@ -466,10 +466,12 @@ class Osoitetyokalu:
                 for ajorata, coordinates in polyline_dict.items():
                         ending_road_address_split = road_address.split('/')
                         ending_road_address_split[3] = str(road_part_length)
+                        ending_road_address_split[1] = ending_point[2]
                         ending_road_address = '/'.join(ending_road_address_split)
 
                         starting_road_address_split = road_address.split('/')
                         starting_road_address_split[3] = '0'
+                        starting_road_address_split[1] = starting_point[2]
                         starting_road_address = '/'.join(starting_road_address_split)
 
                         roadway = f'Alkupiste: {starting_road_address}\nLoppupiste: {ending_road_address}\npituus: {road_part_length}m'
@@ -1050,12 +1052,15 @@ class Osoitetyokalu:
 
             else:
                 if vkm_feature['properties']['etaisyys'] == 0:
-                    starting_point.extend((vkm_feature['properties']['x'], vkm_feature['properties']['y']))
+                    starting_point.append(vkm_feature['properties']['x'])
+                    starting_point.append(vkm_feature['properties']['y'])
+                    starting_point.append(str(vkm_feature['properties']['ajorata']))
 
                 if vkm_feature['properties']['etaisyys_loppu'] > road_part_length:
                     road_part_length = vkm_feature['properties']['etaisyys_loppu']
                     x_end = vkm_feature['properties']['x_loppu']
                     y_end = vkm_feature['properties']['y_loppu']
+                    roadway_end = str(vkm_feature['properties']['ajorata_loppu'])
 
                 ajorata = str(vkm_feature['properties']['ajorata'])
                 new_type = str(vkm_feature['geometry']['type'])
@@ -1073,7 +1078,7 @@ class Osoitetyokalu:
                 else:
                     polyline_dict[ajorata] = vkm_feature['geometry']['coordinates']
 
-        ending_point = [x_end, y_end]
+        ending_point = [x_end, y_end, roadway_end]
 
         return polyline_dict, road_part_length, starting_point, ending_point, request_url
 
