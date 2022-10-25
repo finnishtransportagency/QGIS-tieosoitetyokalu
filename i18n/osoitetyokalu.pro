@@ -4,7 +4,8 @@ FORMS = ../dialogs/Ajoradat_dialog.ui \
 ../dialogs/SearchForm_dialog.ui \
 ../dialogs/ShowCoordinates_dialog.ui
 
-SOURCES = ../Osoitetyokalu.py
+SOURCES = ../Osoitetyokalu.py \
+../LayerHandler.py
 
 TRANSLATIONS = Osoitetyokalu_sv.ts \
 Osoitetyokalu_en.ts

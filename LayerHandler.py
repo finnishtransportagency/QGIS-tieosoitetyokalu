@@ -2,7 +2,7 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsField,
                        QgsGeometry, QgsMarkerSymbol, QgsPointXY, QgsProject,
                        QgsSingleSymbolRenderer, QgsTextAnnotation,
                        QgsVectorLayer, edit)
-from qgis.PyQt.QtCore import QPoint, QSizeF, QVariant
+from qgis.PyQt.QtCore import QPoint, QSizeF, QVariant, QCoreApplication
 from qgis.PyQt.QtGui import QColor, QTextDocument
 
 
@@ -56,6 +56,20 @@ class LayerHandler(object):
         self.project = QgsProject.instance()
         self.root = self.project.layerTreeRoot()
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
+
+    def tr(self, message):
+        """Get the translation for a string using Qt translation API.
+
+        We implement this ourselves since we do not inherit QObject.
+
+        :param message: String for translation.
+        :type message: str, QString
+
+        :returns: Translated version of message.
+        :rtype: QString
+        """
+        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
+        return QCoreApplication.translate('Osoitetyokalu', message)
 
 
     def create_layer_group(self, group_name:str):
