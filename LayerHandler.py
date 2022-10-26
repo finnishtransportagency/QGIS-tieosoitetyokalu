@@ -396,6 +396,7 @@ class LayerHandler(object):
                 for layer in current_layers:
                     if layer.id() == annotation_layer.id():
                         manager.removeAnnotation(annotation)
+                        break
 
 
     def delete_annotation(self):
