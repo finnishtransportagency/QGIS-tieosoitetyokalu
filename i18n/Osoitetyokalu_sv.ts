@@ -8,16 +8,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs/SearchForm_dialog.ui" line="37"/>
-        <source>X:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../dialogs/SearchForm_dialog.ui" line="49"/>
-        <source>Y:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../dialogs/SearchForm_dialog.ui" line="61"/>
         <source>Tie:</source>
         <translation>Väg:</translation>
@@ -153,6 +143,33 @@ VKM:n seuraavassa p&#xc3;&#xa4;ivityksess&#xc3;&#xa4;.</source>
     <message>
         <location filename="../Osoitetyokalu.py" line="255"/>
         <source>6. Poistoty&#xc3;&#xb6;kalu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="309"/>
+        <source>{point_x}, {point_y}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="316"/>
+        <source>{road_address}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="591"/>
+        <source>Pistett&#xc3;&#xa4; ei ole asetettu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="477"/>
+        <source>Alkupiste: {start}
+Loppupiste: {end}
+pituus: {length}m</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="624"/>
+        <source>Alku- ja loppupisteen on oltava samalla tiell&#xc3;&#xa4;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

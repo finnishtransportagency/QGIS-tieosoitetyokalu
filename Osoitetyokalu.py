@@ -101,7 +101,8 @@ class Osoitetyokalu:
 
 
     # noinspection PyMethodMayBeStatic
-    def tr(self, message):
+    @staticmethod
+    def tr(message) -> str:
         """Get the translation for a string using Qt translation API.
 
         We implement this ourselves since we do not inherit QObject.
@@ -319,7 +320,7 @@ class Osoitetyokalu:
                 self.LayerHandler.add_annotation('1', road_address, point_x, point_y)
 
             except AttributeError:
-                self.error_popup('Pistettä ei ole asetettu.')
+                self.error_popup(self.tr(u'Pistettä ei ole asetettu.'))
             except VkmApiException as e:
                 self.error_popup(e)
             except VkmRequestException as e:
@@ -405,7 +406,7 @@ class Osoitetyokalu:
                     self.LayerHandler.add_point_feature('2', road_address, point_x, point_y)
 
             except AttributeError:
-                self.error_popup('Pistettä ei ole asetettu.')
+                self.error_popup(self.tr(u'Pistettä ei ole asetettu.'))
             except VkmApiException as e:
                 self.error_popup(e)
             except VkmRequestException as e:
@@ -474,7 +475,9 @@ class Osoitetyokalu:
                         starting_road_address_split[1] = starting_point[2]
                         starting_road_address = '/'.join(starting_road_address_split)
 
-                        roadway = f'Alkupiste: {starting_road_address}\nLoppupiste: {ending_road_address}\npituus: {road_part_length}m'
+                        roadway = self.tr(u'Alkupiste: {start}\nLoppupiste: {end}\npituus: {length}m').format(
+                            start = starting_road_address, end = ending_road_address, length = road_part_length
+                            )
 
                         for linestring in coordinates:
                             xy_points = self.convert_coordinates_to_XY(linestring)
@@ -498,7 +501,7 @@ class Osoitetyokalu:
                 self.LayerHandler.add_point_feature('3', ending_road_address, ending_point[0], ending_point[1], 'ending')
 
             except AttributeError:
-                self.error_popup('Pistettä ei ole asetettu.')
+                self.error_popup(self.tr(u'Pistettä ei ole asetettu.'))
             except VkmApiException as e:
                 self.error_popup(e)
             except VkmRequestException as e:
@@ -586,7 +589,7 @@ class Osoitetyokalu:
                 self.canvas.setMapTool(pointTool_B)
 
             except AttributeError:
-                self.error_popup('Pistettä ei ole asetettu.')
+                self.error_popup(self.tr(u'Pistettä ei ole asetettu.'))
             except VkmApiException as e:
                 self.error_popup(e)
             except VkmRequestException as e:
@@ -619,7 +622,7 @@ class Osoitetyokalu:
 
                 if tie_B != self.tie_A:
                     self.canvas.setMapTool(pointTool_A)
-                    self.error_popup('Alku- ja loppupisteen on oltava samalla tiellä')
+                    self.error_popup(self.tr(u'Alku- ja loppupisteen on oltava samalla tiellä'))
                     return
 
                 else:
@@ -629,9 +632,9 @@ class Osoitetyokalu:
                     try:
                         polyline_dict, pituus_dict, request_url, kokonaispituus, road_length = self.vkm_request_geometry(vkm_url, self.tie_A, self.osa_A, self.etaisyys_A, tie_B, osa_B, etaisyys_B)
                         self.ajoradat_dlg.AjoradatPituuslineEdit.clear()
-                        self.ajoradat_dlg.AjoradatPituuslineEdit.setText(str(kokonaispituus))
+                        self.ajoradat_dlg.AjoradatPituuslineEdit.setText(f'{str(kokonaispituus)}m')
                         self.ajoradat_dlg.PituuslineEdit.clear()
-                        self.ajoradat_dlg.PituuslineEdit.setText(str(road_length))
+                        self.ajoradat_dlg.PituuslineEdit.setText(f'{str(road_length)}m')
 
                         for ajorata, coordinates in polyline_dict.items():
                             for ajorata_pituus, pituus in pituus_dict.items():
@@ -639,7 +642,10 @@ class Osoitetyokalu:
                                     mitattu_pituus = pituus
                                     break
 
-                            roadway = f'A {self.tie_A}/{self.ajorata_A}/{self.osa_A}/{self.etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} pituus: {mitattu_pituus}'
+                            roadway = self.tr(u'A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} pituus: {mitattu_pituus}').format(
+                                tie_A = self.tie_A, ajorata_A = self.ajorata_A, osa_A = self.osa_A, etaisyys_A = self.etaisyys_A,
+                                tie_B = tie_B, ajorata_B = ajorata_B, osa_B = osa_B, etaisyys_B = etaisyys_B, mitattu_pituus = mitattu_pituus
+                            )
 
                             for linestring in coordinates:
                                 xy_points = self.convert_coordinates_to_XY(linestring)

@@ -1,0 +1,1 @@
+pylupdate5 i18n\osoitetyokalu.pro

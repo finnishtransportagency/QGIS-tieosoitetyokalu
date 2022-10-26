@@ -5,7 +5,9 @@ FORMS = ../dialogs/Ajoradat_dialog.ui \
 ../dialogs/ShowCoordinates_dialog.ui
 
 SOURCES = ../Osoitetyokalu.py \
-../LayerHandler.py
+../LayerHandler.py \
+../dialogs/Ajoradat_dialog.py \
+../CustomExceptions/VkmApiException.py
 
 TRANSLATIONS = Osoitetyokalu_sv.ts \
 Osoitetyokalu_en.ts

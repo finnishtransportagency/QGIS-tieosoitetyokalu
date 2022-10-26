@@ -1,8 +1,10 @@
+from abc import abstractstaticmethod
+
 from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsField,
                        QgsGeometry, QgsMarkerSymbol, QgsPointXY, QgsProject,
                        QgsSingleSymbolRenderer, QgsTextAnnotation,
                        QgsVectorLayer, edit)
-from qgis.PyQt.QtCore import QPoint, QSizeF, QVariant, QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, QPoint, QSizeF, QVariant
 from qgis.PyQt.QtGui import QColor, QTextDocument
 
 
@@ -57,7 +59,8 @@ class LayerHandler(object):
         self.root = self.project.layerTreeRoot()
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
-    def tr(self, message):
+    @staticmethod
+    def tr(message):
         """Get the translation for a string using Qt translation API.
 
         We implement this ourselves since we do not inherit QObject.
