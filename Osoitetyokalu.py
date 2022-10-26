@@ -26,6 +26,7 @@
 import logging
 import os.path
 from pathlib import Path
+from typing import Iterable
 
 formatter = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 rootPath = Path(__file__).parent
@@ -98,6 +99,24 @@ class Osoitetyokalu:
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
         self.LayerHandler = LayerHandler()
+
+        QgsProject.instance().layersWillBeRemoved.connect(self.remove_annotations_from_layers)
+
+
+    def remove_annotations_from_layers(self, layers:Iterable[str]):
+        """Removes an annotatiot of a layer about to be deleted.
+
+        Args:
+            layers (Iterable[str]): Layer IDs of layers about to be deleted.
+        """
+        manager = QgsProject.instance().annotationManager()
+        for annotation in manager.annotations():
+            annotation_layer = annotation.mapLayer()
+            if annotation_layer is not None:
+                for layer_id in layers:
+                    if annotation_layer.id() == layer_id:
+                        manager.removeAnnotation(annotation)
+                        break
 
 
     # noinspection PyMethodMayBeStatic
@@ -739,8 +758,8 @@ class Osoitetyokalu:
         delete_dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
         delete_dlg.show()
 
-        delete_dlg.pushButton_delete_annotations.clicked.connect(self.delete_all_annotations)
-        delete_dlg.pushButton_delete_annotation.clicked.connect(self.delete_annotation)
+        delete_dlg.pushButton_delete_annotations.clicked.connect(self.LayerHandler.delete_all_annotations)
+        delete_dlg.pushButton_delete_annotation.clicked.connect(self.LayerHandler.delete_annotation)
         delete_dlg.pushButton_delete_feature.clicked.connect(self.LayerHandler.remove_feature)
         delete_dlg.pushButton_delete_all_features.clicked.connect(self.LayerHandler.remove_all_features)
         delete_dlg.exec_()
@@ -1052,9 +1071,7 @@ class Osoitetyokalu:
 
             else:
                 if vkm_feature['properties']['etaisyys'] == 0:
-                    starting_point.append(vkm_feature['properties']['x'])
-                    starting_point.append(vkm_feature['properties']['y'])
-                    starting_point.append(str(vkm_feature['properties']['ajorata']))
+                    starting_point.extend((vkm_feature['properties']['x'], vkm_feature['properties']['y'], str(vkm_feature['properties']['ajorata'])))
 
                 if vkm_feature['properties']['etaisyys_loppu'] > road_part_length:
                     road_part_length = vkm_feature['properties']['etaisyys_loppu']
@@ -1444,21 +1461,6 @@ class Osoitetyokalu:
         canvas = self.iface.mapCanvas()
         canvas.setExtent(rectangle)
         canvas.zoomScale(16555 / 1)
-
-
-    def delete_all_annotations(self):
-        """Deletes all annotations."""
-        manager = QgsProject.instance().annotationManager()
-        for i in manager.annotations():
-           manager.removeAnnotation(i)
-
-
-    def delete_annotation(self):
-        """Deletes one annotation."""
-        manager = QgsProject.instance().annotationManager()
-        for i in manager.annotations():
-           manager.removeAnnotation(i)
-           break
 
 
     def write_roadways_to_csv(self, request_url, dlg):

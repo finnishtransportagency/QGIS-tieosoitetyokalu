@@ -386,19 +386,27 @@ class LayerHandler(object):
         return point_layer
 
 
-    #def rearrange_layers(self, layer_list):
-    #    """Moves every new layer created by this plugin on top.
-#
-    #    Args:
-    #        layer_list (list): List of existing layers.
-    #    """
-    #    self.root.setHasCustomLayerOrder(True)
-    #    order = self.root.customLayerOrder()
-#
-    #    for layer in layer_list: # How many layers we need to move
-    #        if isinstance(layer, QgsVectorLayer) and layer in self.project.mapLayers().values():
-    #            order.insert(0, order.pop(order.index(layer))) # Last layer to first position
-#
-    #    self.root.setCustomLayerOrder(order)
+    def delete_all_annotations(self):
+        """Deletes all annotations."""
+        manager = self.project.annotationManager()
+        current_layers = self.project.mapLayers().values()
+        for annotation in manager.annotations():
+            annotation_layer = annotation.mapLayer()
+            if annotation_layer is not None and len(current_layers) > 0:
+                for layer in current_layers:
+                    if layer.id() == annotation_layer.id():
+                        manager.removeAnnotation(annotation)
 
+
+    def delete_annotation(self):
+        """Deletes one random annotation."""
+        manager = self.project.annotationManager()
+        current_layers = self.project.mapLayers().values()
+        for annotation in manager.annotations():
+            annotation_layer = annotation.mapLayer()
+            if annotation_layer is not None and len(current_layers) > 0:
+                for layer in current_layers:
+                    if layer.id() == annotation_layer.id():
+                        manager.removeAnnotation(annotation)
+                        return
 
