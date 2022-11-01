@@ -3,14 +3,17 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Osoitetyokalu
-qgisMinimumVersion=3.0
-description=Osoitetyokalu
-version=1.1.1
-author=Sitowise
+name=Tieosoitetyökalu
 email=support@sitowise.com
+author=Väylävirasto
+qgisMinimumVersion=3.0
+description=Tieosoitetyökalu-plugin hakee VKM-rajapinnasta osoitetietoja ja esittää niitä erilaisin tavoin QGIS:sissa.
+version=1.1.1
 
-about=Osoitetyokalu.
+about=Tieosoitetyökalu mahdollistaa monipuoliset hakutoiminnot tie- ja katuosoitteella.
+  Saat tieosoitteen sekä muita tien ominaisuuksia näkyviin helposti karttaa klikkaamalla.
+  Voit myös tarkastella tieosia, hakea kohteita tieosoitevälillä sekä hakea sijainnin koordinaatilla.
+  Tieosoitevälin ajoratojen osoitetiedot saa talletettua tiedostona taulukkolaskentaohjelmiin viemiseksi.
 
 tracker=https://github.com/sitowise/QGIS-tieosoitetyokalu/issues
 repository=https://github.com/sitowise/QGIS-tieosoitetyokalu
@@ -22,8 +25,6 @@ hasProcessingProvider=no
 
 # Tags are comma separated with spaces allowed
 tags=python
-
-homepage=https://www.sitowise.com/
 category=Plugins
 icon=icon.png
 # experimental flag
@@ -36,9 +37,6 @@ deprecated=False
 # (or upgraded) can be specified.
 # Check the documentation for more information.
 # plugin_dependencies=
-
-Category of the plugin: Raster, Vector, Database or Web
-# category=
 
 # If the plugin can run on QGIS Server.
 server=False
