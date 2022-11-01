@@ -324,7 +324,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Kmtk_id:</string>
+       <string notr="true">Kmtk_id:</string>
       </property>
      </widget>
     </item>

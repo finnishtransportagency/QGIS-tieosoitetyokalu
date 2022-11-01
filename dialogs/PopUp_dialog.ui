@@ -328,7 +328,7 @@
        </font>
       </property>
       <property name="text">
-       <string>X:</string>
+       <string notr="true">X:</string>
       </property>
      </widget>
     </item>
@@ -340,7 +340,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Y:</string>
+       <string notr="true">Y:</string>
       </property>
      </widget>
     </item>
@@ -822,7 +822,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Kmtk_id:</string>
+    <string notr="true">Kmtk_id:</string>
    </property>
   </widget>
  </widget>
