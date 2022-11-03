@@ -17,10 +17,13 @@ about=FI:
   Tieosoitevälin ajoratojen osoitetiedot saa talletettua tiedostona taulukkolaskentaohjelmiin viemiseksi.
 
   EN:
-  Same in english
+  With Tieosoitetyökalu or Road address tool you can perform different kind of searches with road and street addresses.
+  This plugin displays road addresses and other address properties after a click on a canvas.
+  You can also examine road parts, highlight roadways between two chosen points and search locations by coordinates.
+  Address information of the highlighted roadway lines can be downloaded in a CSV file that is spreadsheet-friendly.
 
-tracker=https://github.com/sitowise/QGIS-tieosoitetyokalu/issues
-repository=https://github.com/sitowise/QGIS-tieosoitetyokalu
+tracker=https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/issues
+repository=https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu
 # End of mandatory metadata
 
 # Recommended items:
