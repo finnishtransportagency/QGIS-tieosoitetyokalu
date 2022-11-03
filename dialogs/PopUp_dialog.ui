@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>936</width>
+    <width>977</width>
     <height>430</height>
    </rect>
   </property>
@@ -388,7 +388,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Etaisyys:</string>
+       <string>Etäisyys:</string>
       </property>
      </widget>
     </item>
@@ -409,7 +409,7 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>600</x>
+     <x>630</x>
      <y>20</y>
      <width>311</width>
      <height>291</height>
@@ -624,9 +624,9 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>500</x>
+     <x>480</x>
      <y>30</y>
-     <width>91</width>
+     <width>141</width>
      <height>271</height>
     </rect>
    </property>
@@ -733,7 +733,7 @@
     <rect>
      <x>150</x>
      <y>370</y>
-     <width>309</width>
+     <width>311</width>
      <height>21</height>
     </rect>
    </property>

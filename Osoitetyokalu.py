@@ -790,7 +790,7 @@ class Osoitetyokalu:
         vkm_data = json.loads(response.content)
         for vkm_feature in vkm_data['features']:
             if 'virheet' in vkm_feature['properties']:
-                error_msg = display_point + vkm_feature['properties']['virheet']
+                error_msg = display_point + ' ' + vkm_feature['properties']['virheet']
                 raise VkmRequestException(error_msg)
 
             else:

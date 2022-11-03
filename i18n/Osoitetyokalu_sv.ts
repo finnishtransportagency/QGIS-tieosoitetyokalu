@@ -115,9 +115,9 @@ i nästa VKM uppdatering.</translation>
 </context>
 <context>
     <name>LayerHandler</name>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../LayerHandler.py" line="86"/>
-        <source>Osoitety&#xc3;&#xb6;kalu</source>
+        <source>Osoitetyökalu</source>
         <translation>Vägadressverktyg</translation>
     </message>
     <message>
@@ -125,9 +125,9 @@ i nästa VKM uppdatering.</translation>
         <source>1. Tieosoite</source>
         <translation>1. Vägadress</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../LayerHandler.py" line="100"/>
-        <source>2. Hakuty&#xc3;&#xb6;kalu</source>
+        <source>2. Hakutyökalu</source>
         <translation>2. Sökverktyg</translation>
     </message>
     <message>
@@ -140,9 +140,9 @@ i nästa VKM uppdatering.</translation>
         <source>4. Tieosoite (Alku- ja loppupiste)</source>
         <translation>4. Vägadress (Start- och slutpunkt)</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../LayerHandler.py" line="141"/>
-        <source>5. Kohdistusty&#xc3;&#xb6;kalu</source>
+        <source>5. Kohdistustyökalu</source>
         <translation>5. Fokuseringsverktyg</translation>
     </message>
     <message>
@@ -184,18 +184,13 @@ i nästa VKM uppdatering.</translation>
 <context>
     <name>Osoitetyokalu</name>
     <message>
-        <location filename="../Osoitetyokalu.py" line="277"/>
-        <source>&amp;Osoitetyokalu</source>
-        <translation>Vägadressverktyg</translation>
-    </message>
-    <message>
         <location filename="../Osoitetyokalu.py" line="215"/>
         <source>1. Tieosoite</source>
         <translation>1. Vägadress</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../Osoitetyokalu.py" line="224"/>
-        <source>2. Hakuty&#xc3;&#xb6;kalu</source>
+        <source>2. Hakutyökalu</source>
         <translation>2. Sökverktyg</translation>
     </message>
     <message>
@@ -208,19 +203,19 @@ i nästa VKM uppdatering.</translation>
         <source>4. Tieosoite (Alku- ja loppupiste)</source>
         <translation>4. Vägadress (Start- och slutpunkt)</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../Osoitetyokalu.py" line="248"/>
-        <source>5. Kohdistusty&#xc3;&#xb6;kalu</source>
+        <source>5. Kohdistustyökalu</source>
         <translation>5. Fokuseringsverktyg</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../Osoitetyokalu.py" line="256"/>
-        <source>6. Poistoty&#xc3;&#xb6;kalu</source>
+        <source>6. Poistotyökalu</source>
         <translation>6. Raderingsverktyg</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../Osoitetyokalu.py" line="691"/>
-        <source>Pistett&#xc3;&#xa4; ei ole asetettu.</source>
+        <source>Pistettä ei ole asetettu.</source>
         <translation>Punkten är inte inställd.</translation>
     </message>
     <message>
@@ -232,9 +227,9 @@ pituus: {length}m</source>
 Slutpunkt: {end}
 längd: {length}m</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../Osoitetyokalu.py" line="625"/>
-        <source>Alku- ja loppupisteen on oltava samalla tiell&#xc3;&#xa4;</source>
+        <source>Alku- ja loppupisteen on oltava samalla tiellä</source>
         <translation>Start- och slutpunkt måste vara på samma väg</translation>
     </message>
     <message>
@@ -247,9 +242,9 @@ längd: {length}m</translation>
         <source>Ei tieosoitetta</source>
         <translation>Ingen vägadress</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../Osoitetyokalu.py" line="1100"/>
-        <source>T&#xc3;&#xa4;yt&#xc3;&#xa4; vaaditut kent&#xc3;&#xa4;t.</source>
+        <source>Täytä vaaditut kentät.</source>
         <translation>Fyll i de obligatoriska fälten.</translation>
     </message>
     <message>
@@ -257,9 +252,9 @@ längd: {length}m</translation>
         <source>VKM-API ei vastaa. URL: {final_url}</source>
         <translation>VKM-API svarar inte. URL: {final_url}</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../Osoitetyokalu.py" line="1254"/>
-        <source>Pistem&#xc3;&#xa4;inen haku</source>
+        <source>Pistemäinen haku</source>
         <translation>Punktera sök</translation>
     </message>
     <message>
@@ -287,10 +282,15 @@ längd: {length}m</translation>
         <source>Lataus onnistui</source>
         <translation>Nedladdningen lyckades</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../Osoitetyokalu.py" line="1535"/>
-        <source>Virhe tiedostoa ladattaessa. Yrit&#xc3;&#xa4; uudelleen.</source>
+        <source>Virhe tiedostoa ladattaessa. Yritä uudelleen.</source>
         <translation>Fel vid nedladdning av filen. Försök igen.</translation>
+    </message>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="277"/>
+        <source>&amp;Osoitetyokalu</source>
+        <translation>&amp;Vägadressverktyg</translation>
     </message>
 </context>
 <context>
@@ -320,9 +320,9 @@ längd: {length}m</translation>
         <source>Osa:</source>
         <translation>Del:</translation>
     </message>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../dialogs/PopUp_dialog.ui" line="391"/>
-        <source>Etaisyys:</source>
+        <source>Etäisyys:</source>
         <translation>Distans:</translation>
     </message>
     <message>
@@ -348,12 +348,12 @@ längd: {length}m</translation>
     <message>
         <location filename="../dialogs/PopUp_dialog.ui" line="683"/>
         <source>Elynimi:</source>
-        <translation>NTM namn:</translation>
+        <translation>NTM-centrum namn:</translation>
     </message>
     <message>
         <location filename="../dialogs/PopUp_dialog.ui" line="695"/>
         <source>Ualuenimi:</source>
-        <translation>U-regionens namn:</translation>
+        <translation>Underhållsområde:</translation>
     </message>
     <message>
         <location filename="../dialogs/PopUp_dialog.ui" line="707"/>
@@ -442,12 +442,20 @@ längd: {length}m</translation>
         <translation>Stänga</translation>
     </message>
 </context>
-<context>
+<context encoding="UTF-8">
     <name>VkmApiException</name>
-    <message>
+    <message encoding="UTF-8">
         <location filename="../CustomExceptions/VkmApiException.py" line="6"/>
-        <source>VKM-rajapintaan ei saada yhteytt&#xc3;&#xa4;.</source>
+        <source>VKM-rajapintaan ei saada yhteyttä.</source>
         <translation>Kan inte ansluta till VKM-API.</translation>
+    </message>
+</context>
+<context>
+    <name>VkmRequestException</name>
+    <message>
+        <location filename="../CustomExceptions/VkmRequestException.py" line="7"/>
+        <source>VKM-API virhe: </source>
+        <translation>VKM-API fel:</translation>
     </message>
 </context>
 </TS>

@@ -4,16 +4,20 @@
 
 [general]
 name=Tieosoitetyökalu
-email=support@sitowise.com
+email=paikkatieto@vayla.fi
 author=Väylävirasto
 qgisMinimumVersion=3.0
 description=Tieosoitetyökalu-plugin hakee VKM-rajapinnasta osoitetietoja ja esittää niitä erilaisin tavoin QGIS:sissa.
 version=1.1.1
 
-about=Tieosoitetyökalu mahdollistaa monipuoliset hakutoiminnot tie- ja katuosoitteella.
+about=FI:
+  Tieosoitetyökalu mahdollistaa monipuoliset hakutoiminnot tie- ja katuosoitteella.
   Saat tieosoitteen sekä muita tien ominaisuuksia näkyviin helposti karttaa klikkaamalla.
   Voit myös tarkastella tieosia, hakea kohteita tieosoitevälillä sekä hakea sijainnin koordinaatilla.
   Tieosoitevälin ajoratojen osoitetiedot saa talletettua tiedostona taulukkolaskentaohjelmiin viemiseksi.
+
+  EN:
+  Same in english
 
 tracker=https://github.com/sitowise/QGIS-tieosoitetyokalu/issues
 repository=https://github.com/sitowise/QGIS-tieosoitetyokalu
