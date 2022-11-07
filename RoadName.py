@@ -5,8 +5,8 @@ class RoadName:
     
 
     def __init__(self) -> None:
-        working_dir = str(Path.cwd())
-        self.file_path = f'{working_dir}/data/tienimi.json'
+        path = Path('data/tienimi.json')
+        self.file_path = path.resolve()
 
 
     def get_road_name(self, road_number:int):
