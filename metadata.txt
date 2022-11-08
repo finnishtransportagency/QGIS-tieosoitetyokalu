@@ -25,7 +25,7 @@ tags=python
 
 homepage=https://www.sitowise.com/
 category=Plugins
-icon=icon.png
+icon=main_icon.png
 # experimental flag
 experimental=False
 
