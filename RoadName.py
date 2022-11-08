@@ -20,7 +20,7 @@ class RoadName:
         Returns:
             (str): Road name.
         """
-        with open(self.file_path, 'r') as file:
+        with open(self.file_path, 'rb') as file:
             data = json.load(file)
         for road in data:
             with contextlib.suppress(KeyError):
