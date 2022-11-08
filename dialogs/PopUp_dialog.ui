@@ -412,7 +412,7 @@
      <x>630</x>
      <y>20</y>
      <width>311</width>
-     <height>291</height>
+     <height>301</height>
     </rect>
    </property>
    <property name="font">
@@ -619,6 +619,18 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QLineEdit" name="MaantiennimilineEdit">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="layoutWidget">
@@ -705,6 +717,18 @@
       </property>
       <property name="text">
        <string>Maakuntanimi:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_17">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Maantien nimi:</string>
       </property>
      </widget>
     </item>

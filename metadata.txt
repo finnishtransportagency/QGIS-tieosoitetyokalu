@@ -33,7 +33,7 @@ hasProcessingProvider=no
 # Tags are comma separated with spaces allowed
 tags=python
 category=Plugins
-icon=icon.png
+icon=main_icon.png
 # experimental flag
 experimental=False
 
