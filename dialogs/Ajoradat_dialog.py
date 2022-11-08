@@ -1,8 +1,8 @@
 import os
 
-from PyQt5.QtWidgets import QFileDialog
-from qgis.PyQt import uic
-from qgis.PyQt import QtWidgets
+from qgis.PyQt import QtWidgets, uic
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import QFileDialog
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -37,7 +37,7 @@ class Ajoradat_dialog(QtWidgets.QDialog, FORM_CLASS):
     def select_output_file(self):
         """User chooses location for the downloadable CSV-file."""
         options = QFileDialog.Options()
-        filename,_ = QFileDialog.getSaveFileName(self, 'Valitse tallennussijainti', "", 'csv (*.csv)', options=options)
+        filename,_ = QFileDialog.getSaveFileName(self, self.tr(u'Valitse tallennussijainti'), "", 'csv (*.csv)', options=options)
         if filename:
             self.PathlineEdit.setText(filename)
 
@@ -49,3 +49,19 @@ class Ajoradat_dialog(QtWidgets.QDialog, FORM_CLASS):
             (str): File path.
         """
         return self.PathlineEdit.text()
+
+
+    @staticmethod
+    def tr(message, disambiguation="", n=-1) -> str:
+        """Get the translation for a string using Qt translation API.
+
+        We implement this ourselves since we do not inherit QObject.
+
+        :param message: String for translation.
+        :type message: str, QString
+
+        :returns: Translated version of message.
+        :rtype: QString
+        """
+        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
+        return QCoreApplication.translate('Ajoradat_dialog', message, disambiguation, n)
