@@ -639,7 +639,7 @@
      <x>480</x>
      <y>30</y>
      <width>141</width>
-     <height>271</height>
+     <height>281</height>
     </rect>
    </property>
    <property name="font">
@@ -720,7 +720,7 @@
       </property>
      </widget>
     </item>
-    <item>
+    <item alignment="Qt::AlignRight">
      <widget class="QLabel" name="label_17">
       <property name="font">
        <font>

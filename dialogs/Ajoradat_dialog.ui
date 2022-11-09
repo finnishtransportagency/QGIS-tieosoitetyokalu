@@ -16,9 +16,9 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>0</x>
      <y>30</y>
-     <width>131</width>
+     <width>151</width>
      <height>151</height>
     </rect>
    </property>
@@ -51,7 +51,7 @@
       </property>
      </widget>
     </item>
-    <item>
+    <item alignment="Qt::AlignRight">
      <widget class="QLabel" name="label_6">
       <property name="text">
        <string>Ajoratojen kokonaispituus:</string>
