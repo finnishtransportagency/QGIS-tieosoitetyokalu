@@ -7,7 +7,7 @@ Saat tieosoitteen sekä muita tien ominaisuuksia näkyviin helposti karttaa klik
 Voit myös tarkastella tieosia, hakea kohteita tieosoitevälillä sekä hakea sijainnin koordinaatilla.
 Tieosoitevälin ajoratojen osoitetiedot saa talletettua tiedostona taulukkolaskentaohjelmiin viemiseksi.
 
-**Documentation in English can be found [below][EN].**
+**Documentation in English can be found below.**
 
 ### Asennus
 #### Asennus Githubin kautta
@@ -39,9 +39,6 @@ Viivamaisen haun pituus näytetään erikseen Ajoradat-ikkunan 'Tieputuus'-kent�
 Haetun välin ajoratapätkien tiedot voi ladata CSV-tiedostoon, joka ilmestyy valittuun kansioon kolmea pistettä (...) ja 'Lataa..' painikkeita painamalla!
 
 5. Kohdistustyökalu. Avaa tekstikenttiä sisältävän ikkunan, johon käyttäjä voi syöttää parametreja VKM-hakua varten. Palauttaa pisteen tai ajoratojen osoitetiedot, kohdistaa niihin ja lisää ne kartalle riippuen annetuista hakuparametreista.
-
-Viivamaisen haun pituus näytetään erikseen Ajoradat-ikkunan 'Tieputuus'-kentässä.
-Haetun välin ajoratapätkien tiedot voi ladata CSV-tiedostoon, joka ilmestyy valittuun kansioon kolmea pistettä (...) ja 'Lataa..' painikkeita klikkaamalla!
 
 6. Poistotyökalu. Poistaa yhden tai kaikki karttavihjeet ja myös yhden satunnaisen tai kaikki geometriat työkalun tasoista riippuen käyttäjän valinnasta.
 
@@ -84,9 +81,6 @@ Length between the two points is shown in a 'Road length' text field.
 Starting and ending address data of every line of every road way retrieved from the linestring VKM-request can be downloaded as a CSV to a chosen folder by pressing buttons (...) and then 'Download..'!
 
 5. Centering tool. Opens a search form with lines to input VKM-API request parameters. Once "Search" button is pressed, returns address information about a point or a line depending on the given search parameters and centers the canvas on the requested point.
-
-Length between the two points is shown in a 'Tiepituus' text field.
-Starting and ending address data of every line of every road way retrieved from the linestring VKM-request can be downloaded as a CSV to a chosen folder by pressing buttons (...) and 'Download..'!
 
 6. Delete tool. Opens a window with buttons to delete one or all annotations in the current project. Also can delete one random geometry or all geometries that were added using this plugin.
 
