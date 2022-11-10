@@ -11,7 +11,7 @@ Tieosoitevälin ajoratojen osoitetiedot saa talletettua tiedostona taulukkolaske
 
 ### Asennus
 #### Asennus Githubin kautta
-1. Lataa Osoitetyokalu.zip-tiedosto Githubista: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/releases.
+1. Lataa Tieosoitetyokalu.zip-tiedosto Githubista: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/releases.
 2. QGIS > Lisäosat > Hallitse ja asenna lisäosia > Asenna ZIP-tiedostosta > valitse ladattu ZIP-tiedosto > Asenna lisäosa.
 3. Varmista, että Tieosoitetyökalu-plugin on asennettu ja käytössä: Hallitse ja asenna lisäosia > Asennettu.
 
@@ -33,9 +33,9 @@ Käyttäjän klikkaus palauttaa XY-koordinaatit, joita käytetään VKM-haussa. 
 
 **Tieosoitetyökalun avulla korostetut ajoradat erotellaan värien perusteella: 0 = vihreä, 1 = punainen ja 2 = sininen.**
 
-4. "Alku- ja loppupiste" -työkalu. Korostaa kahden (A ja B) klikatun pisteen väliset ajoradat ja esittää niiden alku- ja loppuosoitteet sekä pituudet erillisessä ikkunassa. Pisteiden on oltava samalla tiellä. Kun ensimmäinen piste on valittu, karttaa pitkin voi tarvittaessa siirtyä eri suuntiin käyttäen nuolinäppäimiä ennen toista klikkausta!!! 
+4. "Alku- ja loppupiste" -työkalu. Korostaa kahden (A ja B) klikatun pisteen väliset ajoradat ja esittää niiden alku- ja loppuosoitteet sekä pituudet erillisessä ikkunassa. Pisteiden on oltava samalla tiellä. Kun ensimmäinen piste on valittu, karttaa pitkin voi tarvittaessa siirtyä eri suuntiin käyttäen nuolinäppäimiä ennen toista klikkausta!!!
 
-Viivamaisen haun pituus näytetään erikseen Ajoradat-ikkunan 'Tieputuus'-kentässä. 
+Viivamaisen haun pituus näytetään erikseen Ajoradat-ikkunan 'Tieputuus'-kentässä.
 Haetun välin ajoratapätkien tiedot voi ladata CSV-tiedostoon, joka ilmestyy valittuun kansioon kolmea pistettä (...) ja 'Lataa..' painikkeita painamalla!
 
 5. Kohdistustyökalu. Avaa tekstikenttiä sisältävän ikkunan, johon käyttäjä voi syöttää parametreja VKM-hakua varten. Palauttaa pisteen tai ajoratojen osoitetiedot, kohdistaa niihin ja lisää ne kartalle riippuen annetuista hakuparametreista.
@@ -53,7 +53,7 @@ Address information of the highlighted roadway lines can be downloaded in a CSV 
 
 ### Installation
 #### Installation using Github
-1. Download the Osoitetyokalu.zip file from Github release: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/releases.
+1. Download the Tieosoitetyokalu.zip file from Github release: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/releases.
 2. Open QGIS > Plugins > Manage and Install Plugins > Install from Zip > choose the downloaded zip file > press Install Plugin.
 3. Check if the plugin is installed and enabled: Manage and Install plugins > Installed.
 
