@@ -11,7 +11,7 @@ Tieosoitevälin ajoratojen osoitetiedot saa talletettua tiedostona taulukkolaske
 
 ### Asennus
 #### Asennus Githubin kautta
-1. Lataa Tieosoitetyokalu.zip-tiedosto Githubista: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/releases.
+1. Lataa Osoitetyokalu.zip-tiedosto Githubista: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/releases.
 2. QGIS > Lisäosat > Hallitse ja asenna lisäosia > Asenna ZIP-tiedostosta > valitse ladattu ZIP-tiedosto > Asenna lisäosa.
 3. Varmista, että Tieosoitetyökalu-plugin on asennettu ja käytössä: Hallitse ja asenna lisäosia > Asennettu.
 
@@ -53,7 +53,7 @@ Address information of the highlighted roadway lines can be downloaded in a CSV 
 
 ### Installation
 #### Installation using Github
-1. Download the Tieosoitetyokalu.zip file from Github release: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/releases.
+1. Download the Osoitetyokalu.zip file from Github release: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/releases.
 2. Open QGIS > Plugins > Manage and Install Plugins > Install from Zip > choose the downloaded zip file > press Install Plugin.
 3. Check if the plugin is installed and enabled: Manage and Install plugins > Installed.
 
