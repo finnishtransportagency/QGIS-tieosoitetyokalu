@@ -358,7 +358,7 @@ class LayerHandler(object):
 
 
     def create_roadway_layer(self, name, color):
-        layer = QgsVectorLayer('LineString?crs=3067&field=id:integer&index=yes', name, 'memory')
+        layer = QgsVectorLayer('LineString?crs=epsg:3067&field=id:integer&index=yes', name, 'memory')
         pr = layer.dataProvider()
         pr.addAttributes([QgsField("TOOL_ID", QVariant.String), QgsField("NAME", QVariant.String)])
         layer.updateFields()
