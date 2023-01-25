@@ -9,6 +9,9 @@ Tieosoitevälin ajoratojen osoitetiedot saa talletettua tiedostona taulukkolaske
 
 **Documentation in English can be found below.**
 
+**Syventävät ohjeet (PDF): https://ava.vaylapilvi.fi/ava/Muut/QGIS/QGIS-Tieosoitety%C3%B6kalu_Ohje.pdf**  
+**Ohjevideo: https://www.youtube.com/watch?v=3UiOASUd2yA**
+
 ### Asennus
 #### Asennus Githubin kautta
 1. Lataa Tieosoitetyokalu.zip-tiedosto Githubista: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/releases.
@@ -50,6 +53,9 @@ With Tieosoitetyökalu or Road address tool you can perform different kind of se
 This plugin displays road addresses and other address properties after a click on a canvas.
 You can also examine road parts, highlight roadways between two chosen points and search locations by coordinates.
 Address information of the highlighted roadway lines can be downloaded in a CSV file that is spreadsheet-friendly.
+
+**Advanced instructions (PDF): https://ava.vaylapilvi.fi/ava/Muut/QGIS/QGIS-Tieosoitety%C3%B6kalu_Ohje.pdf**  
+**Instructional video: https://www.youtube.com/watch?v=3UiOASUd2yA**
 
 ### Installation
 #### Installation using Github
