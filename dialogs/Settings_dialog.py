@@ -23,7 +23,7 @@ from qgis.PyQt import QtCore, QtGui, QtWidgets, uic
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'Settings_dialog.ui'))
+    os.path.dirname(__file__), "Settings_dialog.ui"))
 
 
 class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
@@ -53,37 +53,41 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
 
     # ----- Helpers -----
     
-    def _collect_watched_from_container(self):
-        container = self.proxySettingsMainVLayout.parentWidget()  # the QWidget that holds the layout
+    def _collect_watched_from_container(self) -> list[QtWidgets.QWidget]:
+        """Collect all interactive inputs from the entire Settings_dialog.
+
+        Returns:
+            result (list[QWidget]): A list of all interactive input widgets found in Settings_dialog.
+        """
         watched_types = (
             QtWidgets.QLineEdit, QtWidgets.QCheckBox, QtWidgets.QComboBox,
             QtWidgets.QSpinBox, QtWidgets.QDoubleSpinBox, QtWidgets.QDateEdit
         )
 
-        widgets = container.findChildren(QtWidgets.QWidget)  # recursive
+        widgets = self.findChildren(QtWidgets.QWidget)  # recursive
         result = []
         for w in widgets:
             # Include only the types we care about
             if not isinstance(w, watched_types):
                 continue
             # Skip intentionally excluded widgets: in Designer set dynamic property watch=False
-            if w.property('watch') is False:
+            if w.property("watch") is False:
                 continue
             # Skip disabled or read-only inputs
             if not w.isEnabled():
                 continue
-            if hasattr(w, 'isReadOnly') and w.isReadOnly():
+            if hasattr(w, "isReadOnly") and w.isReadOnly():
                 continue
             result.append(w)
         return result
 
 
     def _load_settings(self):
-        s = QtCore.QSettings()
+        settings = QtCore.QSettings()
         blockers = [QtCore.QSignalBlocker(w) for w in self._watched]
         try:
-            self.HTTPAddressLineEdit.setText(s.value('QGIS-tieosoitetyokalu/http', ''))
-            self.HTTPsAddressLineEdit.setText(s.value('QGIS-tieosoitetyokalu/https', ''))
+            self.HTTPAddressLineEdit.setText(settings.value("QGIS-tieosoitetyokalu/http", ""))
+            self.HTTPSAddressLineEdit.setText(settings.value("QGIS-tieosoitetyokalu/https", ""))
         finally:
             del blockers
 
@@ -164,10 +168,10 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         self.setWindowModified(changed)
 
     def _apply(self):
-        s = QtCore.QSettings()
-        s.setValue('QGIS-tieosoitetyokalu/http', self.HTTPAddressLineEdit.text().strip())
-        s.setValue('QGIS-tieosoitetyokalu/https', self.HTTPsAddressLineEdit.text().strip())
-        s.sync()
+        settings = QtCore.QSettings()
+        settings.setValue("QGIS-tieosoitetyokalu/http", self.HTTPAddressLineEdit.text().strip())
+        settings.setValue("QGIS-tieosoitetyokalu/https", self.HTTPSAddressLineEdit.text().strip())
+        settings.sync()
 
         # Reset the baseline & modified flags
         self._original = {w: self._get_value(w) for w in self._watched}
