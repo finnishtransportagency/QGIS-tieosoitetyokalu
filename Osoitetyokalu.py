@@ -60,6 +60,7 @@ from .dialogs.Ajoradat_dialog import Ajoradat_dialog
 from .dialogs.DeleteLayer_dialog import DeleteLayer_dialog
 from .dialogs.PopUp_dialog import PopUp_dialog
 from .dialogs.SearchForm_dialog import SearchForm_dialog
+from .dialogs.Settings_dialog import Settings_dialog
 #Import modules
 from .dialogs.ShowCoordinates_dialog import ShowCoordinates_dialog
 from .LayerHandler import LayerHandler
@@ -291,6 +292,15 @@ class Osoitetyokalu:
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
             add_to_popupMenu=True)
+        
+        self.add_action(
+            icon_path_6,
+            text=self.tr(u"Asetukset"),
+            callback=self.open_settings,
+            parent=self.iface.mainWindow(),
+            add_to_toolbar=False,
+            add_to_popupMenu=True
+        )
 
         self.toolButton.setMenu(self.popupMenu)
         self.toolButton.setDefaultAction(self.actions[0])
@@ -300,6 +310,11 @@ class Osoitetyokalu:
 
         # will be set False in run()
         self.first_start = True
+
+
+    def open_settings(self):
+        dlg = Settings_dialog()
+        dlg.exec()
 
 
     def unload(self):
