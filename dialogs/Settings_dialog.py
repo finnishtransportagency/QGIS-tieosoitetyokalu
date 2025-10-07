@@ -20,6 +20,8 @@
 import os
 
 from qgis.PyQt import QtCore, QtGui, QtWidgets, uic
+from ..libs.process_widgets import WidgetValidator
+from ..CustomExceptions.InvalidSettingsException import InvalidSettingsException
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -33,6 +35,8 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         self.setFixedSize(410, 160)
 
         self._settings_group = "QGIS-tieosoitetyokalu"
+
+        self.wv = WidgetValidator()
     
         # Decide which widgets to watch:
         self._watched = self._collect_watched_from_dialog()
@@ -63,7 +67,9 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         """Return full relative key path inside ROOT_GROUP, e.g., 'proxy/http'."""
         # subgroup may come from widget, or inherit from a parent container
         subgroup = self._settings_group_for_widget(w)  # e.g., 'proxy' or ''
+        assert subgroup is not None # Widgets have to belong to a group
         key = w.property("settingsKey")
+        assert key is not None # A setting key has to be configured for a watched interactive widget
         if not key:
             key = w.objectName()
         return f"{subgroup}/{key}" if subgroup else key
@@ -77,7 +83,7 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
                 return val.strip()
             cur = cur.parent()
         # Fallback to a dialog-level default if you like (e.g., 'proxy')
-        return getattr(self, "_default_subgroup", "")
+        return getattr(self, "_default_subgroup", None)
 
     def _collect_watched_from_dialog(self) -> list[QtWidgets.QWidget]:
         """Collect all interactive inputs from the entire Settings_dialog.
@@ -313,10 +319,12 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
                 except Exception:
                     pass
 
+    # TODO: POISTA
     def _validate(self) -> bool:
         """Centralize validation; respect validators if present."""
         # NOTE: this currently requires all interactive widgets to have valid values
         # TODO: user needs to be able to save modified settings even if some forms are empty or invalid
+
         for w in self._watched:
             if isinstance(w, QtWidgets.QLineEdit):
                 v = w.validator()
@@ -331,6 +339,10 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
 
     def _is_dirty(self) -> bool:
         return any(self._get_value(w) != self._original[w] for w in self._watched)
+    
+    # TODO: POISTA
+    # def _get_dirty_widgets(self) -> list:
+    #     return [self._get_value(w) for w in self._watched if self._get_value(w) != self._original[w]]
 
     # ----- Slots -----
 
@@ -344,13 +356,17 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         """Enable/disable "Apply" button depending on changes made to watched widgets.
         """
         changed = self._is_dirty()
-        valid = self._validate()
-        self.apply_btn.setEnabled(changed and valid)
+        self.apply_btn.setEnabled(changed)
         self.setWindowModified(changed)
 
     def _apply(self):
         """Save dialog settings and reset the baseline for tracking interactive widgets. Update "Apply" button state.
         """
+        
+        invalid_groups = self.wv.validate_widgets(widgets=self._watched)
+        if invalid_groups:
+            raise InvalidSettingsException(invalid_groups)
+        
         self._save_settings()
 
         # Reset baseline for dirty tracking

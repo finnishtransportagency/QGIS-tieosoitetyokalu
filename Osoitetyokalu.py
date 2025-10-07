@@ -56,6 +56,7 @@ from requests.adapters import HTTPAdapter, Retry
 
 from .CustomExceptions.VkmApiException import VkmApiException
 from .CustomExceptions.VkmRequestException import VkmRequestException
+from .CustomExceptions.InvalidSettingsException import InvalidSettingsException
 from .dialogs.Ajoradat_dialog import Ajoradat_dialog
 from .dialogs.DeleteLayer_dialog import DeleteLayer_dialog
 from .dialogs.PopUp_dialog import PopUp_dialog
@@ -64,6 +65,7 @@ from .dialogs.Settings_dialog import Settings_dialog
 #Import modules
 from .dialogs.ShowCoordinates_dialog import ShowCoordinates_dialog
 from .LayerHandler import LayerHandler
+from .libs.vkm_api_requests import VKMAPIRequests
 # Initialize Qt resources from file resources.py
 from .resources import *
 from .RoadName import RoadName
@@ -112,6 +114,10 @@ class Osoitetyokalu:
         self.LayerHandler = LayerHandler()
 
         self.RoadName = RoadName()
+
+        # Setup for VKM API requests
+        self.proxies = VKMAPIRequests.load_proxies_from_settings()
+        self.session = VKMAPIRequests.create_session()
 
         QgsProject.instance().layersWillBeRemoved.connect(self.remove_annotations_from_layers)
 
@@ -314,7 +320,10 @@ class Osoitetyokalu:
 
     def open_settings(self):
         dlg = Settings_dialog()
-        dlg.exec()
+        try:
+            dlg.exec()
+        except InvalidSettingsException as e:
+            self.error_popup(e)
 
 
     def unload(self):
