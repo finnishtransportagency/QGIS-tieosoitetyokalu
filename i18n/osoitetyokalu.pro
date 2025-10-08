@@ -8,9 +8,11 @@ FORMS = ../dialogs/Ajoradat_dialog.ui \
 SOURCES = ../Osoitetyokalu.py \
 ../LayerHandler.py \
 ../dialogs/Ajoradat_dialog.py \
+../dialogs/Settings_dialog.py \
 ../CustomExceptions/VkmApiException.py \
 ../CustomExceptions/VkmRequestException.py \
-../vkm_api_requests.py
+../libs/vkm_api_requests.py \
+../libs/process_widgets.py
 
 TRANSLATIONS = Osoitetyokalu_sv.ts \
 Osoitetyokalu_en.ts
