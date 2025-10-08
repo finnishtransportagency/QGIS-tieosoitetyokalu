@@ -19,9 +19,8 @@
 
 import os
 
-from qgis.PyQt import QtCore, QtGui, QtWidgets, uic
+from qgis.PyQt import QtCore, QtWidgets, uic
 from ..libs.process_widgets import WidgetValidator
-from ..CustomExceptions.InvalidSettingsException import InvalidSettingsException
 
 # This loads your .ui file so that PyQt can populate your plugin with the elements from Qt Designer
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -319,31 +318,14 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
                 except Exception:
                     pass
 
-    # TODO: POISTA
-    def _validate(self) -> bool:
-        """Centralize validation; respect validators if present."""
-        # NOTE: this currently requires all interactive widgets to have valid values
-        # TODO: user needs to be able to save modified settings even if some forms are empty or invalid
-
-        for w in self._watched:
-            if isinstance(w, QtWidgets.QLineEdit):
-                v = w.validator()
-                if v:
-                    state, _, _ = v.validate(w.text(), 0)
-                    if state != QtGui.QValidator.Acceptable:
-                        return False
-                else:
-                    if not w.text().strip():
-                        return False
-        return True
-
     def _is_dirty(self) -> bool:
+        """Check if any of the watched widgets is modified compared to the baseline.
+
+        Returns:
+            bool: Returns True if any one widget is dirty.
+        """
         return any(self._get_value(w) != self._original[w] for w in self._watched)
     
-    # TODO: POISTA
-    # def _get_dirty_widgets(self) -> list:
-    #     return [self._get_value(w) for w in self._watched if self._get_value(w) != self._original[w]]
-
     # ----- Slots -----
 
     @QtCore.pyqtSlot()
@@ -360,12 +342,16 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         self.setWindowModified(changed)
 
     def _apply(self):
-        """Save dialog settings and reset the baseline for tracking interactive widgets. Update "Apply" button state.
+        """Save dialog settings and reset the baseline for tracking interactive widgets if inputs in the watched widgets are valid. Update "Apply" button state.
         """
-        
         invalid_groups = self.wv.validate_widgets(widgets=self._watched)
         if invalid_groups:
-            raise InvalidSettingsException(invalid_groups)
+            # Message from invalid_groups to show which settings contain invalid inputs
+            settings_groups = ", ".join(map(str, invalid_groups))
+            error_message = self.tr(u"Tarkista ja korjaa seuraavat asetukset:")
+            full_message = f"{error_message}\n- {settings_groups}"
+            QtWidgets.QMessageBox.critical(self, self.tr(u"Virheelliset asetukset"), full_message)
+            return
         
         self._save_settings()
 
@@ -375,3 +361,18 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
             if isinstance(w, QtWidgets.QLineEdit):
                 w.setModified(False)
         self._update_apply_button()
+
+    @staticmethod
+    def tr(message, disambiguation="", n=-1) -> str:
+        """Get the translation for a string using Qt translation API.
+
+        We implement this ourselves since we do not inherit QObject.
+
+        :param message: String for translation.
+        :type message: str, QString
+
+        :returns: Translated version of message.
+        :rtype: QString
+        """
+        # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
+        return QtCore.QCoreApplication.translate('WidgetValidator', message, disambiguation, n)

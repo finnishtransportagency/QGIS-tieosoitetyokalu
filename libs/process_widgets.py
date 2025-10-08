@@ -1,6 +1,5 @@
 from qgis.PyQt import QtCore, QtWidgets
 from collections import defaultdict
-from ..CustomExceptions.InvalidSettingsException import InvalidSettingsException
 import re
 
 
@@ -45,12 +44,28 @@ class WidgetValidator:
         """, re.VERBOSE | re.IGNORECASE)
 
     def _collect_widgets_by_group(self, widgets: list[QtWidgets.QWidget]) -> dict[str, list]:
+        """Collect interactive widgets by their settings group.
+
+        Args:
+            widgets (list[QtWidgets.QWidget]): A list of QT widgets to sort.
+
+        Returns:
+            dict[str, list]: A dictionary of lists of widgets. Each list contains widgets specific to their settings group.
+        """
         widgets_by_group = defaultdict(list)
         for w in widgets:
             widgets_by_group[w.property("settingsGroup")].append(w)
         return widgets_by_group
 
     def validate_widgets(self, widgets: list[QtWidgets.QWidget]):
+        """Validate interactive QT widgets based on their group (= a custom widget property) and type.
+
+        Args:
+            widgets (list[QtWidgets.QWidget]): A list of QT widgets to validate.
+
+        Returns:
+            invalid_groups (set): The names of the groups that contain invalid widget inputs.
+        """
         widgets_by_group = self._collect_widgets_by_group(widgets)
         invalid_groups = set()
         for group_name, widget_group in widgets_by_group.items():
@@ -60,6 +75,14 @@ class WidgetValidator:
         return invalid_groups
 
     def _validate_proxy_widgets(self, widget_group: list[QtWidgets.QWidget]) -> bool:
+        """Validate widgets of 'proxySettings' group by counting the sum of invalid inputs.
+
+        Args:
+            widget_group (list[QtWidgets.QWidget]): Proxy settings widgets. (So far only QLineEdit types).
+
+        Returns:
+            bool: Returns True if the count of invalid inputs is above zero.
+        """
         invalid_inputs = 0
 
         for w in widget_group:
@@ -90,11 +113,11 @@ class WidgetValidator:
         # fullmatch ensures the entire value matches (your pattern already uses ^...$)
         if self.url_regex.fullmatch(text):
             lineedit.setStyleSheet("border: 1px solid #2ecc71;")   # green
-            lineedit.setToolTip("Valid URL")
+            lineedit.setToolTip("")
             return True
         else:
             lineedit.setStyleSheet("border: 1px solid #e74c3c;")   # red
-            lineedit.setToolTip("Invalid URL — must start with http:// or https:// and be a valid host[:port]")
+            lineedit.setToolTip(self.tr(u'Virheellinen URL-osoite – täytyy alkaa skeemasta: "http://" tai "https://"'))
             return False
         
     @staticmethod

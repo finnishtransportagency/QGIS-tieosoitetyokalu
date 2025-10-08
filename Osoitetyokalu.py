@@ -56,7 +56,6 @@ from requests.adapters import HTTPAdapter, Retry
 
 from .CustomExceptions.VkmApiException import VkmApiException
 from .CustomExceptions.VkmRequestException import VkmRequestException
-from .CustomExceptions.InvalidSettingsException import InvalidSettingsException
 from .dialogs.Ajoradat_dialog import Ajoradat_dialog
 from .dialogs.DeleteLayer_dialog import DeleteLayer_dialog
 from .dialogs.PopUp_dialog import PopUp_dialog
@@ -71,7 +70,6 @@ from .resources import *
 from .RoadName import RoadName
 
 # Import the code for the dialog
-
 
 
 class Osoitetyokalu:
@@ -320,10 +318,7 @@ class Osoitetyokalu:
 
     def open_settings(self):
         dlg = Settings_dialog()
-        try:
-            dlg.exec()
-        except InvalidSettingsException as e:
-            self.error_popup(e)
+        dlg.exec()
 
 
     def unload(self):
