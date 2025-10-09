@@ -185,42 +185,42 @@ in the next VKM API update.</translation>
 <context>
     <name>Osoitetyokalu</name>
     <message>
-        <location filename="../Osoitetyokalu.py" line="251"/>
+        <location filename="../Osoitetyokalu.py" line="253"/>
         <source>1. Tieosoite</source>
         <translation>1. Road address</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="260"/>
+        <location filename="../Osoitetyokalu.py" line="262"/>
         <source>2. Hakutyökalu</source>
         <translation>2. Search tool</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="268"/>
+        <location filename="../Osoitetyokalu.py" line="270"/>
         <source>3. Tieosa</source>
         <translation>3. Road part</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="276"/>
+        <location filename="../Osoitetyokalu.py" line="278"/>
         <source>4. Tieosoite (Alku- ja loppupiste)</source>
         <translation>4. Road address (Starting and ending point)</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="284"/>
+        <location filename="../Osoitetyokalu.py" line="286"/>
         <source>5. Kohdistustyökalu</source>
         <translation>5. Centering tool</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="292"/>
+        <location filename="../Osoitetyokalu.py" line="294"/>
         <source>6. Poistotyökalu</source>
         <translation>6. Delete tool</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="741"/>
+        <location filename="../Osoitetyokalu.py" line="753"/>
         <source>Pistettä ei ole asetettu.</source>
         <translation>Point is not set.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="528"/>
+        <location filename="../Osoitetyokalu.py" line="544"/>
         <source>Alkupiste: {start}
 Loppupiste: {end}
 pituus: {length}m</source>
@@ -229,72 +229,72 @@ Ending point: {end}
 length: {length}m</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="675"/>
+        <location filename="../Osoitetyokalu.py" line="687"/>
         <source>Alku- ja loppupisteen on oltava samalla tiellä</source>
         <translation>Starting and ending points have to be on the same road</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="695"/>
+        <location filename="../Osoitetyokalu.py" line="707"/>
         <source>A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} pituus: {mitattu_pituus}</source>
         <translation>A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} length: {mitattu_pituus}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="863"/>
+        <location filename="../Osoitetyokalu.py" line="873"/>
         <source>Ei tieosoitetta</source>
         <translation>No road address</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1150"/>
+        <location filename="../Osoitetyokalu.py" line="1151"/>
         <source>Täytä vaaditut kentät.</source>
         <translation>Fill out necessary fields.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1249"/>
+        <location filename="../Osoitetyokalu.py" line="1247"/>
         <source>VKM-API ei vastaa. URL: {final_url}</source>
         <translation>VKM API does not respond. URL: {final_url}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1304"/>
+        <location filename="../Osoitetyokalu.py" line="1302"/>
         <source>Pistemäinen haku</source>
         <translation>Point-like search</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1452"/>
+        <location filename="../Osoitetyokalu.py" line="1450"/>
         <source>Alkupiste {road}/{roadway}/{part}/{distance} - Loppupiste {road_end}/{roadway_end}/{part_end}/{distance_end}, mitattu pituus: {measured_length}</source>
         <translation>Starting point {road}/{roadway}/{part}/{distance} - Ending point {road_end}/{roadway_end}/{part_end}/{distance_end}, measured_length: {measured_length}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1482"/>
+        <location filename="../Osoitetyokalu.py" line="1480"/>
         <source>Alkupiste</source>
         <translation>Starting point</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1486"/>
+        <location filename="../Osoitetyokalu.py" line="1484"/>
         <source>Loppupiste</source>
         <translation>Ending point</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1562"/>
+        <location filename="../Osoitetyokalu.py" line="1557"/>
         <source>Tiedosto tallennettu polkuun: {user_path}</source>
         <translation>File saved in:</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1563"/>
+        <location filename="../Osoitetyokalu.py" line="1558"/>
         <source>Lataus onnistui</source>
         <translation>Download succeeded</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1570"/>
+        <location filename="../Osoitetyokalu.py" line="1565"/>
         <source>Virhe tiedostoa ladattaessa. Yritä uudelleen.</source>
         <translation>Error while downloading the file. Try again.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="327"/>
+        <location filename="../Osoitetyokalu.py" line="104"/>
         <source>&amp;Tieosoitetyökalu</source>
         <translation>Road address tool</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="300"/>
+        <location filename="../Osoitetyokalu.py" line="302"/>
         <source>Asetukset</source>
         <translation>Settings</translation>
     </message>
@@ -438,47 +438,67 @@ length: {length}m</translation>
         <translation>Apply</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.ui" line="63"/>
+        <location filename="../dialogs/Settings_dialog.ui" line="238"/>
         <source>Oletusasetukset</source>
         <translation>Default settings</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.ui" line="73"/>
+        <location filename="../dialogs/Settings_dialog.ui" line="63"/>
         <source>Peruuta</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.ui" line="108"/>
+        <location filename="../dialogs/Settings_dialog.ui" line="98"/>
         <source>Määritä mahdolliset Proxy-palvelimen osoitteet</source>
         <translation>Configre possible Proxy server addresses</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.ui" line="131"/>
+        <location filename="../dialogs/Settings_dialog.ui" line="121"/>
         <source>HTTP-osoite:</source>
         <translation>HTTP-address:</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.ui" line="185"/>
+        <location filename="../dialogs/Settings_dialog.ui" line="175"/>
         <source>HTTPS-osoite:</source>
         <translation>HTTPS-address:</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.ui" line="14"/>
         <source>Asetukset</source>
-        <translation type="unfinished">Settings</translation>
+        <translation>Settings</translation>
     </message>
 </context>
 <context>
     <name>Settings_dialog</name>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="351"/>
+        <location filename="../dialogs/Settings_dialog.py" line="361"/>
         <source>Tarkista ja korjaa seuraavat asetukset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Please check and correct the following settings:</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="353"/>
+        <location filename="../dialogs/Settings_dialog.py" line="363"/>
         <source>Virheelliset asetukset</source>
-        <translation type="unfinished"></translation>
+        <translation>Invalid settings</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.py" line="386"/>
+        <source>Palauta oletusasetukset</source>
+        <translation>Reset to defaults</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.py" line="386"/>
+        <source>Haluatko palauttaa oletusasetukset ja poistaa tallennetut asetukset?</source>
+        <translation>Are you sure you want to restore default settings and delete all saved settings?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.py" line="453"/>
+        <source>Oletusarvot palautettu</source>
+        <translation>Settings reset to defaults</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.py" line="453"/>
+        <source>Asetukset on palautettu oletusarvoihin ja tallennetut asetukset on poistettu.</source>
+        <translation>Settings have been restored to their defaults and saved settings have been removed.</translation>
     </message>
 </context>
 <context>
@@ -523,14 +543,14 @@ length: {length}m</translation>
 <context>
     <name>WidgetValidator</name>
     <message>
-        <location filename="../libs/process_widgets.py" line="74"/>
+        <location filename="../libs/process_widgets.py" line="93"/>
         <source>Proxy-asetukset</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy settings</translation>
     </message>
     <message>
-        <location filename="../libs/process_widgets.py" line="120"/>
+        <location filename="../libs/process_widgets.py" line="139"/>
         <source>Virheellinen URL-osoite – täytyy alkaa skeemasta: &quot;http://&quot; tai &quot;https://&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Invalid URL – must begin with &quot;http://&quot; tai &quot;https://&quot;</translation>
     </message>
 </context>
 </TS>

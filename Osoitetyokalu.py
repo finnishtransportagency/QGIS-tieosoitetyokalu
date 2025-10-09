@@ -114,9 +114,10 @@ class Osoitetyokalu:
         self.RoadName = RoadName()
 
         # Setup for VKM API requests
-        self.proxies = VKMAPIRequests.load_proxies_from_settings()
-        self.session = VKMAPIRequests.create_session()
-
+        self.vkm_api_requests = VKMAPIRequests()
+        self.session = self.vkm_api_requests.create_session()
+        self.proxies = self.vkm_api_requests.load_proxies_from_settings()
+        self.vkm_url = self.vkm_api_requests.vkm_url
         QgsProject.instance().layersWillBeRemoved.connect(self.remove_annotations_from_layers)
 
 
@@ -247,6 +248,7 @@ class Osoitetyokalu:
         icon_path_4 = ':/plugins/osoitetyokalu/tool_icons/tool_4.png'
         icon_path_5 = ':/plugins/osoitetyokalu/tool_icons/tool_5.png'
         icon_path_6 = ':/plugins/osoitetyokalu/tool_icons/tool_6.png'
+        icon_path_7 = ':/plugins/osoitetyokalu/tool_icons/settings.png'
 
         self.add_action(
             icon_path_1,
@@ -298,7 +300,7 @@ class Osoitetyokalu:
             add_to_popupMenu=True)
         
         self.add_action(
-            icon_path_6,
+            icon_path_7,
             text=self.tr(u"Asetukset"),
             callback=self.open_settings,
             parent=self.iface.mainWindow(),
@@ -322,12 +324,28 @@ class Osoitetyokalu:
 
 
     def unload(self):
-        """Removes the plugin menu item and icon from QGIS GUI."""
+        """Closes open sessions and connections upon exiting QGIS or removing the plugin.
+        """
+        # remove menu / toolbar entries
         for action in self.actions:
-            self.iface.removePluginMenu(
-                self.tr(u'&Tieosoitetyökalu'),
-                action)
-            self.iface.removeToolBarIcon(action)
+            try:
+                self.iface.removePluginMenu(self.menu, action)
+                self.iface.removeToolBarIcon(action)
+            except Exception:
+                pass
+
+        # disconnect global signals safely
+        try:
+            QgsProject.instance().layersWillBeRemoved.disconnect(self.remove_annotations_from_layers)
+        except Exception:
+            pass
+
+        # close shared requests.Session if you created one
+        if getattr(self, 'session', None) is not None:
+            try:
+                self.session.close()
+            except Exception:
+                pass
 
 
     def road_address(self):
@@ -343,6 +361,8 @@ class Osoitetyokalu:
 
         self.LayerHandler.init_tool1()
         self.iface.mapCanvas().refresh()
+
+        self.proxies = self.vkm_api_requests.load_proxies_from_settings()
 
         def display_point(pointTool):
             """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
@@ -360,9 +380,7 @@ class Osoitetyokalu:
                 dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
 
                 #get new coordinates and address from VKM
-                vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-
-                road_address, point_x, point_y, _, _, _, _ = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y)
+                road_address, point_x, point_y, _, _, _, _ = self.vkm_request_road_address(vkm_url=self.vkm_url, point_x=point_x, point_y=point_y)
 
                 dlg.AddrLineEdit.setText(road_address)
 
@@ -413,6 +431,8 @@ class Osoitetyokalu:
         self.LayerHandler.init_tool2()
         self.iface.mapCanvas().refresh()
 
+        self.proxies = self.vkm_api_requests.load_proxies_from_settings()
+
         def display_popup(pointTool):
             """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
                 Draws a point on the canvas with the road address by using the road's coordinates from VKM-API output, that are closest to the clicked coordinates.
@@ -431,14 +451,10 @@ class Osoitetyokalu:
                 point_x = str(pointTool.x())
                 point_y = str(pointTool.y())
                 #get new coordinates and address from VKM
-                vkm_url = 'https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-                request_url = f'{vkm_url}muunna?x={point_x}&y={point_y}&palautusarvot=1,2,3,4,5,6&vaylan_luonne=0'
+                request_url = f'{self.vkm_url}muunna?x={point_x}&y={point_y}&palautusarvot=1,2,3,4,5,6&vaylan_luonne=0'
 
-                s = requests.Session()
-                retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
-                s.mount('http://', HTTPAdapter(max_retries=retries))
-                response = s.get(request_url, verify=False)
-                s.close()
+                s = self.session
+                response = s.get(request_url, verify=False, proxies=self.proxies)
 
                 if response.status_code != 200:
                     raise VkmApiException(request_url)
@@ -486,6 +502,8 @@ class Osoitetyokalu:
         self.LayerHandler.init_tool3()
         self.iface.mapCanvas().refresh()
 
+        self.proxies = self.vkm_api_requests.load_proxies_from_settings()
+
         def display_road_part(pointTool):
             """ Uses pointTool to return XY-coordinates from each click and passes them as search parameters onto GET request to VKM-API.
 
@@ -506,13 +524,11 @@ class Osoitetyokalu:
                 dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
 
                 #get new coordinates and address from VKM
-                vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-
-                road_address, point_x, point_y, tie, _, osa, _ = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y)
+                road_address, point_x, point_y, tie, _, osa, _ = self.vkm_request_road_address(vkm_url=self.vkm_url, point_x=point_x, point_y=point_y)
 
                 dlg.AddrLineEdit.setText(road_address)
 
-                polyline_dict, road_part_length, starting_point, ending_point, _= self.vkm_request_road_part_geometry(vkm_url, tie, osa)
+                polyline_dict, road_part_length, starting_point, ending_point, _= self.vkm_request_road_part_geometry(self.vkm_url, tie, osa)
 
                 for ajorata, coordinates in polyline_dict.items():
                         ending_road_address_split = road_address.split('/')
@@ -541,7 +557,7 @@ class Osoitetyokalu:
                 #getting road part's halfway coordinates for annotation
                 road_part_halfway = road_part_length // 2
 
-                point_x, point_y = self.vkm_request_coordinates(vkm_url, road=tie, road_part=osa, distance=road_part_halfway)
+                point_x, point_y = self.vkm_request_coordinates(self.vkm_url, road=tie, road_part=osa, distance=road_part_halfway)
 
                 self.LayerHandler.add_annotation('3', roadway, point_x, point_y, 5)
                 self.zoom_to_feature(point_x, point_y)
@@ -598,6 +614,7 @@ class Osoitetyokalu:
         self.LayerHandler.init_tool4()
         self.iface.mapCanvas().refresh()
 
+        self.proxies = self.vkm_api_requests.load_proxies_from_settings()
 
         def display_point_A(pointTool_A):
             """ Operates the same way as display_point(), but in addition: clears the roadway dialog lines at the start, creates road address parameters for VKM-API
@@ -624,9 +641,7 @@ class Osoitetyokalu:
                 self.two_points_dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
 
                 #get new coordinates and address from VKM
-                vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-
-                road_address, point_x, point_y, tie_A, ajorata_A, osa_A, etaisyys_A = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y, display_point='A')
+                road_address, point_x, point_y, tie_A, ajorata_A, osa_A, etaisyys_A = self.vkm_request_road_address(vkm_url=self.vkm_url, point_x=point_x, point_y=point_y, display_point='A')
 
                 self.LayerHandler.add_annotation('4', road_address, point_x, point_y)
 
@@ -664,10 +679,7 @@ class Osoitetyokalu:
                 self.two_points_dlg.CoordLineEdit.setText(f'{point_x}, {point_y}')
 
                 #get new coordinates and address from VKM
-                vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
-
-
-                road_address, point_x_B, point_y_B, tie_B, ajorata_B, osa_B, etaisyys_B = self.vkm_request_road_address(vkm_url=vkm_url, point_x=point_x, point_y=point_y, display_point='B')
+                road_address, point_x_B, point_y_B, tie_B, ajorata_B, osa_B, etaisyys_B = self.vkm_request_road_address(vkm_url=self.vkm_url, point_x=point_x, point_y=point_y, display_point='B')
 
 
                 if tie_B != self.tie_A:
@@ -680,7 +692,7 @@ class Osoitetyokalu:
 
                     #getting road address and calculating the distance of roadway(s) between points A and B
                     try:
-                        polyline_dict, pituus_dict, request_url, kokonaispituus, road_length = self.vkm_request_geometry(vkm_url, self.tie_A, self.osa_A, self.etaisyys_A, tie_B, osa_B, etaisyys_B)
+                        polyline_dict, pituus_dict, request_url, kokonaispituus, road_length = self.vkm_request_geometry(self.vkm_url, self.tie_A, self.osa_A, self.etaisyys_A, tie_B, osa_B, etaisyys_B)
                         self.ajoradat_dlg.AjoradatPituuslineEdit.clear()
                         self.ajoradat_dlg.AjoradatPituuslineEdit.setText(f'{str(kokonaispituus)}m')
                         self.ajoradat_dlg.PituuslineEdit.clear()
@@ -772,11 +784,12 @@ class Osoitetyokalu:
         self.LayerHandler.init_tool5()
         self.iface.mapCanvas().refresh()
 
+        self.proxies = self.vkm_api_requests.load_proxies_from_settings()
+
         # drop-down menu icon = latest tool used
         self.toolButton.setDefaultAction(self.actions[4])
 
         QgsProject.instance().setCrs(self.my_crs)
-        self.vkm_url='https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/'
         self.search_form_dlg = SearchForm_dialog()
         self.search_form_dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
         self.search_form_dlg.show()
@@ -828,11 +841,8 @@ class Osoitetyokalu:
 
         request_url = f'{vkm_url}muunna?x={point_x}&y={point_y}&palautusarvot={palautus_arvot}&vaylan_luonne=0&sade=50'
 
-        s = requests.Session()
-        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
-        s.mount('http://', HTTPAdapter(max_retries=retries))
-        response = s.get(request_url, verify=False)
-        s.close()
+        s = self.session
+        response = s.get(request_url, verify=False, proxies=self.proxies)
 
         if response.status_code != 200:
             raise VkmApiException(request_url)
@@ -939,11 +949,8 @@ class Osoitetyokalu:
 
         request_url = f'{vkm_url}muunna?tie={road}&osa={road_part}&etaisyys={distance}&palautusarvot={output_parameters}&vaylan_luonne=0'
 
-        s = requests.Session()
-        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
-        s.mount('http://', HTTPAdapter(max_retries=retries))
-        response = s.get(request_url, verify=False)
-        s.close()
+        s = self.session
+        response = s.get(request_url, verify=False, proxies=self.proxies)
 
         if response.status_code != 200:
             raise VkmApiException(request_url)
@@ -1013,11 +1020,8 @@ class Osoitetyokalu:
         polyline_dict = {}
         pituus_dict = {}
 
-        s = requests.Session()
-        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
-        s.mount('http://', HTTPAdapter(max_retries=retries))
-        response = s.get(request_url, verify=False)
-        s.close()
+        s = self.session
+        response = s.get(request_url, verify=False, proxies=self.proxies)
 
         if response.status_code != 200:
             raise VkmApiException(request_url)
@@ -1087,11 +1091,8 @@ class Osoitetyokalu:
 
         polyline_dict = {}
 
-        s = requests.Session()
-        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
-        s.mount('http://', HTTPAdapter(max_retries=retries))
-        response = s.get(request_url, verify=False)
-        s.close()
+        s = self.session
+        response = s.get(request_url, verify=False, proxies=self.proxies)
 
         if response.status_code != 200:
             raise VkmApiException(request_url)
@@ -1239,11 +1240,8 @@ class Osoitetyokalu:
 
         final_url = f'{url}&valihaku={valihaku}&palautusarvot={output_parameters}'
 
-        s = requests.Session()
-        retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
-        s.mount('http://', HTTPAdapter(max_retries=retries))
-        response = s.get(final_url, verify=False)
-        s.close()
+        s = self.session
+        response = s.get(final_url, verify=False, proxies=self.proxies)
 
         if response.status_code != 200:
             self.error_popup(self.tr(u'VKM-API ei vastaa. URL: {final_url}').format(final_url = final_url))
@@ -1520,11 +1518,8 @@ class Osoitetyokalu:
         """
 
         try:
-            s = requests.Session()
-            retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[ 500, 502, 503, 504 ])
-            s.mount('http://', HTTPAdapter(max_retries=retries))
-            response = s.get(request_url, verify=False)
-            s.close()
+            s = self.session
+            response = s.get(request_url, verify=False, proxies=self.proxies)
 
             if response.status_code != 200:
                 raise VkmApiException(request_url)

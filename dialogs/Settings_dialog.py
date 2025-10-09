@@ -48,6 +48,10 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         # If you already have a custom QPushButton named applyButton, keep it:
         self.apply_btn = self.applyButton
 
+        self.cancel_btn = self.cancelButton
+
+        self.default_settings_btn = self.defaultSettingsButton
+
         # Snapshot original values for change tracking
         self._original = {w: self._get_value(w) for w in self._watched}
 
@@ -59,6 +63,12 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
 
         # Wire Save/Apply
         self.apply_btn.clicked.connect(self._apply)
+
+        # Wire Cancel/Close: behaves like X-button
+        self.cancel_btn.clicked.connect(self.reject)
+
+        # Wire Reset: Cleans up current modifications and deletes saved settings from QSettings
+        self.default_settings_btn.clicked.connect(self._reset_settings)
 
     # ----- Helpers -----
     
@@ -361,6 +371,90 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
             if isinstance(w, QtWidgets.QLineEdit):
                 w.setModified(False)
         self._update_apply_button()
+
+    def _reset_settings(self):
+        """Reset interactive widgets to defaults and remove persisted settings from QSettings.
+
+        - Asks the user for confirmation.
+        - Removes all saved keys under the plugin root group.
+        - Restores widget values:
+            * If widget has a dynamic property 'settingsDefault' / 'defaultValue' / 'default', that value is used.
+            * Otherwise falls back to a sensible widget-specific default.
+        - Updates the internal baseline and Apply-button state.
+        """
+        # Ask for confirmation
+        reply = QtWidgets.QMessageBox.question(
+            self,
+            self.tr(u"Palauta oletusasetukset"),
+            self.tr(u"Haluatko palauttaa oletusasetukset ja poistaa tallennetut asetukset?"),
+            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+            QtWidgets.QMessageBox.No,
+        )
+        if reply != QtWidgets.QMessageBox.Yes:
+            return
+
+        # Remove saved settings for this group
+        s = QtCore.QSettings()
+        s.beginGroup(self._settings_group)
+        # Remove all keys in the current group
+        s.remove("")
+        s.endGroup()
+        s.sync()
+
+        # Reset interactive widgets. Block signals while doing this.
+        blockers = [QtCore.QSignalBlocker(w) for w in self._watched]
+        try:
+            for w in self._watched:
+                # Try dynamic property based defaults first (if set in Designer)
+                default = w.property("settingsDefault")
+                if default is None:
+                    default = w.property("defaultValue")
+                if default is None:
+                    default = w.property("default")
+
+                if default is not None:
+                    # Use the existing setter helper to apply the value in a type-safe way
+                    self._set_value(w, default)
+                    continue
+
+                # Fallback sensible defaults per widget type
+                if isinstance(w, QtWidgets.QLineEdit):
+                    w.clear()
+                elif isinstance(w, QtWidgets.QCheckBox):
+                    w.setChecked(False)
+                elif isinstance(w, QtWidgets.QComboBox):
+                    if w.isEditable():
+                        w.setEditText("")
+                    else:
+                        if w.count():
+                            w.setCurrentIndex(0)
+                elif isinstance(w, QtWidgets.QSpinBox):
+                    w.setValue(w.minimum())
+                elif isinstance(w, QtWidgets.QDoubleSpinBox):
+                    w.setValue(w.minimum())
+                elif isinstance(w, QtWidgets.QDateEdit):
+                    w.setDate(QtCore.QDate.currentDate())
+                else:
+                    # Generic fallback: try clearing text if possible
+                    setter = getattr(w, "setText", None)
+                    if callable(setter):
+                        setter("")
+        finally:
+            del blockers
+
+        # Reset baseline for dirty-tracking
+        self._original = {w: self._get_value(w) for w in self._watched}
+        for w in self._watched:
+            if isinstance(w, QtWidgets.QLineEdit):
+                w.setModified(False)
+
+        self._update_apply_button()
+
+        QtWidgets.QMessageBox.information(
+            self,
+            self.tr(u"Oletusarvot palautettu"),
+            self.tr(u"Asetukset on palautettu oletusarvoihin ja tallennetut asetukset on poistettu."),
+        )
 
     @staticmethod
     def tr(message, disambiguation="", n=-1) -> str:
