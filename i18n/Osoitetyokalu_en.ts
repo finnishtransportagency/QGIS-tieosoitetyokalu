@@ -487,7 +487,7 @@ length: {length}m</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.py" line="386"/>
-        <source>Haluatko palauttaa oletusasetukset ja poistaa tallennetut asetukset?</source>
+        <source>Haluatko varmasti palauttaa oletusasetukset ja poistaa kaikki tallennetut asetukset?</source>
         <translation>Are you sure you want to restore default settings and delete all saved settings?</translation>
     </message>
     <message>

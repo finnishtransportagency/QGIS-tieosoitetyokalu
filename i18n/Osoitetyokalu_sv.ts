@@ -296,7 +296,7 @@ längd: {length}m</translation>
     <message>
         <location filename="../Osoitetyokalu.py" line="302"/>
         <source>Asetukset</source>
-        <translation type="unfinished"></translation>
+        <translation>Inställningar</translation>
     </message>
 </context>
 <context>
@@ -435,37 +435,37 @@ längd: {length}m</translation>
     <message>
         <location filename="../dialogs/Settings_dialog.ui" line="53"/>
         <source>Käytä</source>
-        <translation type="unfinished"></translation>
+        <translation>Verkställ</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.ui" line="238"/>
         <source>Oletusasetukset</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardinställningar</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.ui" line="63"/>
         <source>Peruuta</source>
-        <translation type="unfinished"></translation>
+        <translation>Avbryt</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.ui" line="98"/>
         <source>Määritä mahdolliset Proxy-palvelimen osoitteet</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurera möjliga proxyserveradresser</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.ui" line="121"/>
         <source>HTTP-osoite:</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP-adress:</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.ui" line="175"/>
         <source>HTTPS-osoite:</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP-adress:</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.ui" line="14"/>
         <source>Asetukset</source>
-        <translation type="unfinished"></translation>
+        <translation>Inställningar</translation>
     </message>
 </context>
 <context>
@@ -473,32 +473,32 @@ längd: {length}m</translation>
     <message>
         <location filename="../dialogs/Settings_dialog.py" line="361"/>
         <source>Tarkista ja korjaa seuraavat asetukset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vänligen kontrollera och korrigera följande inställningar:</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.py" line="363"/>
         <source>Virheelliset asetukset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltiga inställningar</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.py" line="386"/>
         <source>Palauta oletusasetukset</source>
-        <translation type="unfinished"></translation>
+        <translation>Återställ till standardinställningar</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.py" line="386"/>
-        <source>Haluatko palauttaa oletusasetukset ja poistaa tallennetut asetukset?</source>
-        <translation type="unfinished"></translation>
+        <source>Haluatko varmasti palauttaa oletusasetukset ja poistaa kaikki tallennetut asetukset?</source>
+        <translation>Är du säker på att du vill återställa standardinställningarna och ta bort alla sparade inställningar?</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.py" line="453"/>
         <source>Oletusarvot palautettu</source>
-        <translation type="unfinished"></translation>
+        <translation>Inställningarna återställs till standard</translation>
     </message>
     <message>
         <location filename="../dialogs/Settings_dialog.py" line="453"/>
         <source>Asetukset on palautettu oletusarvoihin ja tallennetut asetukset on poistettu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inställningarna har återställts till standardinställningarna och sparade inställningar har tagits bort.</translation>
     </message>
 </context>
 <context>
@@ -545,12 +545,12 @@ längd: {length}m</translation>
     <message>
         <location filename="../libs/process_widgets.py" line="93"/>
         <source>Proxy-asetukset</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxyinställningar</translation>
     </message>
     <message>
         <location filename="../libs/process_widgets.py" line="139"/>
         <source>Virheellinen URL-osoite – täytyy alkaa skeemasta: &quot;http://&quot; tai &quot;https://&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltig URL-adress – måste börja med protokollet: &quot;http://&quot; eller &quot;https://&quot;</translation>
     </message>
 </context>
 </TS>

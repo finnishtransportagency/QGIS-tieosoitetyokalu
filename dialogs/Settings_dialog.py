@@ -386,7 +386,7 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         reply = QtWidgets.QMessageBox.question(
             self,
             self.tr(u"Palauta oletusasetukset"),
-            self.tr(u"Haluatko palauttaa oletusasetukset ja poistaa tallennetut asetukset?"),
+            self.tr(u"Haluatko varmasti palauttaa oletusasetukset ja poistaa kaikki tallennetut asetukset?"),
             QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
             QtWidgets.QMessageBox.No,
         )

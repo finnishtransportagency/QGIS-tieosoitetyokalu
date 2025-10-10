@@ -301,7 +301,7 @@ class Osoitetyokalu:
         
         self.add_action(
             icon_path_7,
-            text=self.tr(u"Asetukset"),
+            text=self.tr(u'Asetukset'),
             callback=self.open_settings,
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
