@@ -872,6 +872,7 @@ class Osoitetyokalu:
 
         if 'ualuenimi' in vkm_feature['properties']:
             dlg.UaluenimilineEdit.setText(str(vkm_feature['properties']['ualuenimi']))
+            dlg.UrakkakoodilineEdit.setText(str(vkm_feature['properties']['ualue']))
 
         #getting road coordinates and road address that are nearest to the mouse click
         dlg.XlineEdit.setText(str(vkm_feature['properties']['x']))
