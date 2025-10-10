@@ -65,7 +65,6 @@ from .dialogs.ShowCoordinates_dialog import ShowCoordinates_dialog
 from .LayerHandler import LayerHandler
 # Initialize Qt resources from file resources.py
 from .resources import *
-from .RoadName import RoadName
 
 # Import the code for the dialog
 
@@ -109,8 +108,6 @@ class Osoitetyokalu:
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
         self.LayerHandler = LayerHandler()
-
-        self.RoadName = RoadName()
 
         QgsProject.instance().layersWillBeRemoved.connect(self.remove_annotations_from_layers)
 
