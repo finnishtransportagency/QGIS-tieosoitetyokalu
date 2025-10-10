@@ -45,14 +45,12 @@ logging.basicConfig(filename=Path.joinpath(logPath, 'log.txt'), level=logging.DE
 
 import json
 
-import requests
 from qgis.core import (Qgis, QgsCoordinateReferenceSystem, QgsPointXY,
                        QgsProject, QgsRectangle)
 from qgis.gui import QgsMapToolEmitPoint
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QLineEdit, QMenu, QToolButton
-from requests.adapters import HTTPAdapter, Retry
 
 from .CustomExceptions.VkmApiException import VkmApiException
 from .CustomExceptions.VkmRequestException import VkmRequestException

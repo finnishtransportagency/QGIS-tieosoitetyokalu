@@ -469,4 +469,4 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QtCore.QCoreApplication.translate('WidgetValidator', message, disambiguation, n)
+        return QtCore.QCoreApplication.translate('Settings_dialog', message, disambiguation, n)
