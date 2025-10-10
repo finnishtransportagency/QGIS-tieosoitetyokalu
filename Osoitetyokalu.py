@@ -65,7 +65,6 @@ from .dialogs.ShowCoordinates_dialog import ShowCoordinates_dialog
 from .LayerHandler import LayerHandler
 # Initialize Qt resources from file resources.py
 from .resources import *
-from .RoadName import RoadName
 
 # Import the code for the dialog
 
@@ -109,8 +108,6 @@ class Osoitetyokalu:
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
         self.LayerHandler = LayerHandler()
-
-        self.RoadName = RoadName()
 
         QgsProject.instance().layersWillBeRemoved.connect(self.remove_annotations_from_layers)
 
@@ -867,8 +864,7 @@ class Osoitetyokalu:
             dlg.AjoratalineEdit.setText(str(vkm_feature['properties']['ajorata']))
             dlg.OsalineEdit.setText(str(vkm_feature['properties']['osa']))
             dlg.EtaisyyslineEdit.setText(str(vkm_feature['properties']['etaisyys']))
-            road_name = self.RoadName.get_road_name(vkm_feature['properties']['tie'])
-            dlg.MaantiennimilineEdit.setText(road_name)
+            dlg.MaantiennimilineEdit.setText(str(vkm_feature['properties']['tienimi']))
 
         if 'ualuenimi' in vkm_feature['properties']:
             dlg.UaluenimilineEdit.setText(str(vkm_feature['properties']['ualuenimi']))
