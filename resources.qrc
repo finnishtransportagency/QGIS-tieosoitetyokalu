@@ -6,5 +6,6 @@
         <file>tool_icons/tool_4.png</file>
         <file>tool_icons/tool_5.png</file>
         <file>tool_icons/tool_6.png</file>
+        <file>tool_icons/settings.png</file>
     </qresource>
 </RCC>

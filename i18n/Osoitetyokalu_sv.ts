@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0">
+<!DOCTYPE TS>
+<TS version="2.1">
 <context>
     <name>Ajoradat_dialog</name>
     <message>
@@ -8,7 +9,7 @@
         <translation>Välj en lagringsplats</translation>
     </message>
 </context>
-<context encoding="UTF-8">
+<context>
     <name>Center</name>
     <message>
         <location filename="../dialogs/SearchForm_dialog.ui" line="209"/>
@@ -30,7 +31,7 @@
         <source>Osa:</source>
         <translation>Del:</translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../dialogs/SearchForm_dialog.ui" line="97"/>
         <source>Etäisyys:</source>
         <translation>Distans:</translation>
@@ -40,7 +41,7 @@
         <source>Osa_loppu:</source>
         <translation>Del_slut:</translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../dialogs/SearchForm_dialog.ui" line="242"/>
         <source>Etäisyys_loppu:</source>
         <translation>Distans_slut:</translation>
@@ -70,12 +71,12 @@
         <source>Sulje</source>
         <translation>Stänga</translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../dialogs/SearchForm_dialog.ui" line="468"/>
         <source>Koko tien tai useiden tieosien hakeminen voi kestää useita minuutteja.</source>
         <translation>Att söka på hela vägen eller flera vägavsnitt kan ta flera minuter.</translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../dialogs/SearchForm_dialog.ui" line="481"/>
         <source>(24.10.2022)
 Kmtk_id- ja m-arvo-parametrit tulevat käyttöön
@@ -87,7 +88,7 @@ i nästa VKM uppdatering.</translation>
 </context>
 <context>
     <name>Delete</name>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../dialogs/DeleteLayer_dialog.ui" line="14"/>
         <source>Poistotyökalu</source>
         <translation>Raderingsverktyg</translation>
@@ -120,7 +121,7 @@ i nästa VKM uppdatering.</translation>
         <source>1. Tieosoite</source>
         <translation>1. Vägadress</translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../LayerHandler.py" line="117"/>
         <source>2. Hakutyökalu</source>
         <translation>2. Sökverktyg</translation>
@@ -135,7 +136,7 @@ i nästa VKM uppdatering.</translation>
         <source>4. Tieosoite (Alku- ja loppupiste)</source>
         <translation>4. Vägadress (Start- och slutpunkt)</translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../LayerHandler.py" line="158"/>
         <source>5. Kohdistustyökalu</source>
         <translation>5. Fokuseringsverktyg</translation>
@@ -175,51 +176,51 @@ i nästa VKM uppdatering.</translation>
         <source>Loppupisteet</source>
         <translation>Slutpunkter</translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../LayerHandler.py" line="103"/>
         <source>Tieosoitetyökalu</source>
         <translation>Vägadressverktyg</translation>
     </message>
 </context>
-<context encoding="UTF-8">
+<context>
     <name>Osoitetyokalu</name>
     <message>
-        <location filename="../Osoitetyokalu.py" line="246"/>
+        <location filename="../Osoitetyokalu.py" line="253"/>
         <source>1. Tieosoite</source>
         <translation>1. Vägadress</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="../Osoitetyokalu.py" line="255"/>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="262"/>
         <source>2. Hakutyökalu</source>
         <translation>2. Sökverktyg</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="263"/>
+        <location filename="../Osoitetyokalu.py" line="270"/>
         <source>3. Tieosa</source>
         <translation>3. Vägsträcka</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="271"/>
+        <location filename="../Osoitetyokalu.py" line="278"/>
         <source>4. Tieosoite (Alku- ja loppupiste)</source>
         <translation>4. Vägadress (Start- och slutpunkt)</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="../Osoitetyokalu.py" line="279"/>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="286"/>
         <source>5. Kohdistustyökalu</source>
         <translation>5. Fokuseringsverktyg</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="../Osoitetyokalu.py" line="287"/>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="294"/>
         <source>6. Poistotyökalu</source>
         <translation>6. Raderingsverktyg</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="../Osoitetyokalu.py" line="722"/>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="753"/>
         <source>Pistettä ei ole asetettu.</source>
         <translation>Punkten är inte inställd.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="509"/>
+        <location filename="../Osoitetyokalu.py" line="544"/>
         <source>Alkupiste: {start}
 Loppupiste: {end}
 pituus: {length}m</source>
@@ -227,70 +228,75 @@ pituus: {length}m</source>
 Slutpunkt: {end}
 längd: {length}m</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="../Osoitetyokalu.py" line="656"/>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="687"/>
         <source>Alku- ja loppupisteen on oltava samalla tiellä</source>
         <translation>Start- och slutpunkt måste vara på samma väg</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="676"/>
+        <location filename="../Osoitetyokalu.py" line="707"/>
         <source>A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} pituus: {mitattu_pituus}</source>
         <translation>A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} längd: {mitattu_pituus}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="844"/>
+        <location filename="../Osoitetyokalu.py" line="873"/>
         <source>Ei tieosoitetta</source>
         <translation>Ingen vägadress</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="../Osoitetyokalu.py" line="1131"/>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="1151"/>
         <source>Täytä vaaditut kentät.</source>
         <translation>Fyll i de obligatoriska fälten.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1230"/>
+        <location filename="../Osoitetyokalu.py" line="1247"/>
         <source>VKM-API ei vastaa. URL: {final_url}</source>
         <translation>VKM-API svarar inte. URL: {final_url}</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="../Osoitetyokalu.py" line="1285"/>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="1302"/>
         <source>Pistemäinen haku</source>
         <translation>Punktera sök</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1433"/>
+        <location filename="../Osoitetyokalu.py" line="1450"/>
         <source>Alkupiste {road}/{roadway}/{part}/{distance} - Loppupiste {road_end}/{roadway_end}/{part_end}/{distance_end}, mitattu pituus: {measured_length}</source>
         <translation>Startpunkt {road}/{roadway}/{part}/{distance} - Slutpunkt {road_end}/{roadway_end}/{part_end}/{distance_end}, uppmätt längd: {measured_length}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1463"/>
+        <location filename="../Osoitetyokalu.py" line="1480"/>
         <source>Alkupiste</source>
         <translation>Startpunkt</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1467"/>
+        <location filename="../Osoitetyokalu.py" line="1484"/>
         <source>Loppupiste</source>
         <translation>Slutpunkt</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1543"/>
+        <location filename="../Osoitetyokalu.py" line="1557"/>
         <source>Tiedosto tallennettu polkuun: {user_path}</source>
         <translation>Filen sparad i: {user_path}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1544"/>
+        <location filename="../Osoitetyokalu.py" line="1558"/>
         <source>Lataus onnistui</source>
         <translation>Nedladdningen lyckades</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="../Osoitetyokalu.py" line="1551"/>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="1565"/>
         <source>Virhe tiedostoa ladattaessa. Yritä uudelleen.</source>
         <translation>Fel vid nedladdning av filen. Försök igen.</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="../Osoitetyokalu.py" line="308"/>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="104"/>
         <source>&amp;Tieosoitetyökalu</source>
         <translation>Vägadressverktyg</translation>
+    </message>
+    <message>
+        <location filename="../Osoitetyokalu.py" line="302"/>
+        <source>Asetukset</source>
+        <translation>Inställningar</translation>
     </message>
 </context>
 <context>
@@ -320,7 +326,7 @@ längd: {length}m</translation>
         <source>Osa:</source>
         <translation>Del:</translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../dialogs/PopUp_dialog.ui" line="391"/>
         <source>Etäisyys:</source>
         <translation>Distans:</translation>
@@ -378,7 +384,7 @@ längd: {length}m</translation>
         <source>Ajoradat</source>
         <translation>Körbanor</translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../dialogs/Ajoradat_dialog.ui" line="29"/>
         <source>Ajorata 0 (vihreä):</source>
         <translation>Körbana 0 (grön):</translation>
@@ -403,7 +409,7 @@ längd: {length}m</translation>
         <source>Ajoratojen kokonaispituus:</source>
         <translation>Total längd på körbanor:</translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../dialogs/Ajoradat_dialog.ui" line="103"/>
         <source>Lataa välin ajoratojen osoitetiedot</source>
         <translation>Ladda ner adressinformationen för intervallets körbanor</translation>
@@ -422,6 +428,77 @@ längd: {length}m</translation>
         <location filename="../dialogs/Ajoradat_dialog.ui" line="149"/>
         <source>Sulje</source>
         <translation>Stänga</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsDialog</name>
+    <message>
+        <location filename="../dialogs/Settings_dialog.ui" line="53"/>
+        <source>Käytä</source>
+        <translation>Verkställ</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.ui" line="238"/>
+        <source>Oletusasetukset</source>
+        <translation>Standardinställningar</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.ui" line="63"/>
+        <source>Peruuta</source>
+        <translation>Avbryt</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.ui" line="98"/>
+        <source>Määritä mahdolliset Proxy-palvelimen osoitteet</source>
+        <translation>Konfigurera möjliga proxyserveradresser</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.ui" line="121"/>
+        <source>HTTP-osoite:</source>
+        <translation>HTTP-adress:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.ui" line="175"/>
+        <source>HTTPS-osoite:</source>
+        <translation>HTTP-adress:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.ui" line="14"/>
+        <source>Asetukset</source>
+        <translation>Inställningar</translation>
+    </message>
+</context>
+<context>
+    <name>Settings_dialog</name>
+    <message>
+        <location filename="../dialogs/Settings_dialog.py" line="361"/>
+        <source>Tarkista ja korjaa seuraavat asetukset:</source>
+        <translation>Vänligen kontrollera och korrigera följande inställningar:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.py" line="363"/>
+        <source>Virheelliset asetukset</source>
+        <translation>Ogiltiga inställningar</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.py" line="386"/>
+        <source>Palauta oletusasetukset</source>
+        <translation>Återställ till standardinställningar</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.py" line="386"/>
+        <source>Haluatko varmasti palauttaa oletusasetukset ja poistaa kaikki tallennetut asetukset?</source>
+        <translation>Är du säker på att du vill återställa standardinställningarna och ta bort alla sparade inställningar?</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.py" line="453"/>
+        <source>Oletusarvot palautettu</source>
+        <translation>Inställningarna återställs till standard</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/Settings_dialog.py" line="453"/>
+        <source>Asetukset on palautettu oletusarvoihin ja tallennetut asetukset on poistettu.</source>
+        <translation>Inställningarna har återställts till standardinställningarna och sparade inställningar har tagits bort.</translation>
     </message>
 </context>
 <context>
@@ -447,9 +524,9 @@ längd: {length}m</translation>
         <translation>Stänga</translation>
     </message>
 </context>
-<context encoding="UTF-8">
+<context>
     <name>VkmApiException</name>
-    <message encoding="UTF-8">
+    <message>
         <location filename="../CustomExceptions/VkmApiException.py" line="25"/>
         <source>VKM-rajapintaan ei saada yhteyttä.</source>
         <translation>Kan inte ansluta till VKM-API.</translation>
@@ -461,6 +538,19 @@ längd: {length}m</translation>
         <location filename="../CustomExceptions/VkmRequestException.py" line="26"/>
         <source>VKM-API virhe: </source>
         <translation>VKM-API fel:</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetValidator</name>
+    <message>
+        <location filename="../libs/process_widgets.py" line="93"/>
+        <source>Proxy-asetukset</source>
+        <translation>Proxyinställningar</translation>
+    </message>
+    <message>
+        <location filename="../libs/process_widgets.py" line="139"/>
+        <source>Virheellinen URL-osoite – täytyy alkaa skeemasta: &quot;http://&quot; tai &quot;https://&quot;</source>
+        <translation>Ogiltig URL-adress – måste börja med protokollet: &quot;http://&quot; eller &quot;https://&quot;</translation>
     </message>
 </context>
 </TS>
