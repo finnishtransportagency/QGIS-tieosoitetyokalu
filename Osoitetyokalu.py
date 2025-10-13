@@ -65,7 +65,6 @@ from .LayerHandler import LayerHandler
 from .libs.vkm_api_requests import VKMAPIRequests
 # Initialize Qt resources from file resources.py
 from .resources import *
-from .RoadName import RoadName
 
 # Import the code for the dialog
 
@@ -108,8 +107,6 @@ class Osoitetyokalu:
         self.my_crs = QgsCoordinateReferenceSystem.fromEpsgId(3067)
 
         self.LayerHandler = LayerHandler()
-
-        self.RoadName = RoadName()
 
         # Setup for VKM API requests
         self.vkm_api_requests = VKMAPIRequests()
@@ -558,7 +555,7 @@ class Osoitetyokalu:
                 point_x, point_y = self.vkm_request_coordinates(self.vkm_url, road=tie, road_part=osa, distance=road_part_halfway)
 
                 self.LayerHandler.add_annotation('3', roadway, point_x, point_y, 5)
-                self.zoom_to_feature(point_x, point_y)
+                self.center_to_feature(point_x, point_y)
 
                 #adding a point to each end of the road part
                 self.LayerHandler.add_point_feature('3', starting_road_address, starting_point[0], starting_point[1], 'starting')
@@ -894,11 +891,11 @@ class Osoitetyokalu:
             dlg.AjoratalineEdit.setText(str(vkm_feature['properties']['ajorata']))
             dlg.OsalineEdit.setText(str(vkm_feature['properties']['osa']))
             dlg.EtaisyyslineEdit.setText(str(vkm_feature['properties']['etaisyys']))
-            road_name = self.RoadName.get_road_name(vkm_feature['properties']['tie'])
-            dlg.MaantiennimilineEdit.setText(road_name)
+            dlg.MaantiennimilineEdit.setText(str(vkm_feature['properties']['tienimi']))
 
         if 'ualuenimi' in vkm_feature['properties']:
             dlg.UaluenimilineEdit.setText(str(vkm_feature['properties']['ualuenimi']))
+            dlg.UrakkakoodilineEdit.setText(str(vkm_feature['properties']['ualue']))
 
         #getting road coordinates and road address that are nearest to the mouse click
         dlg.XlineEdit.setText(str(vkm_feature['properties']['x']))
@@ -1298,7 +1295,7 @@ class Osoitetyokalu:
                 point_x = vkm_feature['properties']['x']
                 point_y = vkm_feature['properties']['y']
                 self.LayerHandler.add_point_feature('5', self.tr(u'Pistemäinen haku'), point_x, point_y)
-                self.zoom_to_feature(point_x, point_y)
+                self.center_to_feature(point_x, point_y)
                 popup_dlg.show()
                 result = popup_dlg.exec_()
                 if result:
@@ -1476,7 +1473,7 @@ class Osoitetyokalu:
                 #getting starting coordinates
                 x_start, y_start = self.vkm_request_coordinates(self.vkm_url, road, part, distance)
             self.LayerHandler.add_point_feature('5', self.tr(u'Alkupiste'), x_start, y_start, 'starting')
-            self.zoom_to_feature(x_start, y_start)
+            self.center_to_feature(x_start, y_start)
             #getting ending coordinates
             x_end, y_end = self.vkm_request_coordinates(self.vkm_url, road_end, part_end, distance_end)
             self.LayerHandler.add_point_feature('5', self.tr(u'Loppupiste'), x_end, y_end, 'ending')
@@ -1488,18 +1485,21 @@ class Osoitetyokalu:
                 roadways_dlg.pushButton.setEnabled(False)
                 return
 
-    def zoom_to_feature(self, point_x = None, point_y = None):
-        """Zooms and centers to given coordinates.
+
+    def center_to_feature(self, point_x = None, point_y = None):
+        """Centers to given coordinates.
 
         Args:
             point_x (float, optional): X coordinate. Defaults to None.
             point_y (float, optional): Y coordiante. Defaults to None.
         """
 
-        rectangle = QgsRectangle(point_x, point_y, point_x, point_y)
+        if point_x is None or point_y is None:
+            return
+
         canvas = self.iface.mapCanvas()
-        canvas.setExtent(rectangle)
-        canvas.zoomScale(16555 / 1)
+        canvas.setCenter(QgsPointXY(float(point_x), float(point_y)))
+        canvas.refresh()
 
 
     def write_roadways_to_csv(self, request_url, dlg):
