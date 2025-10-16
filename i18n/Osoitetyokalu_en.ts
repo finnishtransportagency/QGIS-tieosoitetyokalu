@@ -185,42 +185,42 @@ in the next VKM API update.</translation>
 <context>
     <name>Osoitetyokalu</name>
     <message>
-        <location filename="../Osoitetyokalu.py" line="253"/>
+        <location filename="../Osoitetyokalu.py" line="248"/>
         <source>1. Tieosoite</source>
         <translation>1. Road address</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="262"/>
+        <location filename="../Osoitetyokalu.py" line="257"/>
         <source>2. Hakutyökalu</source>
         <translation>2. Search tool</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="270"/>
+        <location filename="../Osoitetyokalu.py" line="265"/>
         <source>3. Tieosa</source>
         <translation>3. Road part</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="278"/>
+        <location filename="../Osoitetyokalu.py" line="273"/>
         <source>4. Tieosoite (Alku- ja loppupiste)</source>
         <translation>4. Road address (Starting and ending point)</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="286"/>
+        <location filename="../Osoitetyokalu.py" line="281"/>
         <source>5. Kohdistustyökalu</source>
         <translation>5. Centering tool</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="294"/>
+        <location filename="../Osoitetyokalu.py" line="289"/>
         <source>6. Poistotyökalu</source>
         <translation>6. Delete tool</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="753"/>
+        <location filename="../Osoitetyokalu.py" line="748"/>
         <source>Pistettä ei ole asetettu.</source>
         <translation>Point is not set.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="544"/>
+        <location filename="../Osoitetyokalu.py" line="539"/>
         <source>Alkupiste: {start}
 Loppupiste: {end}
 pituus: {length}m</source>
@@ -229,72 +229,72 @@ Ending point: {end}
 length: {length}m</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="687"/>
+        <location filename="../Osoitetyokalu.py" line="682"/>
         <source>Alku- ja loppupisteen on oltava samalla tiellä</source>
         <translation>Starting and ending points have to be on the same road</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="707"/>
+        <location filename="../Osoitetyokalu.py" line="702"/>
         <source>A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} pituus: {mitattu_pituus}</source>
         <translation>A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} length: {mitattu_pituus}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="873"/>
+        <location filename="../Osoitetyokalu.py" line="868"/>
         <source>Ei tieosoitetta</source>
         <translation>No road address</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1151"/>
+        <location filename="../Osoitetyokalu.py" line="1146"/>
         <source>Täytä vaaditut kentät.</source>
         <translation>Fill out necessary fields.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1247"/>
+        <location filename="../Osoitetyokalu.py" line="1242"/>
         <source>VKM-API ei vastaa. URL: {final_url}</source>
         <translation>VKM API does not respond. URL: {final_url}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1302"/>
+        <location filename="../Osoitetyokalu.py" line="1297"/>
         <source>Pistemäinen haku</source>
         <translation>Point-like search</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1450"/>
+        <location filename="../Osoitetyokalu.py" line="1445"/>
         <source>Alkupiste {road}/{roadway}/{part}/{distance} - Loppupiste {road_end}/{roadway_end}/{part_end}/{distance_end}, mitattu pituus: {measured_length}</source>
         <translation>Starting point {road}/{roadway}/{part}/{distance} - Ending point {road_end}/{roadway_end}/{part_end}/{distance_end}, measured_length: {measured_length}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1480"/>
+        <location filename="../Osoitetyokalu.py" line="1475"/>
         <source>Alkupiste</source>
         <translation>Starting point</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1484"/>
+        <location filename="../Osoitetyokalu.py" line="1479"/>
         <source>Loppupiste</source>
         <translation>Ending point</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1557"/>
+        <location filename="../Osoitetyokalu.py" line="1555"/>
         <source>Tiedosto tallennettu polkuun: {user_path}</source>
         <translation>File saved in:</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1558"/>
+        <location filename="../Osoitetyokalu.py" line="1556"/>
         <source>Lataus onnistui</source>
         <translation>Download succeeded</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1565"/>
+        <location filename="../Osoitetyokalu.py" line="1563"/>
         <source>Virhe tiedostoa ladattaessa. Yritä uudelleen.</source>
         <translation>Error while downloading the file. Try again.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="104"/>
+        <location filename="../Osoitetyokalu.py" line="101"/>
         <source>&amp;Tieosoitetyökalu</source>
         <translation>Road address tool</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="302"/>
+        <location filename="../Osoitetyokalu.py" line="297"/>
         <source>Asetukset</source>
         <translation>Settings</translation>
     </message>
@@ -337,44 +337,49 @@ length: {length}m</translation>
         <translation>Administrative class:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="659"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="671"/>
         <source>Kuntanimi:</source>
         <translation>Municipality name:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="671"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="683"/>
         <source>Katunimi:</source>
         <translation>Street name:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="683"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="695"/>
         <source>Katunumero:</source>
         <translation>Street number:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="695"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="707"/>
         <source>Elynimi:</source>
         <translation>ETE centre:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="707"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="719"/>
         <source>Ualuenimi:</source>
         <translation>Maintenance area:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="719"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="746"/>
         <source>Maakuntanimi:</source>
         <translation>Province name:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="831"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="858"/>
         <source>M-arvo:</source>
         <translation>M-value:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="731"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="758"/>
         <source>Maantien nimi:</source>
         <translation>Road name:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/PopUp_dialog.ui" line="731"/>
+        <source>Urakkakoodi:</source>
+        <translation>Maintenance code:</translation>
     </message>
 </context>
 <context>

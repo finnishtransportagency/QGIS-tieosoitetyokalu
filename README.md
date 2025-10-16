@@ -47,6 +47,9 @@ Haetun välin ajoratapätkien tiedot voi ladata CSV-tiedostoon, joka ilmestyy va
 
 **Tasot voi poistaa käyttäen QGIS-sovelluksen vasemmassa reunassa olevaa tasopaneelia. Käyttäjä voi poistaa/piilottaa joko Tieosoitetyökalun pääryhmän tai valitsemansa työkaluryhmän tasot.**
 
+#### Asetukset
+Käyttäjä voi tarvittaessa määrittää välityspalvelimen ("proxy server") HTTP- ja/tai HTTPS-osoitteet QGIS-tieosoitetyökalun asetuksissa.
+
 [EN]:
 ### Description
 With Tieosoitetyökalu or Road address tool you can perform different kind of searches with road and street addresses.
@@ -91,3 +94,7 @@ Starting and ending address data of every line of every road way retrieved from 
 6. Delete tool. Opens a window with buttons to delete one or all annotations in the current project. Also can delete one random geometry or all geometries that were added using this plugin.
 
 **Layers can be deleted by choosing and deleting Tieosoitetyökalu plugin's main group or one of its subgroups that can be found in QGIS's layer panel.**
+
+#### Settings
+Proxy server HTTP and/or HTTPS addresses can be configured in Tieosoitetyökalu plugin's settings.
+
