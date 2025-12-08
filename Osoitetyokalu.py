@@ -891,7 +891,7 @@ class Osoitetyokalu:
             dlg.AjoratalineEdit.setText(str(vkm_feature['properties']['ajorata']))
             dlg.OsalineEdit.setText(str(vkm_feature['properties']['osa']))
             dlg.EtaisyyslineEdit.setText(str(vkm_feature['properties']['etaisyys']))
-            dlg.MaantiennimilineEdit.setText(str(vkm_feature['properties']['tienimi']))
+            dlg.MaantiennimilineEdit.setText(str(vkm_feature['properties'].get('tienimi', '')))
 
         if 'ualuenimi' in vkm_feature['properties']:
             dlg.UaluenimilineEdit.setText(str(vkm_feature['properties']['ualuenimi']))
@@ -902,7 +902,9 @@ class Osoitetyokalu:
         dlg.YlineEdit.setText(str(vkm_feature['properties']['y']))
         dlg.HaLulineEdit.setText(str(vkm_feature['properties']['hallinnollinen_luokka']))
         dlg.KuntanimilineEdit.setText(str(vkm_feature['properties']['kuntanimi']))
-        dlg.ElynimilineEdit.setText(str(vkm_feature['properties']['elynimi']))
+        dlg.ElynimilineEdit.setText(str(vkm_feature['properties'].get('elynimi', '')))
+        dlg.EvkeskusnimilineEdit.setText(str(vkm_feature['properties'].get('elinvoimakeskusnimi', '')))
+        dlg.EvkeskuslineEdit.setText(str(vkm_feature['properties'].get('elinvoimakeskus', '')))
         dlg.MaakuntanimilineEdit.setText(str(vkm_feature['properties']['maakuntanimi']))
         dlg.Kmtk_idlineEdit.setText(str(vkm_feature['properties']['kmtk_id']))
         dlg.M_arvolineEdit.setText(str(vkm_feature['properties']['m_arvo']))
