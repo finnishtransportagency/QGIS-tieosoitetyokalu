@@ -244,47 +244,47 @@ längd: {length}m</translation>
         <translation>Ingen vägadress</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1146"/>
+        <location filename="../Osoitetyokalu.py" line="1148"/>
         <source>Täytä vaaditut kentät.</source>
         <translation>Fyll i de obligatoriska fälten.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1242"/>
+        <location filename="../Osoitetyokalu.py" line="1244"/>
         <source>VKM-API ei vastaa. URL: {final_url}</source>
         <translation>VKM-API svarar inte. URL: {final_url}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1297"/>
+        <location filename="../Osoitetyokalu.py" line="1299"/>
         <source>Pistemäinen haku</source>
         <translation>Punktera sök</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1445"/>
+        <location filename="../Osoitetyokalu.py" line="1447"/>
         <source>Alkupiste {road}/{roadway}/{part}/{distance} - Loppupiste {road_end}/{roadway_end}/{part_end}/{distance_end}, mitattu pituus: {measured_length}</source>
         <translation>Startpunkt {road}/{roadway}/{part}/{distance} - Slutpunkt {road_end}/{roadway_end}/{part_end}/{distance_end}, uppmätt längd: {measured_length}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1475"/>
+        <location filename="../Osoitetyokalu.py" line="1477"/>
         <source>Alkupiste</source>
         <translation>Startpunkt</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1479"/>
+        <location filename="../Osoitetyokalu.py" line="1481"/>
         <source>Loppupiste</source>
         <translation>Slutpunkt</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1555"/>
+        <location filename="../Osoitetyokalu.py" line="1557"/>
         <source>Tiedosto tallennettu polkuun: {user_path}</source>
         <translation>Filen sparad i: {user_path}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1556"/>
+        <location filename="../Osoitetyokalu.py" line="1558"/>
         <source>Lataus onnistui</source>
         <translation>Nedladdningen lyckades</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1563"/>
+        <location filename="../Osoitetyokalu.py" line="1565"/>
         <source>Virhe tiedostoa ladattaessa. Yritä uudelleen.</source>
         <translation>Fel vid nedladdning av filen. Försök igen.</translation>
     </message>
@@ -337,49 +337,59 @@ längd: {length}m</translation>
         <translation>Administrativ klass:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="671"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="689"/>
         <source>Kuntanimi:</source>
         <translation>Kommunens namn:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="683"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="701"/>
         <source>Katunimi:</source>
         <translation>Gatunamn:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="695"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="713"/>
         <source>Katunumero:</source>
         <translation>Gatunummer:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="707"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="728"/>
         <source>Elynimi:</source>
         <translation>NTM-centrum namn:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="719"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="770"/>
         <source>Ualuenimi:</source>
         <translation>Underhållsområde:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="746"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="797"/>
         <source>Maakuntanimi:</source>
         <translation>Länsnamn:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="858"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="909"/>
         <source>M-arvo:</source>
         <translation>M-värde:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="758"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="809"/>
         <source>Maantien nimi:</source>
         <translation>Vägnamn:</translation>
     </message>
     <message>
-        <location filename="../dialogs/PopUp_dialog.ui" line="731"/>
+        <location filename="../dialogs/PopUp_dialog.ui" line="782"/>
         <source>Urakkakoodi:</source>
         <translation>Underhållskod:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/PopUp_dialog.ui" line="740"/>
+        <source>Elinvoimakeskusnimi:</source>
+        <translation>Livskraftscentralnamn:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs/PopUp_dialog.ui" line="755"/>
+        <source>Elinvoimakeskus:</source>
+        <translation>Livskraftscentral:</translation>
     </message>
 </context>
 <context>

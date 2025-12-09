@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>977</width>
+    <width>1082</width>
     <height>430</height>
    </rect>
   </property>
@@ -295,8 +295,8 @@
   <widget class="QPushButton" name="SuljeButton">
    <property name="geometry">
     <rect>
-     <x>830</x>
-     <y>370</y>
+     <x>960</x>
+     <y>390</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -409,10 +409,10 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>630</x>
+     <x>710</x>
      <y>20</y>
-     <width>311</width>
-     <height>351</height>
+     <width>351</width>
+     <height>361</height>
     </rect>
    </property>
    <property name="font">
@@ -553,6 +553,24 @@
      </widget>
     </item>
     <item>
+     <widget class="QLineEdit" name="EvkeskusnimilineEdit">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="EvkeskuslineEdit">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLineEdit" name="UaluenimilineEdit">
       <property name="palette">
        <palette>
@@ -649,9 +667,9 @@
    <property name="geometry">
     <rect>
      <x>480</x>
-     <y>30</y>
-     <width>141</width>
-     <height>331</height>
+     <y>20</y>
+     <width>221</width>
+     <height>351</height>
     </rect>
    </property>
    <property name="font">
@@ -684,7 +702,7 @@
       </property>
      </widget>
     </item>
-    <item alignment="Qt::AlignRight">
+    <item>
      <widget class="QLabel" name="label_7">
       <property name="font">
        <font>
@@ -693,6 +711,9 @@
       </property>
       <property name="text">
        <string>Katunumero:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
@@ -705,6 +726,36 @@
       </property>
       <property name="text">
        <string>Elynimi:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_19">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Elinvoimakeskusnimi:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_20">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Elinvoimakeskus:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
