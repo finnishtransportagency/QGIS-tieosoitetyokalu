@@ -134,7 +134,7 @@ class Osoitetyokalu:
 
     # noinspection PyMethodMayBeStatic
     @staticmethod
-    def tr(message, disambiguation="", n=-1) -> str:
+    def tr(message, disambiguation="", n=-1):
         """Get the translation for a string using Qt translation API.
 
         We implement this ourselves since we do not inherit QObject.

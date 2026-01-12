@@ -22,7 +22,7 @@ from requests.adapters import HTTPAdapter, Retry
 from qgis.PyQt import QtCore
 
 class VKMAPIRequests:
-    def __init__(self) -> None:
+    def __init__(self):
         self.vkm_url = "https://avoinapi.vaylapilvi.fi/viitekehysmuunnin/"
         
     def create_session(self):
@@ -34,7 +34,7 @@ class VKMAPIRequests:
         session.trust_env = True
         return session
 
-    def load_proxies_from_settings(self, subgroup: str = "proxySettings", same_for_both: bool = True) -> dict[str, str] | None:
+    def load_proxies_from_settings(self, subgroup: str = "proxySettings", same_for_both: bool = True):
         """Loads saved proxy settings if they exist.
 
         Args:

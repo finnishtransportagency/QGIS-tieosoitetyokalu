@@ -62,7 +62,7 @@ class WidgetValidator:
         $
         """, re.VERBOSE | re.IGNORECASE)
 
-    def _collect_widgets_by_group(self, widgets: list[QtWidgets.QWidget]) -> dict[str, list]:
+    def _collect_widgets_by_group(self, widgets: list[QtWidgets.QWidget]):
         """Collect interactive widgets by their settings group.
 
         Args:
@@ -93,7 +93,7 @@ class WidgetValidator:
                     invalid_groups.add(self.tr(u"Proxy-asetukset"))
         return invalid_groups
 
-    def _validate_proxy_widgets(self, widget_group: list[QtWidgets.QWidget]) -> bool:
+    def _validate_proxy_widgets(self, widget_group: list[QtWidgets.QWidget]):
         """Validate widgets of 'proxySettings' group by counting the sum of invalid inputs.
 
         Args:
@@ -110,7 +110,7 @@ class WidgetValidator:
                 invalid_inputs += 1
         return invalid_inputs == 0
     
-    def _validate_proxy_lineedit(self, lineedit: QtWidgets.QLineEdit, allow_empty: bool = True) -> bool:
+    def _validate_proxy_lineedit(self, lineedit: QtWidgets.QLineEdit, allow_empty: bool = True):
         """
         Validate a single QLineEdit using self.url_regex.
         - allow_empty=True treats empty string as valid (useful to allow "no proxy").
@@ -140,7 +140,7 @@ class WidgetValidator:
             return False
         
     @staticmethod
-    def tr(message, disambiguation="", n=-1) -> str:
+    def tr(message, disambiguation="", n=-1):
         """Get the translation for a string using Qt translation API.
 
         We implement this ourselves since we do not inherit QObject.

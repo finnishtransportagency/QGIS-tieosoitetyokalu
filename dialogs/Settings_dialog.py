@@ -72,7 +72,7 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
 
     # ----- Helpers -----
     
-    def _settings_key_for(self, w: QtWidgets.QWidget) -> str:
+    def _settings_key_for(self, w: QtWidgets.QWidget):
         """Return full relative key path inside ROOT_GROUP, e.g., 'proxy/http'."""
         # subgroup may come from widget, or inherit from a parent container
         subgroup = self._settings_group_for_widget(w)  # e.g., 'proxy' or ''
@@ -83,7 +83,7 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
             key = w.objectName()
         return f"{subgroup}/{key}" if subgroup else key
 
-    def _settings_group_for_widget(self, w: QtWidgets.QWidget) -> str:
+    def _settings_group_for_widget(self, w: QtWidgets.QWidget):
         """Resolve subgroup by walking up the parent chain for 'settingsGroup'."""
         cur = w
         while cur is not None:
@@ -94,7 +94,7 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         # Fallback to a dialog-level default if you like (e.g., 'proxy')
         return getattr(self, "_default_subgroup", None)
 
-    def _collect_watched_from_dialog(self) -> list[QtWidgets.QWidget]:
+    def _collect_watched_from_dialog(self):
         """Collect all interactive inputs from the entire Settings_dialog.
 
         Returns:
@@ -328,7 +328,7 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
                 except Exception:
                     pass
 
-    def _is_dirty(self) -> bool:
+    def _is_dirty(self):
         """Check if any of the watched widgets is modified compared to the baseline.
 
         Returns:
@@ -457,7 +457,7 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         )
 
     @staticmethod
-    def tr(message, disambiguation="", n=-1) -> str:
+    def tr(message, disambiguation="", n=-1):
         """Get the translation for a string using Qt translation API.
 
         We implement this ourselves since we do not inherit QObject.
