@@ -305,7 +305,7 @@ class Osoitetyokalu:
 
         self.toolButton.setMenu(self.popupMenu)
         self.toolButton.setDefaultAction(self.actions[0])
-        self.toolButton.setPopupMode(QToolButton.MenuButtonPopup)
+        self.toolButton.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
         self.toolWidget = self.iface.addToolBarWidget(self.toolButton)
         self.actions.append(self.toolWidget)
 
@@ -352,7 +352,12 @@ class Osoitetyokalu:
         if self.first_start == True:
             self.first_start = False
         dlg = ShowCoordinates_dialog()
-        dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+        dlg.setWindowFlags(
+            QtCore.Qt.WindowType.CustomizeWindowHint
+            | QtCore.Qt.WindowType.WindowStaysOnTopHint
+            | QtCore.Qt.WindowType.WindowCloseButtonHint
+            | QtCore.Qt.WindowType.WindowMinimizeButtonHint
+        )
 
         self.LayerHandler.init_tool1()
         self.iface.mapCanvas().refresh()
@@ -402,7 +407,7 @@ class Osoitetyokalu:
         # show the dialog
         dlg.show()
         # Run the dialog event loop
-        result = dlg.exec_()
+        result = dlg.exec()
         # See if OK was pressed
         if result:
 
@@ -421,7 +426,12 @@ class Osoitetyokalu:
         if self.first_start == True:
             self.first_start = False
         dlg = PopUp_dialog()
-        dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+        dlg.setWindowFlags(
+            QtCore.Qt.WindowType.CustomizeWindowHint
+            | QtCore.Qt.WindowType.WindowStaysOnTopHint
+            | QtCore.Qt.WindowType.WindowCloseButtonHint
+            | QtCore.Qt.WindowType.WindowMinimizeButtonHint
+        )
 
         self.LayerHandler.init_tool2()
         self.iface.mapCanvas().refresh()
@@ -480,7 +490,7 @@ class Osoitetyokalu:
         canvas.setMapTool(pointTool)
 
         dlg.show()
-        dlg.exec_()
+        dlg.exec()
 
 
     def road_part(self):
@@ -492,7 +502,12 @@ class Osoitetyokalu:
         if self.first_start == True:
             self.first_start = False
         dlg = ShowCoordinates_dialog()
-        dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+        dlg.setWindowFlags(
+            QtCore.Qt.WindowType.CustomizeWindowHint
+            | QtCore.Qt.WindowType.WindowStaysOnTopHint
+            | QtCore.Qt.WindowType.WindowCloseButtonHint
+            | QtCore.Qt.WindowType.WindowMinimizeButtonHint
+        )
 
         self.LayerHandler.init_tool3()
         self.iface.mapCanvas().refresh()
@@ -580,7 +595,7 @@ class Osoitetyokalu:
         # show the dialog
         dlg.show()
         # Run the dialog event loop
-        result = dlg.exec_()
+        result = dlg.exec()
         # See if OK was pressed
         if result:
 
@@ -598,10 +613,19 @@ class Osoitetyokalu:
         if self.first_start == True:
             self.first_start = False
         self.two_points_dlg = ShowCoordinates_dialog()
-        self.two_points_dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+        self.two_points_dlg.setWindowFlags(
+            QtCore.Qt.WindowType.CustomizeWindowHint
+            | QtCore.Qt.WindowType.WindowCloseButtonHint
+            | QtCore.Qt.WindowType.WindowMinimizeButtonHint
+        )
 
         self.ajoradat_dlg = Ajoradat_dialog()
-        self.ajoradat_dlg.setWindowFlags(QtCore.Qt.CustomizeWindowHint | QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+        self.ajoradat_dlg.setWindowFlags(
+            QtCore.Qt.WindowType.CustomizeWindowHint
+            | QtCore.Qt.WindowType.WindowStaysOnTopHint
+            | QtCore.Qt.WindowType.WindowCloseButtonHint
+            | QtCore.Qt.WindowType.WindowMinimizeButtonHint
+        )
 
         QgsProject.instance().setCrs(self.my_crs)
         self.canvas = self.iface.mapCanvas()
@@ -729,7 +753,7 @@ class Osoitetyokalu:
                         self.canvas.setMapTool(pointTool_A)
                         #showing all the roadways address info
                         self.ajoradat_dlg.show()
-                        result = self.ajoradat_dlg.exec_()
+                        result = self.ajoradat_dlg.exec()
                         #connecting canvas back to pointTool A
 
                         if result:
@@ -761,7 +785,7 @@ class Osoitetyokalu:
 
         self.two_points_dlg.show()
         # Run the dialog event loop
-        result = self.two_points_dlg.exec_()
+        result = self.two_points_dlg.exec()
 
         # See if OK was pressed
         if result:
@@ -786,9 +810,13 @@ class Osoitetyokalu:
 
         QgsProject.instance().setCrs(self.my_crs)
         self.search_form_dlg = SearchForm_dialog()
-        self.search_form_dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+        self.search_form_dlg.setWindowFlags(
+            QtCore.Qt.WindowType.WindowStaysOnTopHint
+            | QtCore.Qt.WindowType.WindowCloseButtonHint
+            | QtCore.Qt.WindowType.WindowMinimizeButtonHint
+        )
         self.search_form_dlg.show()
-        if self.search_form_dlg.exec_():
+        if self.search_form_dlg.exec():
             self.vkm_request_form_search()
 
 
@@ -800,14 +828,18 @@ class Osoitetyokalu:
 
         QgsProject.instance().setCrs(self.my_crs)
         delete_dlg = DeleteLayer_dialog()
-        delete_dlg.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.WindowCloseButtonHint | QtCore.Qt.WindowMinimizeButtonHint)
+        delete_dlg.setWindowFlags(
+            QtCore.Qt.WindowType.WindowStaysOnTopHint
+            | QtCore.Qt.WindowType.WindowCloseButtonHint
+            | QtCore.Qt.WindowType.WindowMinimizeButtonHint
+        )
         delete_dlg.show()
 
         delete_dlg.pushButton_delete_annotations.clicked.connect(self.LayerHandler.delete_all_annotations)
         delete_dlg.pushButton_delete_annotation.clicked.connect(self.LayerHandler.delete_annotation)
         delete_dlg.pushButton_delete_feature.clicked.connect(self.LayerHandler.remove_feature)
         delete_dlg.pushButton_delete_all_features.clicked.connect(self.LayerHandler.remove_all_features)
-        delete_dlg.exec_()
+        delete_dlg.exec()
 
 
 # ---------------- EXTRA FUNCTIONS ----------------------
@@ -1299,7 +1331,7 @@ class Osoitetyokalu:
                 self.LayerHandler.add_point_feature('5', self.tr(u'Pistemäinen haku'), point_x, point_y)
                 self.center_to_feature(point_x, point_y)
                 popup_dlg.show()
-                result = popup_dlg.exec_()
+                result = popup_dlg.exec()
                 if result:
                     lineEdits = popup_dlg.findChildren(QLineEdit)
                     for line in lineEdits:
@@ -1482,7 +1514,7 @@ class Osoitetyokalu:
 
             roadways_dlg.pushButton_Download.clicked.connect(lambda: self.write_roadways_to_csv(final_url, roadways_dlg))
             roadways_dlg.show()
-            result = roadways_dlg.exec_()
+            result = roadways_dlg.exec()
             if result:
                 roadways_dlg.pushButton.setEnabled(False)
                 return

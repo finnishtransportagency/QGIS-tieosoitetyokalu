@@ -21,7 +21,7 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsField,
                        QgsGeometry, QgsMarkerSymbol, QgsPointXY, QgsProject,
                        QgsSingleSymbolRenderer, QgsTextAnnotation,
                        QgsVectorLayer, edit)
-from qgis.PyQt.QtCore import QCoreApplication, QPoint, QSizeF, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, QPointF, QSizeF, QVariant
 from qgis.PyQt.QtGui import QColor, QTextDocument
 
 
@@ -199,7 +199,7 @@ class LayerHandler(object):
             annot_length = len(text) * 3
             annot.setFrameSizeMm(QSizeF(annot_length, 6))
         annot.setMapLayer(layer)
-        annot.setFrameOffsetFromReferencePointMm(QPoint(position_x, position_y))
+        annot.setFrameOffsetFromReferencePointMm(QPointF(position_x, position_y))
         annot.setDocument(QTextDocument(text))
 
         # X and Y are defined previously

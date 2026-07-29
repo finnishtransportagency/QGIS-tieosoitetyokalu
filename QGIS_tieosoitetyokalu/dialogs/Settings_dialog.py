@@ -387,10 +387,10 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
             self,
             self.tr(u"Palauta oletusasetukset"),
             self.tr(u"Haluatko varmasti palauttaa oletusasetukset ja poistaa kaikki tallennetut asetukset?"),
-            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-            QtWidgets.QMessageBox.No,
+            QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+            QtWidgets.QMessageBox.StandardButton.No,
         )
-        if reply != QtWidgets.QMessageBox.Yes:
+        if reply != QtWidgets.QMessageBox.StandardButton.Yes:
             return
 
         # Remove saved settings for this group

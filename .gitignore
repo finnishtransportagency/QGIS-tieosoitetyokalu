@@ -213,8 +213,7 @@ ModelManifest.xml
 
 __pycache__/
 *.code-workspace
-launch.json
-settings.json
+.vscode/
 logs/
 roadways/
 zip_build/
