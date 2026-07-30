@@ -56,7 +56,7 @@ class Ajoradat_dialog(QtWidgets.QDialog, FORM_CLASS):
     def select_output_file(self):
         """User chooses location for the downloadable CSV-file."""
         options = QFileDialog.Options()
-        filename,_ = QFileDialog.getSaveFileName(self, self.tr(u'Valitse tallennussijainti'), "", 'csv (*.csv)', options=options)
+        filename,_ = QFileDialog.getSaveFileName(self, self.tr('Valitse tallennussijainti'), "", 'csv (*.csv)', options=options)
         if filename:
             self.PathlineEdit.setText(filename)
 

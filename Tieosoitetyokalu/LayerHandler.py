@@ -21,7 +21,7 @@ from qgis.core import (QgsCoordinateReferenceSystem, QgsFeature, QgsField,
                        QgsGeometry, QgsMarkerSymbol, QgsPointXY, QgsProject,
                        QgsSingleSymbolRenderer, QgsTextAnnotation,
                        QgsVectorLayer, edit)
-from qgis.PyQt.QtCore import QCoreApplication, QPoint, QSizeF, QVariant
+from qgis.PyQt.QtCore import QCoreApplication, QPointF, QSizeF, QVariant
 from qgis.PyQt.QtGui import QColor, QTextDocument
 
 
@@ -98,30 +98,30 @@ class LayerHandler(object):
         Args:
             group_name (str): Name of the group.
         """
-        tool_group = self.root.findGroup(self.tr(u'Tieosoitetyökalu'))
+        tool_group = self.root.findGroup(self.tr('Tieosoitetyökalu'))
         if tool_group is None:
-            tool_group = self.root.insertGroup(0, self.tr(u'Tieosoitetyökalu'))
+            tool_group = self.root.insertGroup(0, self.tr('Tieosoitetyökalu'))
         group = tool_group.findGroup(group_name)
 
         return tool_group.addGroup(group_name) if group is None else group
 
 
     def init_tool1(self):
-        self.group_1 = self.create_layer_group(self.tr(u'1. Tieosoite'))
+        self.group_1 = self.create_layer_group(self.tr('1. Tieosoite'))
 
         #annotation layer
         self.tool_layers['1']['Karttavihjeet'] = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet', '1', self.group_1)
 
 
     def init_tool2(self):
-        self.group_2 = self.create_layer_group(self.tr(u'2. Hakutyökalu'))
+        self.group_2 = self.create_layer_group(self.tr('2. Hakutyökalu'))
 
         #point layer
         self.tool_layers['2']['Pisteet'] = self.init_point_layer('255,0,0', 'circle', '2.5', 'Pisteet', '2', self.group_2)
 
 
     def init_tool3(self):
-        self.group_3 = self.create_layer_group(self.tr(u'3. Tieosa'))
+        self.group_3 = self.create_layer_group(self.tr('3. Tieosa'))
 
         #annotation layer
         self.tool_layers['3']['Karttavihjeet'] = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet', '3', self.group_3)
@@ -141,7 +141,7 @@ class LayerHandler(object):
 
 
     def init_tool4(self):
-        self.group_4 = self.create_layer_group(self.tr(u'4. Tieosoite (Alku- ja loppupiste)'))
+        self.group_4 = self.create_layer_group(self.tr('4. Tieosoite (Alku- ja loppupiste)'))
 
         #annotation layer
         self.tool_layers['4']['Karttavihjeet'] = self.init_point_layer('0,0,0', 'circle', '0.0', 'Karttavihjeet', '4', self.group_4)
@@ -155,7 +155,7 @@ class LayerHandler(object):
 
 
     def init_tool5(self):
-        self.group_5 = self.create_layer_group(self.tr(u'5. Kohdistustyökalu'))
+        self.group_5 = self.create_layer_group(self.tr('5. Kohdistustyökalu'))
 
         #point layer
         self.tool_layers['5']['Pisteet'] = self.init_point_layer('0,255,0', 'triangle', '3.5', 'Pisteet', '5', self.group_5)
@@ -199,7 +199,7 @@ class LayerHandler(object):
             annot_length = len(text) * 3
             annot.setFrameSizeMm(QSizeF(annot_length, 6))
         annot.setMapLayer(layer)
-        annot.setFrameOffsetFromReferencePointMm(QPoint(position_x, position_y))
+        annot.setFrameOffsetFromReferencePointMm(QPointF(position_x, position_y))
         annot.setDocument(QTextDocument(text))
 
         # X and Y are defined previously
@@ -306,7 +306,7 @@ class LayerHandler(object):
                 self.layers.append(layer)
 
         else:
-            roadway0_layer = self.create_roadway_layer(self.tr(u'Ajoradat 0'), QColor(0,255,0))
+            roadway0_layer = self.create_roadway_layer(self.tr('Ajoradat 0'), QColor(0,255,0))
 
             self.project.addMapLayer(roadway0_layer, False)
             group.addLayer(roadway0_layer)
@@ -325,7 +325,7 @@ class LayerHandler(object):
                 self.layers.append(layer)
 
         else:
-            roadway1_layer = self.create_roadway_layer(self.tr(u'Ajoradat 1'), QColor(255,127,80))
+            roadway1_layer = self.create_roadway_layer(self.tr('Ajoradat 1'), QColor(255,127,80))
 
             self.project.addMapLayer(roadway1_layer, False)
             group.addLayer(roadway1_layer)
@@ -344,7 +344,7 @@ class LayerHandler(object):
                 self.layers.append(layer)
 
         else:
-            roadway2_layer = self.create_roadway_layer(self.tr(u'Ajoradat 2'), QColor(0,0,255))
+            roadway2_layer = self.create_roadway_layer(self.tr('Ajoradat 2'), QColor(0,0,255))
 
             self.project.addMapLayer(roadway2_layer, False)
             group.addLayer(roadway2_layer)
@@ -394,13 +394,13 @@ class LayerHandler(object):
             return layer
 
         if layer_name == 'Karttavihjeet':
-            name = self.tr(u'Karttavihjeet')
+            name = self.tr('Karttavihjeet')
         elif layer_name == 'Pisteet':
-            name = self.tr(u'Pisteet')
+            name = self.tr('Pisteet')
         elif layer_name == 'Alkupisteet':
-            name = self.tr(u'Alkupisteet')
+            name = self.tr('Alkupisteet')
         elif layer_name == 'Loppupisteet':
-            name = self.tr(u'Loppupisteet')
+            name = self.tr('Loppupisteet')
         
 
         point_layer = QgsVectorLayer('Point?crs=epsg:3067', name, 'memory')

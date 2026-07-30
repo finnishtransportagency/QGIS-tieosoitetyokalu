@@ -23,7 +23,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 class VkmRequestException(Exception):
     def __init__(self, message):
         self.message = message
-        self.error_message = self.tr(u'VKM-API virhe: ')
+        self.error_message = self.tr('VKM-API virhe: ')
 
         
     def __str__(self):
