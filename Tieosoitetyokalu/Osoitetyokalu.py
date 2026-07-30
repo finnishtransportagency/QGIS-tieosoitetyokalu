@@ -98,7 +98,7 @@ class Osoitetyokalu:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&Tieosoitetyökalu')
+        self.menu = self.tr('&Tieosoitetyökalu')
 
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
@@ -247,7 +247,7 @@ class Osoitetyokalu:
 
         self.add_action(
             icon_path_1,
-            text=self.tr(u'1. Tieosoite'),
+            text=self.tr('1. Tieosoite'),
             callback=self.road_address,
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
@@ -256,7 +256,7 @@ class Osoitetyokalu:
 #
         self.add_action(
             icon_path_2,
-            text=self.tr(u'2. Hakutyökalu'),
+            text=self.tr('2. Hakutyökalu'),
             callback=self.popup,
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
@@ -264,7 +264,7 @@ class Osoitetyokalu:
 #
         self.add_action(
             icon_path_3,
-            text=self.tr(u'3. Tieosa'),
+            text=self.tr('3. Tieosa'),
             callback=self.road_part,
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
@@ -272,7 +272,7 @@ class Osoitetyokalu:
 #
         self.add_action(
             icon_path_4,
-            text=self.tr(u'4. Tieosoite (Alku- ja loppupiste)'),
+            text=self.tr('4. Tieosoite (Alku- ja loppupiste)'),
             callback=self.two_points,
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
@@ -280,7 +280,7 @@ class Osoitetyokalu:
 #
         self.add_action(
             icon_path_5,
-            text=self.tr(u'5. Kohdistustyökalu'),
+            text=self.tr('5. Kohdistustyökalu'),
             callback=self.search_form,
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
@@ -288,7 +288,7 @@ class Osoitetyokalu:
 #
         self.add_action(
             icon_path_6,
-            text=self.tr(u'6. Poistotyökalu'),
+            text=self.tr('6. Poistotyökalu'),
             callback=self.delete_tool,
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
@@ -296,7 +296,7 @@ class Osoitetyokalu:
         
         self.add_action(
             icon_path_7,
-            text=self.tr(u'Asetukset'),
+            text=self.tr('Asetukset'),
             callback=self.open_settings,
             parent=self.iface.mainWindow(),
             add_to_toolbar=False,
@@ -388,7 +388,7 @@ class Osoitetyokalu:
                 self.LayerHandler.add_annotation('1', road_address, point_x, point_y)
 
             except AttributeError:
-                self.error_popup(self.tr(u'Pistettä ei ole asetettu.'))
+                self.error_popup(self.tr('Pistettä ei ole asetettu.'))
             except VkmApiException as e:
                 self.error_popup(e)
             except VkmRequestException as e:
@@ -477,7 +477,7 @@ class Osoitetyokalu:
                     self.LayerHandler.add_point_feature('2', road_address, point_x, point_y)
 
             except AttributeError:
-                self.error_popup(self.tr(u'Pistettä ei ole asetettu.'))
+                self.error_popup(self.tr('Pistettä ei ole asetettu.'))
             except VkmApiException as e:
                 self.error_popup(e)
             except VkmRequestException as e:
@@ -551,7 +551,7 @@ class Osoitetyokalu:
                         starting_road_address_split[1] = starting_point[2]
                         starting_road_address = '/'.join(starting_road_address_split)
 
-                        roadway = self.tr(u'Alkupiste: {start}\nLoppupiste: {end}\npituus: {length}m').format(
+                        roadway = self.tr('Alkupiste: {start}\nLoppupiste: {end}\npituus: {length}m').format(
                             start = starting_road_address, end = ending_road_address, length = road_part_length
                             )
 
@@ -577,7 +577,7 @@ class Osoitetyokalu:
                 self.LayerHandler.add_point_feature('3', ending_road_address, ending_point[0], ending_point[1], 'ending')
 
             except AttributeError:
-                self.error_popup(self.tr(u'Pistettä ei ole asetettu.'))
+                self.error_popup(self.tr('Pistettä ei ole asetettu.'))
             except VkmApiException as e:
                 self.error_popup(e)
             except VkmRequestException as e:
@@ -673,7 +673,7 @@ class Osoitetyokalu:
                 self.canvas.setMapTool(pointTool_B)
 
             except AttributeError:
-                self.error_popup(self.tr(u'Pistettä ei ole asetettu.'))
+                self.error_popup(self.tr('Pistettä ei ole asetettu.'))
             except VkmApiException as e:
                 self.error_popup(e)
             except VkmRequestException as e:
@@ -703,7 +703,7 @@ class Osoitetyokalu:
 
                 if tie_B != self.tie_A:
                     self.canvas.setMapTool(pointTool_A)
-                    self.error_popup(self.tr(u'Alku- ja loppupisteen on oltava samalla tiellä'))
+                    self.error_popup(self.tr('Alku- ja loppupisteen on oltava samalla tiellä'))
                     return
 
                 else:
@@ -723,7 +723,7 @@ class Osoitetyokalu:
                                     mitattu_pituus = pituus
                                     break
 
-                            roadway = self.tr(u'A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} pituus: {mitattu_pituus}').format(
+                            roadway = self.tr('A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} pituus: {mitattu_pituus}').format(
                                 tie_A = self.tie_A, ajorata_A = self.ajorata_A, osa_A = self.osa_A, etaisyys_A = self.etaisyys_A,
                                 tie_B = tie_B, ajorata_B = ajorata_B, osa_B = osa_B, etaisyys_B = etaisyys_B, mitattu_pituus = mitattu_pituus
                             )
@@ -769,7 +769,7 @@ class Osoitetyokalu:
                         return
 
             except AttributeError:
-                self.error_popup(self.tr(u'Pistettä ei ole asetettu.'))
+                self.error_popup(self.tr('Pistettä ei ole asetettu.'))
             except VkmApiException as e:
                 self.error_popup(e)
             except VkmRequestException as e:
@@ -897,7 +897,7 @@ class Osoitetyokalu:
                     point_x = vkm_feature['properties']['x']
                     point_y = vkm_feature['properties']['y']
 
-                    road_address = self.tr(u'Ei tieosoitetta')
+                    road_address = self.tr('Ei tieosoitetta')
 
 
         return road_address, point_x, point_y, tie, ajorata, osa, etaisyys
@@ -1177,7 +1177,7 @@ class Osoitetyokalu:
         params_dict = self.append_form_layout_lines()
 
         if len(params_dict) == 0:
-            self.error_popup(self.tr(u'Täytä vaaditut kentät.'))
+            self.error_popup(self.tr('Täytä vaaditut kentät.'))
             return
 
         else:
@@ -1273,7 +1273,7 @@ class Osoitetyokalu:
         response = s.get(final_url, verify=False, proxies=self.proxies)
 
         if response.status_code != 200:
-            self.error_popup(self.tr(u'VKM-API ei vastaa. URL: {final_url}').format(final_url = final_url))
+            self.error_popup(self.tr('VKM-API ei vastaa. URL: {final_url}').format(final_url = final_url))
             return
 
         vkm_data = json.loads(response.content)
@@ -1328,7 +1328,7 @@ class Osoitetyokalu:
                 self.set_popup_text(popup_dlg, vkm_feature)
                 point_x = vkm_feature['properties']['x']
                 point_y = vkm_feature['properties']['y']
-                self.LayerHandler.add_point_feature('5', self.tr(u'Pistemäinen haku'), point_x, point_y)
+                self.LayerHandler.add_point_feature('5', self.tr('Pistemäinen haku'), point_x, point_y)
                 self.center_to_feature(point_x, point_y)
                 popup_dlg.show()
                 result = popup_dlg.exec()
@@ -1476,7 +1476,7 @@ class Osoitetyokalu:
                     if length_dict_roadway == polyline_roadway:
                         measured_length = str(length)
                         break
-                polyline_adress = self.tr(u'Alkupiste {road}/{roadway}/{part}/{distance} - Loppupiste {road_end}/{roadway_end}/{part_end}/{distance_end}, mitattu pituus: {measured_length}').format(
+                polyline_adress = self.tr('Alkupiste {road}/{roadway}/{part}/{distance} - Loppupiste {road_end}/{roadway_end}/{part_end}/{distance_end}, mitattu pituus: {measured_length}').format(
                     road = road, roadway = roadway, part = part, distance = distance,
                     road_end = road_end, roadway_end = roadway_end, part_end = part_end, distance_end = distance_end, 
                     measured_length = measured_length
@@ -1506,11 +1506,11 @@ class Osoitetyokalu:
             if x_start == 0 and y_start == 0:
                 #getting starting coordinates
                 x_start, y_start = self.vkm_request_coordinates(self.vkm_url, road, part, distance)
-            self.LayerHandler.add_point_feature('5', self.tr(u'Alkupiste'), x_start, y_start, 'starting')
+            self.LayerHandler.add_point_feature('5', self.tr('Alkupiste'), x_start, y_start, 'starting')
             self.center_to_feature(x_start, y_start)
             #getting ending coordinates
             x_end, y_end = self.vkm_request_coordinates(self.vkm_url, road_end, part_end, distance_end)
-            self.LayerHandler.add_point_feature('5', self.tr(u'Loppupiste'), x_end, y_end, 'ending')
+            self.LayerHandler.add_point_feature('5', self.tr('Loppupiste'), x_end, y_end, 'ending')
 
             roadways_dlg.pushButton_Download.clicked.connect(lambda: self.write_roadways_to_csv(final_url, roadways_dlg))
             roadways_dlg.show()
@@ -1586,14 +1586,14 @@ class Osoitetyokalu:
 
             roadways_file.close()
 
-            message = self.tr(u'Tiedosto tallennettu polkuun: {user_path}').format(user_path = str(user_path))
-            self.iface.messageBar().pushMessage(self.tr(u'Lataus onnistui'), message, level=Qgis.Success, duration=7)
+            message = self.tr('Tiedosto tallennettu polkuun: {user_path}').format(user_path = str(user_path))
+            self.iface.messageBar().pushMessage(self.tr('Lataus onnistui'), message, level=Qgis.Success, duration=7)
 
         except VkmApiException as e:
             self.error_popup(e)
         except VkmRequestException as e:
             self.error_popup(e)
         except OSError as e:
-            self.error_popup(self.tr(u'Virhe tiedostoa ladattaessa. Yritä uudelleen.'))
+            self.error_popup(self.tr('Virhe tiedostoa ladattaessa. Yritä uudelleen.'))
             logging.info(e)
 

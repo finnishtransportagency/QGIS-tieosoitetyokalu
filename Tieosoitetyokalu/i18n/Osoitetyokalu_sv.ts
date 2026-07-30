@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1">
+<TS version="2.1" language="sv_SE" sourcelanguage="fi">
 <context>
     <name>Ajoradat_dialog</name>
     <message>
@@ -12,6 +12,7 @@
 <context>
     <name>Center</name>
     <message>
+        <location filename="../dialogs/SearchForm_dialog.ui" line="14"/>
         <location filename="../dialogs/SearchForm_dialog.ui" line="209"/>
         <source>Kohdista</source>
         <translation>Ställä in</translation>
@@ -177,6 +178,7 @@ i nästa VKM uppdatering.</translation>
         <translation>Slutpunkter</translation>
     </message>
     <message>
+        <location filename="../LayerHandler.py" line="101"/>
         <location filename="../LayerHandler.py" line="103"/>
         <source>Tieosoitetyökalu</source>
         <translation>Vägadressverktyg</translation>
@@ -185,42 +187,46 @@ i nästa VKM uppdatering.</translation>
 <context>
     <name>Osoitetyokalu</name>
     <message>
-        <location filename="../Osoitetyokalu.py" line="248"/>
+        <location filename="../Osoitetyokalu.py" line="250"/>
         <source>1. Tieosoite</source>
         <translation>1. Vägadress</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="257"/>
+        <location filename="../Osoitetyokalu.py" line="259"/>
         <source>2. Hakutyökalu</source>
         <translation>2. Sökverktyg</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="265"/>
+        <location filename="../Osoitetyokalu.py" line="267"/>
         <source>3. Tieosa</source>
         <translation>3. Vägsträcka</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="273"/>
+        <location filename="../Osoitetyokalu.py" line="275"/>
         <source>4. Tieosoite (Alku- ja loppupiste)</source>
         <translation>4. Vägadress (Start- och slutpunkt)</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="281"/>
+        <location filename="../Osoitetyokalu.py" line="283"/>
         <source>5. Kohdistustyökalu</source>
         <translation>5. Fokuseringsverktyg</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="289"/>
+        <location filename="../Osoitetyokalu.py" line="291"/>
         <source>6. Poistotyökalu</source>
         <translation>6. Raderingsverktyg</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="748"/>
+        <location filename="../Osoitetyokalu.py" line="391"/>
+        <location filename="../Osoitetyokalu.py" line="480"/>
+        <location filename="../Osoitetyokalu.py" line="580"/>
+        <location filename="../Osoitetyokalu.py" line="676"/>
+        <location filename="../Osoitetyokalu.py" line="772"/>
         <source>Pistettä ei ole asetettu.</source>
         <translation>Punkten är inte inställd.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="539"/>
+        <location filename="../Osoitetyokalu.py" line="554"/>
         <source>Alkupiste: {start}
 Loppupiste: {end}
 pituus: {length}m</source>
@@ -229,62 +235,62 @@ Slutpunkt: {end}
 längd: {length}m</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="682"/>
+        <location filename="../Osoitetyokalu.py" line="706"/>
         <source>Alku- ja loppupisteen on oltava samalla tiellä</source>
         <translation>Start- och slutpunkt måste vara på samma väg</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="702"/>
+        <location filename="../Osoitetyokalu.py" line="726"/>
         <source>A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} pituus: {mitattu_pituus}</source>
         <translation>A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} längd: {mitattu_pituus}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="868"/>
+        <location filename="../Osoitetyokalu.py" line="900"/>
         <source>Ei tieosoitetta</source>
         <translation>Ingen vägadress</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1148"/>
+        <location filename="../Osoitetyokalu.py" line="1180"/>
         <source>Täytä vaaditut kentät.</source>
         <translation>Fyll i de obligatoriska fälten.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1244"/>
+        <location filename="../Osoitetyokalu.py" line="1276"/>
         <source>VKM-API ei vastaa. URL: {final_url}</source>
         <translation>VKM-API svarar inte. URL: {final_url}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1299"/>
+        <location filename="../Osoitetyokalu.py" line="1331"/>
         <source>Pistemäinen haku</source>
         <translation>Punktera sök</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1447"/>
+        <location filename="../Osoitetyokalu.py" line="1479"/>
         <source>Alkupiste {road}/{roadway}/{part}/{distance} - Loppupiste {road_end}/{roadway_end}/{part_end}/{distance_end}, mitattu pituus: {measured_length}</source>
         <translation>Startpunkt {road}/{roadway}/{part}/{distance} - Slutpunkt {road_end}/{roadway_end}/{part_end}/{distance_end}, uppmätt längd: {measured_length}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1477"/>
+        <location filename="../Osoitetyokalu.py" line="1509"/>
         <source>Alkupiste</source>
         <translation>Startpunkt</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1481"/>
+        <location filename="../Osoitetyokalu.py" line="1513"/>
         <source>Loppupiste</source>
         <translation>Slutpunkt</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1557"/>
+        <location filename="../Osoitetyokalu.py" line="1589"/>
         <source>Tiedosto tallennettu polkuun: {user_path}</source>
         <translation>Filen sparad i: {user_path}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1558"/>
+        <location filename="../Osoitetyokalu.py" line="1590"/>
         <source>Lataus onnistui</source>
         <translation>Nedladdningen lyckades</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1565"/>
+        <location filename="../Osoitetyokalu.py" line="1597"/>
         <source>Virhe tiedostoa ladattaessa. Yritä uudelleen.</source>
         <translation>Fel vid nedladdning av filen. Försök igen.</translation>
     </message>
@@ -294,7 +300,7 @@ längd: {length}m</translation>
         <translation>Vägadressverktyg</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="297"/>
+        <location filename="../Osoitetyokalu.py" line="299"/>
         <source>Asetukset</source>
         <translation>Inställningar</translation>
     </message>
@@ -496,22 +502,22 @@ längd: {length}m</translation>
         <translation>Ogiltiga inställningar</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="386"/>
+        <location filename="../dialogs/Settings_dialog.py" line="388"/>
         <source>Palauta oletusasetukset</source>
         <translation>Återställ till standardinställningar</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="386"/>
+        <location filename="../dialogs/Settings_dialog.py" line="389"/>
         <source>Haluatko varmasti palauttaa oletusasetukset ja poistaa kaikki tallennetut asetukset?</source>
         <translation>Är du säker på att du vill återställa standardinställningarna och ta bort alla sparade inställningar?</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="453"/>
+        <location filename="../dialogs/Settings_dialog.py" line="455"/>
         <source>Oletusarvot palautettu</source>
         <translation>Inställningarna återställs till standard</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="453"/>
+        <location filename="../dialogs/Settings_dialog.py" line="456"/>
         <source>Asetukset on palautettu oletusarvoihin ja tallennetut asetukset on poistettu.</source>
         <translation>Inställningarna har återställts till standardinställningarna och sparade inställningar har tagits bort.</translation>
     </message>

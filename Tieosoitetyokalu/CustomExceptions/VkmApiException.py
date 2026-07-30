@@ -22,7 +22,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 class VkmApiException(Exception):
     def __init__(self, url):
-        self.message = self.tr(u'VKM-rajapintaan ei saada yhteyttä.')
+        self.message = self.tr('VKM-rajapintaan ei saada yhteyttä.')
         self.url = url
 
 
