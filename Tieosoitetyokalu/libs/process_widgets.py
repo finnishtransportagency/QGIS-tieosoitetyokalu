@@ -90,7 +90,7 @@ class WidgetValidator:
         for group_name, widget_group in widgets_by_group.items():
             if group_name == "proxySettings":
                 if not self._validate_proxy_widgets(widget_group):
-                    invalid_groups.add(self.tr(u"Proxy-asetukset"))
+                    invalid_groups.add(self.tr("Proxy-asetukset"))
         return invalid_groups
 
     def _validate_proxy_widgets(self, widget_group: list[QtWidgets.QWidget]):
@@ -136,7 +136,7 @@ class WidgetValidator:
             return True
         else:
             lineedit.setStyleSheet("border: 1px solid #e74c3c;")   # red
-            lineedit.setToolTip(self.tr(u'Virheellinen URL-osoite – täytyy alkaa skeemasta: "http://" tai "https://"'))
+            lineedit.setToolTip(self.tr('Virheellinen URL-osoite – täytyy alkaa skeemasta: "http://" tai "https://"'))
             return False
         
     @staticmethod

@@ -358,9 +358,9 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         if invalid_groups:
             # Message from invalid_groups to show which settings contain invalid inputs
             settings_groups = ", ".join(map(str, invalid_groups))
-            error_message = self.tr(u"Tarkista ja korjaa seuraavat asetukset:")
+            error_message = self.tr("Tarkista ja korjaa seuraavat asetukset:")
             full_message = f"{error_message}\n- {settings_groups}"
-            QtWidgets.QMessageBox.critical(self, self.tr(u"Virheelliset asetukset"), full_message)
+            QtWidgets.QMessageBox.critical(self, self.tr("Virheelliset asetukset"), full_message)
             return
         
         self._save_settings()
@@ -385,12 +385,12 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         # Ask for confirmation
         reply = QtWidgets.QMessageBox.question(
             self,
-            self.tr(u"Palauta oletusasetukset"),
-            self.tr(u"Haluatko varmasti palauttaa oletusasetukset ja poistaa kaikki tallennetut asetukset?"),
-            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-            QtWidgets.QMessageBox.No,
+            self.tr("Palauta oletusasetukset"),
+            self.tr("Haluatko varmasti palauttaa oletusasetukset ja poistaa kaikki tallennetut asetukset?"),
+            QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No,
+            QtWidgets.QMessageBox.StandardButton.No,
         )
-        if reply != QtWidgets.QMessageBox.Yes:
+        if reply != QtWidgets.QMessageBox.StandardButton.Yes:
             return
 
         # Remove saved settings for this group
@@ -452,8 +452,8 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
 
         QtWidgets.QMessageBox.information(
             self,
-            self.tr(u"Oletusarvot palautettu"),
-            self.tr(u"Asetukset on palautettu oletusarvoihin ja tallennetut asetukset on poistettu."),
+            self.tr("Oletusarvot palautettu"),
+            self.tr("Asetukset on palautettu oletusarvoihin ja tallennetut asetukset on poistettu."),
         )
 
     @staticmethod
