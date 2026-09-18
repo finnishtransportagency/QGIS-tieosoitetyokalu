@@ -19,6 +19,7 @@
 
 import os
 
+from qgis.core import Qgis, QgsMessageLog
 from qgis.PyQt import QtCore, QtWidgets, uic
 from ..libs.process_widgets import WidgetValidator
 
@@ -76,9 +77,7 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         """Return full relative key path inside ROOT_GROUP, e.g., 'proxy/http'."""
         # subgroup may come from widget, or inherit from a parent container
         subgroup = self._settings_group_for_widget(w)  # e.g., 'proxy' or ''
-        assert subgroup is not None # Widgets have to belong to a group
         key = w.property("settingsKey")
-        assert key is not None # A setting key has to be configured for a watched interactive widget
         if not key:
             key = w.objectName()
         return f"{subgroup}/{key}" if subgroup else key
@@ -273,14 +272,20 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
         if isinstance(w, QtWidgets.QSpinBox):
             try:
                 w.setValue(int(value))
-            except Exception:
-                pass
+            except (TypeError, ValueError, OverflowError) as e:
+                QgsMessageLog.logMessage(
+                    f'_set_value: invalid integer {value!r} for widget {w.objectName()}: {e!r}',
+                    'Tieosoitetyökalu', Qgis.MessageLevel.Warning, notifyUser=False
+                )
             return
         if isinstance(w, QtWidgets.QDoubleSpinBox):
             try:
                 w.setValue(float(value))
-            except Exception:
-                pass
+            except (TypeError, ValueError, OverflowError) as e:
+                QgsMessageLog.logMessage(
+                    f'_set_value: invalid decimal {value!r} for widget {w.objectName()}: {e!r}',
+                    'Tieosoitetyökalu', Qgis.MessageLevel.Warning, notifyUser=False
+                )
             return
         if isinstance(w, QtWidgets.QDateEdit):
             if isinstance(value, QtCore.QDate):
@@ -325,8 +330,11 @@ class Settings_dialog(QtWidgets.QDialog, FORM_CLASS):
                 # Generic fallback: listen for any changed property if available
                 try:
                     w.changed.connect(self._on_user_change)
-                except Exception:
-                    pass
+                except (AttributeError, TypeError) as e:
+                    QgsMessageLog.logMessage(
+                        f'_connect_change_signals: widget {w.objectName()} is missing a change singal: {e!r}',
+                        'Tieosoitetyökalu', Qgis.MessageLevel.Warning, notifyUser=False
+                    )
 
     def _is_dirty(self):
         """Check if any of the watched widgets is modified compared to the baseline.

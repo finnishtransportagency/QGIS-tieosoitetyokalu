@@ -217,16 +217,16 @@ in the next VKM API update.</translation>
         <translation>6. Delete tool</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="391"/>
-        <location filename="../Osoitetyokalu.py" line="480"/>
-        <location filename="../Osoitetyokalu.py" line="580"/>
-        <location filename="../Osoitetyokalu.py" line="676"/>
-        <location filename="../Osoitetyokalu.py" line="772"/>
+        <location filename="../Osoitetyokalu.py" line="400"/>
+        <location filename="../Osoitetyokalu.py" line="489"/>
+        <location filename="../Osoitetyokalu.py" line="589"/>
+        <location filename="../Osoitetyokalu.py" line="685"/>
+        <location filename="../Osoitetyokalu.py" line="781"/>
         <source>Pistettä ei ole asetettu.</source>
         <translation>Point is not set.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="554"/>
+        <location filename="../Osoitetyokalu.py" line="563"/>
         <source>Alkupiste: {start}
 Loppupiste: {end}
 pituus: {length}m</source>
@@ -235,62 +235,62 @@ Ending point: {end}
 length: {length}m</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="706"/>
+        <location filename="../Osoitetyokalu.py" line="715"/>
         <source>Alku- ja loppupisteen on oltava samalla tiellä</source>
         <translation>Starting and ending points have to be on the same road</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="726"/>
+        <location filename="../Osoitetyokalu.py" line="735"/>
         <source>A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} pituus: {mitattu_pituus}</source>
         <translation>A {tie_A}/{ajorata_A}/{osa_A}/{etaisyys_A} - B {tie_B}/{ajorata_B}/{osa_B}/{etaisyys_B} length: {mitattu_pituus}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="900"/>
+        <location filename="../Osoitetyokalu.py" line="909"/>
         <source>Ei tieosoitetta</source>
         <translation>No road address</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1180"/>
+        <location filename="../Osoitetyokalu.py" line="1189"/>
         <source>Täytä vaaditut kentät.</source>
         <translation>Fill out necessary fields.</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1276"/>
+        <location filename="../Osoitetyokalu.py" line="1285"/>
         <source>VKM-API ei vastaa. URL: {final_url}</source>
         <translation>VKM API does not respond. URL: {final_url}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1331"/>
+        <location filename="../Osoitetyokalu.py" line="1340"/>
         <source>Pistemäinen haku</source>
         <translation>Point-like search</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1479"/>
+        <location filename="../Osoitetyokalu.py" line="1488"/>
         <source>Alkupiste {road}/{roadway}/{part}/{distance} - Loppupiste {road_end}/{roadway_end}/{part_end}/{distance_end}, mitattu pituus: {measured_length}</source>
         <translation>Starting point {road}/{roadway}/{part}/{distance} - Ending point {road_end}/{roadway_end}/{part_end}/{distance_end}, measured_length: {measured_length}</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1509"/>
+        <location filename="../Osoitetyokalu.py" line="1518"/>
         <source>Alkupiste</source>
         <translation>Starting point</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1513"/>
+        <location filename="../Osoitetyokalu.py" line="1522"/>
         <source>Loppupiste</source>
         <translation>Ending point</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1589"/>
+        <location filename="../Osoitetyokalu.py" line="1598"/>
         <source>Tiedosto tallennettu polkuun: {user_path}</source>
         <translation>File saved in:</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1590"/>
+        <location filename="../Osoitetyokalu.py" line="1599"/>
         <source>Lataus onnistui</source>
         <translation>Download succeeded</translation>
     </message>
     <message>
-        <location filename="../Osoitetyokalu.py" line="1597"/>
+        <location filename="../Osoitetyokalu.py" line="1606"/>
         <source>Virhe tiedostoa ladattaessa. Yritä uudelleen.</source>
         <translation>Error while downloading the file. Try again.</translation>
     </message>
@@ -492,32 +492,32 @@ length: {length}m</translation>
 <context>
     <name>Settings_dialog</name>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="361"/>
+        <location filename="../dialogs/Settings_dialog.py" line="369"/>
         <source>Tarkista ja korjaa seuraavat asetukset:</source>
         <translation>Please check and correct the following settings:</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="363"/>
+        <location filename="../dialogs/Settings_dialog.py" line="371"/>
         <source>Virheelliset asetukset</source>
         <translation>Invalid settings</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="388"/>
+        <location filename="../dialogs/Settings_dialog.py" line="396"/>
         <source>Palauta oletusasetukset</source>
         <translation>Reset to defaults</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="389"/>
+        <location filename="../dialogs/Settings_dialog.py" line="397"/>
         <source>Haluatko varmasti palauttaa oletusasetukset ja poistaa kaikki tallennetut asetukset?</source>
         <translation>Are you sure you want to restore default settings and delete all saved settings?</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="455"/>
+        <location filename="../dialogs/Settings_dialog.py" line="463"/>
         <source>Oletusarvot palautettu</source>
         <translation>Settings reset to defaults</translation>
     </message>
     <message>
-        <location filename="../dialogs/Settings_dialog.py" line="456"/>
+        <location filename="../dialogs/Settings_dialog.py" line="464"/>
         <source>Asetukset on palautettu oletusarvoihin ja tallennetut asetukset on poistettu.</source>
         <translation>Settings have been restored to their defaults and saved settings have been removed.</translation>
     </message>

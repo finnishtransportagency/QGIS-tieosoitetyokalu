@@ -9,7 +9,7 @@ author=Väylävirasto
 qgisMinimumVersion=4.0
 qgisMaximumVersion=4.99
 description=Tieosoitetyökalu-plugin hakee VKM-rajapinnasta osoitetietoja ja esittää niitä erilaisin tavoin QGIS:sissa.
-version=1.4.0
+version=1.4.1
 homepage=https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/tree/main#readme
 
 about=FI:
@@ -49,4 +49,14 @@ deprecated=False
 
 # If the plugin can run on QGIS Server.
 server=False
+
+changelog=
+  1.4.1 - 2026-09-18
+  - Fixed issues found by Bandit Security Analysis
+  - Fixed Qt6 compatability issues
+  - Full Changelog: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/compare/v1.4.0...v1.4.1
+
+  1.4.0 - 2026-09-17
+  - Modified source code to support QGIS 4
+  - Full Changelog: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/compare/v1.3.2...v1.4.0
 
