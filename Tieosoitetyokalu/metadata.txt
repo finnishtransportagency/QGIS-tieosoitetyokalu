@@ -53,7 +53,7 @@ server=False
 changelog=
   1.4.1 - 2026-09-18
   - Fixed issues found by Bandit Security Analysis
-  - Fixed Qt6 compatability issues
+  - Fixed Qt6 compatibility issues
   - Full Changelog: https://github.com/finnishtransportagency/QGIS-tieosoitetyokalu/compare/v1.4.0...v1.4.1
 
   1.4.0 - 2026-09-17
