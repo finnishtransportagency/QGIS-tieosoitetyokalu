@@ -46,7 +46,7 @@ logging.basicConfig(filename=Path.joinpath(logPath, 'log.txt'), level=logging.DE
 import json
 
 from qgis.core import (Qgis, QgsCoordinateReferenceSystem, QgsPointXY,
-                       QgsProject, QgsRectangle)
+                       QgsProject, QgsMessageLog)
 from qgis.gui import QgsMapToolEmitPoint
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
 from qgis.PyQt.QtGui import QIcon
@@ -326,21 +326,30 @@ class Osoitetyokalu:
             try:
                 self.iface.removePluginMenu(self.menu, action)
                 self.iface.removeToolBarIcon(action)
-            except Exception:
-                pass
+            except (RuntimeError, TypeError) as e:
+                QgsMessageLog.logMessage(
+                    f'unload: removal of plugin menu or toolbar failed: {e!r}',
+                    'Tieosoitetyökalu', Qgis.MessageLevel.Warning, notifyUser=False
+                )
 
         # disconnect global signals safely
         try:
             QgsProject.instance().layersWillBeRemoved.disconnect(self.remove_annotations_from_layers)
-        except Exception:
-            pass
+        except (TypeError, RuntimeError) as e:
+            QgsMessageLog.logMessage(
+                f'unload: removal of layersWillBeRemoved signal failed: {e!r}',
+                'Tieosoitetyökalu', Qgis.MessageLevel.Warning, notifyUser=False
+            )
 
         # close shared requests.Session if you created one
         if getattr(self, 'session', None) is not None:
             try:
                 self.session.close()
-            except Exception:
-                pass
+            except (OSError, RuntimeError) as e:
+                QgsMessageLog.logMessage(
+                    f'unload: closing of HTTP session failed: {e!r}',
+                    'Tieosoitetyökalu', Qgis.MessageLevel.Warning, notifyUser=False
+                )
 
 
     def road_address(self):
@@ -1022,7 +1031,7 @@ class Osoitetyokalu:
 
         self.iface.messageBar().pushMessage(
         f'{error_msg}',
-        level=Qgis.Critical, duration=10)
+        level=Qgis.MessageLevel.Critical, duration=10)
 
 
     def vkm_request_geometry(self, vkm_url, tie_A, osa_A, etaisyys_A, tie_B, osa_B, etaisyys_B, palautus_arvot='1,2,5'):
@@ -1587,7 +1596,7 @@ class Osoitetyokalu:
             roadways_file.close()
 
             message = self.tr('Tiedosto tallennettu polkuun: {user_path}').format(user_path = str(user_path))
-            self.iface.messageBar().pushMessage(self.tr('Lataus onnistui'), message, level=Qgis.Success, duration=7)
+            self.iface.messageBar().pushMessage(self.tr('Lataus onnistui'), message, level=Qgis.MessageLevel.Success, duration=7)
 
         except VkmApiException as e:
             self.error_popup(e)
